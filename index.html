@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso - Tecnológico del Valle de Etla</title>
+  <link rel="stylesheet" href="Coordinador/assets/css/estilos.css" />
+  <style>
+    .mensaje-error {
+      color: red;
+      margin-top: 10px;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-principal">
+    <div class="lado-izquierdo">
+      <div class="logos-institucionales">
+        <div class="logo-tecnm">
+          <img src="Coordinador/assets/img/tec mex.png" alt="Logo del Tecnológico Nacional de México" />
+        </div>
+        <div class="logo-itvetla">
+          <img src="Coordinador/assets/img/logo tec etla.png" alt="Logo del Instituto Tecnológico del Valle de Etla" />
+        </div>
+      </div>
+      <div class="lema">
+        <h2>Impulsando el futuro desde el Valle de Etla</h2>
+      </div>
+      <div class="info-adicional">
+        <p>¡Formando líderes con excelencia académica y compromiso social!</p>
+        <p><a href="https://itvalledeetla.tecnm.mx/" target="_blank">https://itvalledeetla.tecnm.mx/</a></p>
+      </div>
+    </div>
+
+    <div class="lado-derecho">
+      <div class="formulario-login">
+        <div class="titulo">
+          <h1>ACTIVIDADES EXTRAESCOLARES</h1>
+          <p>Sistema de gestión de actividades complementarias</p>
+        </div>
+
+        <div class="campo">
+          <label for="usuario"><i class="fas fa-user"></i> Usuario</label>
+          <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu nombre de usuario" />
+        </div>
+        <div class="campo">
+          <label for="contrasena"><i class="fas fa-lock"></i> Contraseña</label>
+          <input type="password" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" />
+        </div>
+
+        <button onclick="validarAcceso()" class="boton-inicio-sesion">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </button>
+
+        <div id="mensaje-error" class="mensaje-error">Usuario o contraseña incorrectos.</div>
+
+        <div class="opciones-login">
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FontAwesome -->
+  <script src="https://kit.fontawesome.com/your_fontawesome_kit.js" crossorigin="anonymous"></script>
+
+  <!-- Validación -->
+  <script>
+    function validarAcceso() {
+      const usuario = document.getElementById("usuario").value.trim().toLowerCase();
+      const contrasena = document.getElementById("contrasena").value.trim();
+      const mensajeError = document.getElementById("mensaje-error");
+
+      const credenciales = {
+        administrador: "TECVALLE",
+        coordinador: "TEC2025"
+      };
+
+      if (credenciales[usuario] && credenciales[usuario] === contrasena) {
+        mensajeError.style.display = "none";
+        window.location.href = "Pagina principal.html";
+      } else {
+        mensajeError.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>

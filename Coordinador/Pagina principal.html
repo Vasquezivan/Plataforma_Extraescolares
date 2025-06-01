@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Principal</title>
+  <link rel="stylesheet" href="/Coordinador/assets/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #1B396A; /* Fondo claro para contraste */
+    }
+
+    .barra-blanca {
+      background-color: rgb(243, 242, 242);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-bottom: 1px solid #ded7d7;
+      box-shadow: 0 2px 4px rgba(177, 99, 99, 0.1);
+    }
+
+    .barra-secundaria {
+      background-color: #1B396A;
+      padding: 12px 30px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .barra-secundaria ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .barra-secundaria a {
+      color: rgb(248, 244, 244);
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    .barra-secundaria a:hover {
+      color: #7e7940a5;
+    }
+
+    .contenedor-principal {
+      display: flex;
+      flex: 1;
+      background-color: #f7f2f2;
+      box-shadow: inset 0 0 10px #f2ebeb;
+    }
+
+    .barra-lateral {
+      width: 260px;
+      background-color: #1B396A;
+      padding: 30px 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .barra-lateral a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #f0eaea;
+    
+      padding: 12px 15px;
+      
+      box-shadow: 0 2px 5px rgba(184, 34, 34, 0.1);
+      transition: background-color 0.3s, box-shadow 0.3s;
+      font-weight: 600;
+    }
+
+    .barra-lateral a:hover {
+      background-color: #e0e0e0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .icono-menu {
+      width: 40px;
+      height: 40px;
+      margin-right: 15px;
+    }
+
+    .contenido {
+      flex: 1;
+      padding: 50px 60px;
+      color: #222;
+    }
+
+    .contenido h1 {
+      margin-bottom: 15px;
+      color: #201f4ee4;
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+
+    .contenido p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      max-width: 700px;
+    }
+
+    .barra-informativa {
+      background-color: #1B396A;
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="barra-blanca">
+    <img src="/Coordinador/assets/img/Educacion.png" alt="Logo 1" />
+    <img src="/Coordinador/assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
+    <img src="/Coordinador/assets/img/pleca-ITVE.png" alt="Logo 3" />
+  </div>
+
+  <div class="barra-secundaria">
+    <ul>
+      <li><a href="Pagina principal.html">Inicio</a></li>
+      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
+      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
+      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
+      <li><a href="informe.html">Informe de Actividad</a></li>
+      <li><a href="resultados.html">Resultados de Actividades</a></li>
+    </ul>
+  </div>
+
+  <div class="contenedor-principal">
+    <div class="barra-lateral">
+      <a href="regEstudiantes.html">
+        <img src="/Coordinador/assets/img/Registro.png" alt="Registrar" class="icono-menu" />
+        <span>Registrar Estudiantes</span>
+      </a>
+
+      <a href="VerEstudiantes.html">
+        <img src="/Coordinador/assets/img/images-removebg-preview.png" alt="Ver" class="icono-menu" />
+        <span>Ver Estudiantes</span>
+      </a>
+
+      <a href="contancia.html">
+        <img src="/Coordinador/assets/img/Constancia.png" alt="Constancia" class="icono-menu" />
+        <span>Constancia de Cumplimiento</span>
+      </a>
+
+      <a href="informe.html">
+        <img src="/Coordinador/assets/img/Informe.png" alt="Informe" class="icono-menu" />
+        <span>Informe de Actividad</span>
+      </a>
+
+      <a href="resultados.html">
+        <img src="/Coordinador/assets/img/Resultados.png" alt="Resultados" class="icono-menu" />
+        <span>Resultados de Actividades</span>
+      </a>
+    </div>
+
+    <div class="contenido">
+      <h1>Bienvenido al Panel Principal</h1>
+      <p></p>
+    </div>
+  </div>
+
+  <div class="barra-informativa">
+    <p>Este sistema fue desarrollado para facilitar la gestión estudiantil.</p>
+    <p>Todos los derechos reservados © 2025 ITVE.</p>
+    <p>Para soporte técnico, comunícate con soporte@itv.edu.mx</p>
+  </div>
+</body>
+</html>

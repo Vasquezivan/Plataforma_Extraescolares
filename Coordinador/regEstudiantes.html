@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>navbar Dos</title>
+  <link rel="stylesheet" href="/Coordinador/assets/css/tarjetas.css" />
+</head>
+<body>
+
+ 
+
+ <div class="barra-blanca">
+    <img src="/Coordinador/assets/img/Educacion.png" alt="Logo 1" />
+    <img src="/Coordinador/assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
+    <img src="/Coordinador/assets/img/pleca-ITVE.png" alt="Logo 3" />
+  </div>
+
+
+  <div class="barra-secundaria">
+    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+  <img src="/Coordinador/assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+</a>
+  <ul>
+    <li><a href="Pagina principal.html">Inicio</a></li>
+      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
+      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
+      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
+      <li><a href="#">Informe de Actividad</a></li>
+      <li><a href="#">Resultados de Actividades</a></li>
+    </ul>
+  </div>
+
+
+<!--tarjetas -->
+
+
+ <div class="seccion">
+    <button class="toggle-btn" data-id="cultural">Cultural</button>
+    <div id="cultural" class="tarjetas-contenedor visible">
+
+
+  <!-- Danza -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/danza.jpeg');">
+  <!-- Enlace invisible cubriendo toda la tarjeta -->
+  <a href="contancia.html" class="overlay-link"></a>
+
+  <div class="tarjeta-header">
+    <span class="titulo">Danza</span>
+    <div class="acciones">
+      <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Teatro -->
+ <div class="tarjeta" style="background-image: url('/Coordinador/assets/img/teatro.jpg');">
+  <a href="contancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Teatro</span>
+    <div class="acciones">
+       <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+ <!-- Pintura -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/pintura.jpg');">
+  <a href="contancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Pintura</span>
+    <div class="acciones">
+        <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- Música -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/musica.jpg');">
+  <a href="constancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Música</span>
+    <div class="acciones">
+       <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="seccion">
+    <button class="toggle-btn" data-id="deportivo">Deportivo</button>
+    <div id="deportivo" class="tarjetas-contenedor visible">
+
+
+<!-- Fútbol -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/futbol.png');">
+  <a href="constancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Fútbol</span>
+    <div class="acciones">
+        <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- Básquetbol -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/basquetbol.jpg');">
+  <a href="constancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Básquetbol</span>
+    <div class="acciones">
+         <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- Voleibol -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/voleibol.jpg');">
+  <a href="constancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Voleibol</span>
+    <div class="acciones">
+          <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+<!-- Ajedrez -->
+<div class="tarjeta" style="background-image: url('/Coordinador/assets/img/ajedrez.jpeg');">
+  <a href="constancia.html" class="overlay-link"></a>
+  <div class="tarjeta-header">
+    <span class="titulo">Ajedrez</span>
+    <div class="acciones">
+         <a href="constancia.html" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/document.png" alt="Doc"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/edit.png" alt="Edit"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/settings.png" alt="Config"></a>
+      <a href="#" onclick="event.stopPropagation();"><img src="/Coordinador/assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
+    </div>
+  </div>
+</div>
+
+
+
+
+ <div class="barra-informativa">
+    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
+    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
+    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          toggleSeccion(id);
+        });
+      });
+    });
+
+    function toggleSeccion(id) {
+      const contenedor = document.getElementById(id);
+      contenedor.classList.toggle('visible');
+      contenedor.classList.toggle('oculto');
+    }
+  </script>
+</body>
+</html>

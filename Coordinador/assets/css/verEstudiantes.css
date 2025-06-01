@@ -1,0 +1,210 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates|Poppins&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat Alternates", sans-serif;
+  font-size: 10px;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden; /* permite scroll vertical, pero oculta horizontal */
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.barra-secundaria {
+  background-color: #1B396A;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.barra-secundaria ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.barra-secundaria li {
+  display: inline;
+}
+
+.barra-secundaria a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.barra-secundaria a:hover {
+  text-decoration: underline;
+}
+
+.barra-blanca {
+  background-color: white;
+  padding: 15px 0;
+  display: flex;
+  justify-content: flex-start;
+  gap: 40px;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.barra-blanca img {
+  width: auto;
+  height: 70px; /* Ajusta la altura de la imagen */
+  object-fit: contain;
+}
+
+.barra-informativa {
+  background-color: #1B396A;
+  color: white;
+  text-align: center;
+  padding: 10px 25px; /* Reduce altura */
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  gap: 30px; /* Espacio entre párrafos */
+  margin-top: auto;
+}
+
+.barra-informativa p {
+  margin-bottom: 8px;
+}
+
+.footer {
+  background-color: #1B396A;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+  font-size: 1em;
+  width: 100%;
+}
+
+.btn-nuevo {
+  background-color: #c7b2ff;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s;
+}
+
+.btn-nuevo:hover {
+  background-color: #b39ddb;
+}
+
+
+
+<!--  -->
+
+.tabla-container {
+  width: 90%;
+  margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.tabla-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 20px;
+}
+
+.tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.buscador {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  width: 200px;
+  outline: none;
+}
+
+.btn-nuevo {
+  background: linear-gradient(to right, #7853f1, #c878f5);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: sans-serif;
+}
+
+thead {
+  background-color: #e5e1ef;
+  color: black;
+  font-weight: bold;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  position: relative;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+a {
+  text-decoration: none;
+  color: purple;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.flecha {
+  color: purple;
+  font-weight: bold;
+}
+.flecha-regreso {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000; /* Cambia el color si lo necesitas */
+  padding: 5px 10px;
+  z-index: 1000;
+}
+.barra-secundaria {
+  position: relative;
+}

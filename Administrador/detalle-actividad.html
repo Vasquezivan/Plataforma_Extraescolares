@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Actividad Extraescolar</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      padding-top: 100px; /* Aumentado para el logo */
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    /* Estilo para el logo del gobierno */
+    .logo-gobierno {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #d4d6db;
+      padding: 15px 0;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .logo-gobierno img {
+      height: 45px;
+    }
+
+    .contenido-detalle {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    
+    .info-actividad {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-bottom: 30px;
+      max-width: 1000px;      /* Más angosto */
+      margin-left: auto;     /* Centrado horizontal */
+      margin-right: auto;    /* Centrado horizontal */
+      margin-top: 10px;
+    }
+    
+    .info-actividad h2 {
+      color: #002147;
+      margin-bottom: 15px;
+      font-size: 28px;
+      border-bottom: 2px solid #ff7f00;
+      padding-bottom: 10px;
+    }
+    
+    .info-actividad p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    .tabla-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #002147;
+      color: white;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .btn-agregar {
+      background-color: #ff7f00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    .btn-agregar:hover {
+      background-color: #e67300;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-contenido {
+      background-color: white;
+      padding: 25px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .cerrar {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #002147;
+    }
+
+    .modal-contenido h2 {
+      color: #002147;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .modal-contenido input,
+    .modal-contenido select,
+    .modal-contenido textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    .modal-contenido button {
+      background-color: #002147;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .modal-contenido button:hover {
+      background-color: #003366;
+    }
+
+    .btn-accion {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .btn-accion img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .acciones-celda {
+      display: flex;
+      gap: 8px;
+    }
+
+    .site-footer {
+      background-color: #002147;
+      color: white;
+      padding: 40px 0 20px;
+      margin-top: 40px;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      gap: 30px;
+    }
+
+    .footer-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .footer-text h3 {
+      color: #ff7f00;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .footer-text p {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .footer-map {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .footer-map iframe {
+      width: 100%;
+      height: 280px;
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .footer-copyright {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9em;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .whatsapp-link img {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.3s;
+    }
+
+    .whatsapp-link img:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding-top: 80px;
+      }
+      
+      .contenido-detalle {
+        padding: 15px;
+      }
+      
+      .info-actividad {
+        padding: 20px;
+      }
+      
+      .footer-container {
+        flex-direction: column;
+      }
+      
+      .footer-map {
+        order: -1;
+      }
+      
+      th, td {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <!-- Logo del gobierno fijo en la parte superior -->
+    <div class="logo-gobierno">
+<a href="https://www.gob.mx/" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-GobMx.png" alt="GobMX"></a>
+          <a href="https://www.gob.mx/sep" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-Educ.png" alt="SEP"></a>
+          <a href="https://www.tecnm.mx" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-TecNM.png" alt="TecNM"></a>
+          <a href="http://www.vetla.tecnm.mx/" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-ITVE.png" alt="ITVE"></a>
+            </div>
+
+    <main>
+      <div class="contenido-detalle">
+        <div class="info-actividad">
+          <h2 id="nombre-actividad">Nombre de la Actividad</h2>
+          <p id="descripcion-actividad">Descripción de la actividad...</p>
+        </div>
+        
+        <button class="btn-agregar" onclick="abrirModalEstudiante()">
+          <span class="glyphicon glyphicon-plus"></span> Agregar Estudiante
+        </button>
+        
+        <div class="tabla-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre del Estudiante</th>
+                <th>No. de Control</th>
+                <th>Carrera</th>
+                <th>Semestre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-estudiantes">
+              <!-- Los datos se llenarán dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Modal para agregar estudiante -->
+      <div id="modal-estudiante" class="modal">
+        <div class="modal-contenido">
+          <span class="cerrar" onclick="cerrarModalEstudiante()">&times;</span>
+          <h2 id="modal-titulo">Agregar Estudiante</h2>
+          <form id="formulario-estudiante">
+            <input type="text" id="nombre-estudiante" placeholder="Nombre completo" required>
+            <input type="text" id="control-estudiante" placeholder="Número de control" required>
+            <select id="carrera-estudiante" required>
+              <option value="">Seleccione carrera</option>
+              <option value="Sistemas">Ing. en Sistemas Computacionales</option>
+              <option value="Industrial">Ing. Industrial</option>
+              <option value="Gestión">Ing. en Gestión Empresarial</option>
+              <option value="Otra">Otra carrera</option>
+            </select>
+            <select id="semestre-estudiante" required>
+              <option value="">Seleccione semestre</option>
+              <option value="1">1°</option>
+              <option value="2">2°</option>
+              <option value="3">3°</option>
+              <option value="4">4°</option>
+              <option value="5">5°</option>
+              <option value="6">6°</option>
+              <option value="7">7°</option>
+              <option value="8">8°</option>
+              <option value="9">9°</option>
+            </select>
+            <button type="button" onclick="agregarEstudiante()">
+              <span id="btn-texto">Agregar</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <!-- Información de contacto -->
+        <div class="footer-text">
+          <h3>Dirección</h3>
+          <p>Abasolo S/N, Barrio del Agua Buena<br>Santiago Suchilquitongo Oaxaca, C.P. 68230</p>
+          
+          <h3>Contacto</h3>
+          <p>
+            Email: info@vetla.tecnm.mx<br>
+            Teléfono: 951 305 29 27
+          </p>
+          
+          <h3>Preguntar por Whatsapp</h3>
+          <a href="https://wa.me/9513052927?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
+            <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
+          </a>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="footer-map">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15241.367048623282!2d-96.8702191!3d17.2506929!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c6e36d891967db%3A0x512f566ad941ae57!2sTecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20campus%20Instituto%20Tecnol%C3%B3gico%20del%20Valle%20de%20Etla!5e0!3m2!1ses!2smx!4v1621983062705!5m2!1ses!2smx"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      
+      <!-- Derechos reservados -->
+      <div class="footer-copyright">
+        <p>© 2023 Tecnológico Nacional de México - Campus Valle de Etla. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Obtener parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const nombreActividad = urlParams.get('nombre') || 'Actividad no especificada';
+    const descripcionActividad = urlParams.get('descripcion') || 'Descripción no disponible';
+    
+    // Llenar la información de la actividad
+    document.getElementById('nombre-actividad').textContent = nombreActividad;
+    document.getElementById('descripcion-actividad').textContent = descripcionActividad;
+    
+    // Datos de estudiantes (almacenados por nombre de actividad)
+    let estudiantes = JSON.parse(localStorage.getItem(`estudiantes_${nombreActividad}`)) || [];
+    
+    // Función para guardar estudiantes en localStorage
+    function guardarEstudiantes() {
+      localStorage.setItem(`estudiantes_${nombreActividad}`, JSON.stringify(estudiantes));
+    }
+    
+    // Función para cargar estudiantes en la tabla
+    function cargarEstudiantes() {
+      const tbody = document.getElementById('tabla-estudiantes');
+      tbody.innerHTML = '';
+      
+      if (estudiantes.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+              No hay estudiantes registrados en esta actividad
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      estudiantes.forEach((estudiante, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${estudiante.nombre}</td>
+          <td>${estudiante.control}</td>
+          <td>${estudiante.carrera}</td>
+          <td>${estudiante.semestre}°</td>
+          <td class="acciones-celda">
+            <button class="btn-accion" onclick="editarEstudiante(${index})" title="Editar">
+              <span class="glyphicon glyphicon-edit"></span>
+            </button>
+            <button class="btn-accion" onclick="eliminarEstudiante(${index})" title="Eliminar">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    
+    // Variables para controlar el modo edición/agregar
+    let estudianteEditando = null;
+    
+    // Funciones para el modal de estudiante
+    function abrirModalEstudiante(index = null) {
+      const modal = document.getElementById('modal-estudiante');
+      const titulo = document.getElementById('modal-titulo');
+      const formulario = document.getElementById('formulario-estudiante');
+      const btnTexto = document.getElementById('btn-texto');
+      
+      if (index !== null) {
+        // Modo edición
+        estudianteEditando = index;
+        titulo.textContent = "Editar Estudiante";
+        btnTexto.textContent = "Guardar Cambios";
+        const est = estudiantes[index];
+        document.getElementById('nombre-estudiante').value = est.nombre;
+        document.getElementById('control-estudiante').value = est.control;
+        document.getElementById('carrera-estudiante').value = est.carrera;
+        document.getElementById('semestre-estudiante').value = est.semestre;
+      } else {
+        // Modo agregar
+        estudianteEditando = null;
+        titulo.textContent = "Agregar Estudiante";
+        btnTexto.textContent = "Agregar";
+        formulario.reset();
+      }
+      
+      modal.style.display = 'flex';
+    }
+    
+    function cerrarModalEstudiante() {
+      document.getElementById('modal-estudiante').style.display = 'none';
+      document.getElementById('formulario-estudiante').reset();
+      estudianteEditando = null;
+    }
+    
+    function agregarEstudiante() {
+      const nombre = document.getElementById('nombre-estudiante').value.trim();
+      const control = document.getElementById('control-estudiante').value.trim();
+      const carrera = document.getElementById('carrera-estudiante').value;
+      const semestre = document.getElementById('semestre-estudiante').value;
+      
+      // Validaciones
+      if (!nombre || !control || !carrera || !semestre) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Todos los campos son requeridos',
+          icon: 'error',
+          confirmButtonColor: '#002147'
+        });
+        return;
+      }
+      
+      // Validar formato de número de control (ejemplo: 7 dígitos)
+      if (!/^\d{7}$/.test(control)) {
+        Swal.fire({
+          title: 'Error',
+          text: 'El número de control debe tener 8 dígitos',
+          icon: 'error',
+          confirmButtonColor: '#002147'
+        });
+        return;
+      }
+      
+      // Verificar si el número de control ya existe (excepto en edición)
+      if (estudianteEditando === null && estudiantes.some(e => e.control === control)) {
+        Swal.fire({
+          title: 'Error',
+          text: 'El número de control ya está registrado',
+          icon: 'error',
+          confirmButtonColor: '#002147'
+        });
+        return;
+      }
+      
+      const nuevoEstudiante = { nombre, control, carrera, semestre };
+      
+      if (estudianteEditando !== null) {
+        // Editar estudiante existente
+        estudiantes[estudianteEditando] = nuevoEstudiante;
+      } else {
+        // Agregar nuevo estudiante
+        estudiantes.push(nuevoEstudiante);
+      }
+      
+      guardarEstudiantes();
+      cargarEstudiantes();
+      cerrarModalEstudiante();
+      
+      Swal.fire({
+        title: 'Éxito',
+        text: estudianteEditando !== null ? 'Estudiante actualizado' : 'Estudiante agregado',
+        icon: 'success',
+        confirmButtonColor: '#002147'
+      });
+    }
+    
+    // Función para eliminar estudiante
+    function eliminarEstudiante(index) {
+      Swal.fire({
+        title: '¿Eliminar estudiante?',
+        html: `¿Estás seguro de eliminar a <b>${estudiantes[index].nombre}</b> (${estudiantes[index].control}) de esta actividad?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#002147',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          estudiantes.splice(index, 1);
+          guardarEstudiantes();
+          cargarEstudiantes();
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'El estudiante ha sido eliminado',
+            icon: 'success',
+            confirmButtonColor: '#002147'
+          });
+        }
+      });
+    }
+    
+    // Cargar estudiantes al iniciar la página
+    cargarEstudiantes();
+    
+    function editarEstudiante(index) {
+  abrirModalEstudiante(index);
+}
+  </script>
+</body>
+</html>
