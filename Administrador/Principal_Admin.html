@@ -141,6 +141,11 @@
         </div>
 
         <div class="card-body" style="padding: 15px;">
+          <!-- Añadido nuevo campo de búsqueda para usuarios -->
+          <div style="margin-bottom: 15px;">
+            <input type="text" id="busquedaUsuarios" placeholder="Buscar usuario..." style="width: 50%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;" onkeyup="filtrarUsuarios()">
+          </div>
+          
           <div class="table-responsive" style="overflow-x: auto;">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
               <thead>
@@ -236,7 +241,7 @@
     function filtrarUsuarios() {
       const input = document.getElementById('busquedaUsuarios');
       const filtro = input.value.toLowerCase();
-      const filas = document.querySelectorAll('#cuerpoTablaUsuarios tr');
+      const filas = document.querySelectorAll('#tablaUsuarios tr');
 
       filas.forEach(fila => {
         const celdas = fila.getElementsByTagName('td');
