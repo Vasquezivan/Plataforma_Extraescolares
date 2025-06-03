@@ -74,7 +74,11 @@ document.addEventListener('DOMContentLoaded', function() {
       <h1 style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 36px;">Bienvenido al Panel Administrador</h1>
       <p style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 18px; margin-top: 20px;">Aquí podrás gestionar las actividades extraescolares, administrar usuarios y mucho más.</p>
       <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" style="width: 150px; margin-top: 30px;">
-      <div style="margin-top: 40px;">
+      <div style="margin-top: 25px;">
+        <!-- Botón Panel Coordinador -->
+        <a href="../Coordinador/Pagina principal.html" class="btn-coordinador" style="background-color: #ff7f00; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+          <i class="fas fa-user-cog" style="margin-right: 8px;"></i>Panel Coordinador
+        </a>
       </div>
     </div>
   `;
@@ -86,7 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <h1 style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 36px;">Bienvenido al Panel Administrador</h1>
         <p style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 18px; margin-top: 20px;">Aquí podrás gestionar las actividades extraescolares, administrar usuarios y mucho más.</p>
         <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" style="width: 150px; margin-top: 30px;">
-        <div style="margin-top: 40px;">
+        <div style="margin-top: 25px;">
+          <!-- Botón Panel Coordinador - Añadido para que aparezca también al hacer clic en inicio -->
+          <a href="../Coordinador/Pagina principal.html" class="btn-coordinador" style="background-color: #ff7f00; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+            <i class="fas fa-user-cog" style="margin-right: 8px;"></i>Panel Coordinador
+          </a>
+        </div>
       </div>
     `;
   });
@@ -110,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <div style="margin-top: 20px;">
-              <input type="text" id="busquedaUsuarios" placeholder="Buscar usuario..." style="width: 50%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;">
+              <input type="text" id="busquedaUsuarios" placeholder="Buscar usuario..." style="width: 50%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;" onkeyup="filtrarUsuarios()">
             </div>
 
             <div style="margin-top: 20px;">
@@ -155,6 +164,12 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>
       `;
+      
+      // Configurar el evento de búsqueda
+      const busquedaInput = document.getElementById('busquedaUsuarios');
+      if (busquedaInput) {
+        busquedaInput.addEventListener('keyup', filtrarUsuarios);
+      }
     });
   }
 
@@ -276,6 +291,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const modal = document.getElementById('modalAgregarUsuario');
                 modal.parentNode.removeChild(modal);
+                
+                // Agregar SweetAlert2 con opción de arrastrar
+                Swal.fire({
+                  title: "¡Usuario agregado!",
+                  text: `El usuario ${nombre} ha sido agregado exitosamente.`,
+                  icon: "success",
+                  draggable: true,
+                  confirmButtonColor: "#1B396A"
+                });
             }
         });
     }
@@ -393,6 +417,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const modal = document.getElementById('modalEditarUsuario');
                 modal.parentNode.removeChild(modal);
+                
+                // Agregar SweetAlert2 con opción de arrastrar para edición
+                Swal.fire({
+                  title: "¡Usuario actualizado!",
+                  text: `Los datos de ${nuevoNombre} han sido actualizados exitosamente.`,
+                  icon: "success",
+                  draggable: true,
+                  confirmButtonColor: "#1B396A"
+                });
             }
         });
     }
@@ -443,8 +476,35 @@ function configurarEventosUnidades() {
       eliminarUnidad(index);
     } else if (action === 'view') {
       verUnidad(unidadesAcademicas[index]); // Ajuste para pasar el nombre completo de la unidad
+    } else if (action === 'panel') {
+      // Implementar navegación a la página específica de la unidad
+      const nombreUnidad = unidadesAcademicas[index];
+      redirigirAVistaUnidad(nombreUnidad);
     }
   });
+}
+
+// Nueva función para redirigir a las páginas de las unidades académicas
+function redirigirAVistaUnidad(unidad) {
+  let archivoHTML = '';
+  
+  // Asignar el archivo HTML correcto según la unidad
+  if (unidad === "CIDERS unión Hidalgo") {
+    archivoHTML = "U_CentrodeInvestigacion.html";
+  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
+    archivoHTML = "U_Demetrio.html";
+  } else if (unidad === "Unidad académica Tlahuitoltepec") {
+    archivoHTML = "U_SantaMaria.html";
+  } else if (unidad === "Valle de Etla") {
+    archivoHTML = "U_ValleEtla.html";
+  }
+  
+  // Redirigir a la página correspondiente
+  if (archivoHTML) {
+    window.location.href = archivoHTML;
+  } else {
+    console.error("No se pudo determinar el archivo HTML para la unidad:", unidad);
+  }
 }
 
 function asignarIndicesIniciales() {
@@ -695,6 +755,18 @@ function mostrarInformacionUnidad(unidad) {
     return;
   }
 
+  // Determinar el archivo HTML correcto según la unidad
+  let archivoHTML = '';
+  if (unidad === "CIDERS unión Hidalgo") {
+    archivoHTML = "U_CentrodeInvestigacion.html";
+  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
+    archivoHTML = "U_Demetrio.html";
+  } else if (unidad === "Unidad académica Tlahuitoltepec") {
+    archivoHTML = "U_SantaMaria.html";
+  } else if (unidad === "Valle de Etla") {
+    archivoHTML = "U_ValleEtla.html";
+  }
+
   const contenedor = document.querySelector('.main-content');
   contenedor.innerHTML = `
     <div class="encabezado-modal">
@@ -709,7 +781,14 @@ function mostrarInformacionUnidad(unidad) {
     </div>
 
     <div class="seccion-alumnos">
-      <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${datosUnidad.actividades[0]}</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${datosUnidad.actividades[0]}</h3>
+        
+        <!-- Botón Vista Previa más pequeño y a la derecha -->
+        <a href="./${archivoHTML}" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
+        </a>
+      </div>
 
       <div class="contenedor-busqueda">
         <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla('${unidad}')">
@@ -752,20 +831,28 @@ function mostrarInformacionUnidad(unidad) {
 function filtrarUsuarios() {
   const input = document.getElementById('busquedaUsuarios');
   const filtro = input.value.toLowerCase();
-  const filas = document.querySelectorAll('#cuerpoTablaUsuarios tr');
+  const filas = document.querySelectorAll('#tablaUsuarios tr');
+
+  let totalFilas = filas.length;
+  let filasVisibles = 0;
 
   filas.forEach(fila => {
     const celdas = fila.getElementsByTagName('td');
     let coincide = false;
 
     for (let i = 0; i < celdas.length; i++) {
-      if (celdas[i].textContent.toLowerCase().includes(filtro)) {
+      if (celdas[i] && celdas[i].textContent.toLowerCase().includes(filtro)) {
         coincide = true;
         break;
       }
     }
 
-    fila.style.display = coincide ? '' : 'none';
+    if (coincide) {
+      fila.style.display = '';
+      filasVisibles++;
+    } else {
+      fila.style.display = 'none';
+    }
   });
 }
 
