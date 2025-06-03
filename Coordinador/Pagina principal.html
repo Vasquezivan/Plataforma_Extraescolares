@@ -5,15 +5,26 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel Principal</title>
-  <link rel="stylesheet" href="/Coordinador/assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Movida la hoja de estilos después de nuestros estilos en línea para que no sobrescriba -->
   <style>
+    /* Reset para sobrescribir el estilo universal de style.css */
+    .barra-lateral a, 
+    .barra-lateral a span,
+    .header-sidebar h3,
+    .barra-secundaria a,
+    .menu-indicator {
+      font-size: initial;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      background-color: #1B396A; /* Fondo claro para contraste */
+      background-color: #1B396A;
     }
 
     .barra-blanca {
@@ -23,13 +34,13 @@
       justify-content: space-around;
       align-items: center;
       border-bottom: 1px solid #ded7d7;
-      box-shadow: 0 2px 4px rgba(177, 99, 99, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .barra-secundaria {
       background-color: #1B396A;
-      padding: 12px 30px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 18px 30px; /* Aumentado de 12px a 18px para hacerla más ancha */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .barra-secundaria ul {
@@ -42,55 +53,99 @@
     }
 
     .barra-secundaria a {
-      color: rgb(248, 244, 244);
+      color: #ffffff;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
-      transition: color 0.3s;
+      font-weight: 600;
+      font-size: 1.1rem; /* Reducido de 1.6rem a 1.1rem */
+      transition: all 0.3s ease;
+      padding: 6px 10px;
+      border-radius: 4px;
     }
 
     .barra-secundaria a:hover {
-      color: #7e7940a5;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffcc00;
     }
 
     .contenedor-principal {
       display: flex;
       flex: 1;
       background-color: #f7f2f2;
-      box-shadow: inset 0 0 10px #f2ebeb;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
     }
 
     .barra-lateral {
-      width: 260px;
+      width: 220px;
       background-color: #1B396A;
-      padding: 30px 20px;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
+      transition: width 0.3s ease;
+      position: relative;
+      padding: 20px 0;
+    }
+
+    .header-sidebar {
+      padding: 10px 15px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .header-sidebar h3 {
+      color: white;
+      font-size: 1.4em !important;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .menu-item {
+      margin-bottom: 5px;
     }
 
     .barra-lateral a {
       display: flex;
       align-items: center;
       text-decoration: none;
-      color: #f0eaea;
-    
-      padding: 12px 15px;
-      
-      box-shadow: 0 2px 5px rgba(184, 34, 34, 0.1);
-      transition: background-color 0.3s, box-shadow 0.3s;
-      font-weight: 600;
+      color: #ffffff;
+      padding: 14px 15px;
+      transition: all 0.3s ease;
+      border-left: 4px solid transparent;
+      font-weight: 700;
+      position: relative;
+      font-size: 1.3rem !important; /* Reducido de 1.5rem a 1.3rem */
     }
 
-    .barra-lateral a:hover {
-      background-color: #e0e0e0;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    .barra-lateral a span {
+      font-size: 1.3rem !important; /* Reducido de 1.5rem a 1.3rem */
+    }
+
+    .barra-lateral a:hover, .barra-lateral a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-left-color: #ffcc00;
+      color: #ffcc00;
+    }
+
+    .barra-lateral a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .icono-menu {
-      width: 40px;
-      height: 40px;
-      margin-right: 15px;
+      width: 22px;
+      height: 22px;
+      margin-right: 12px;
+      filter: brightness(0) invert(1);
+      transition: all 0.3s;
+    }
+
+    .barra-lateral a:hover .icono-menu {
+      filter: invert(83%) sepia(31%) saturate(7304%) hue-rotate(359deg) brightness(105%) contrast(101%);
     }
 
     .contenido {
@@ -101,9 +156,12 @@
 
     .contenido h1 {
       margin-bottom: 15px;
-      color: #201f4ee4;
+      color: #1B396A;
       font-weight: 700;
       font-size: 2.5rem;
+      border-bottom: 3px solid #ffcc00;
+      padding-bottom: 10px;
+      display: inline-block;
     }
 
     .contenido p {
@@ -118,9 +176,69 @@
       padding: 20px 15px;
       text-align: center;
       font-size: 0.9rem;
-      box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo-sidebar {
+      width: 80px;
+      height: auto;
+      margin: 0 auto 10px;
+      display: block;
+    }
+
+    /* Indicador de menú activo */
+    .menu-indicator {
+      display: inline-block;
+      margin-left: auto;
+      font-size: 14px !important; /* Reducido de 16px a 14px */
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .barra-lateral a:hover .menu-indicator {
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .barra-lateral {
+        width: 55px;
+        overflow: hidden;
+      }
+
+      .barra-lateral span, .menu-indicator {
+        display: none;
+      }
+
+      .header-sidebar h3 {
+        display: none;
+      }
+
+      .barra-lateral a {
+        justify-content: center;
+        padding: 20px 0;
+        font-size: 1.1rem !important; /* Reducido de 1.3rem a 1.1rem */
+      }
+
+      .barra-secundaria a {
+        font-size: 1rem; /* Ajustando el tamaño para dispositivos móviles */
+      }
+
+      .icono-menu {
+        margin-right: 0;
+      }
+
+      .contenido {
+        padding: 30px;
+      }
+
+      .barra-secundaria a {
+        font-size: 1rem; /* Ajustando el tamaño para dispositivos móviles */
+      }
     }
   </style>
+  <!-- Movida abajo para que nuestros estilos tengan prioridad -->
+  <link rel="stylesheet" href="/Coordinador/assets/css/style.css" />
 </head>
 <body>
   <div class="barra-blanca">
@@ -130,42 +248,63 @@
   </div>
 
   <div class="barra-secundaria">
-    <ul>
-      <li><a href="Pagina principal.html">Inicio</a></li>
-      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
-      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
-      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
-      <li><a href="informe.html">Informe de Actividad</a></li>
-      <li><a href="resultados.html">Resultados de Actividades</a></li>
-    </ul>
+    <!-- Contenido de la barra secundaria eliminado -->
   </div>
 
   <div class="contenedor-principal">
     <div class="barra-lateral">
-      <a href="regEstudiantes.html">
-        <img src="/Coordinador/assets/img/Registro.png" alt="Registrar" class="icono-menu" />
-        <span>Registrar Estudiantes</span>
-      </a>
+      <div class="header-sidebar">
+        <img src="/Coordinador/assets/img/ITVE.png" alt="Logo TecNM" class="logo-sidebar" />
+        <h3>Panel de Coordinación</h3>
+      </div>
+      
+      <div class="menu-item">
+        <a href="Pagina principal.html" class="active">
+          <i class="fas fa-home" style="font-size: 20px; width: 24px; margin-right: 15px;"></i>
+          <span>Inicio</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
+      
+      <div class="menu-item">
+        <a href="regEstudiantes.html">
+          <img src="/Coordinador/assets/img/Registro.png" alt="Registrar" class="icono-menu" />
+          <span>Registrar Estudiantes</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
 
-      <a href="VerEstudiantes.html">
-        <img src="/Coordinador/assets/img/images-removebg-preview.png" alt="Ver" class="icono-menu" />
-        <span>Ver Estudiantes</span>
-      </a>
+      <div class="menu-item">
+        <a href="VerEstudiantes.html">
+          <img src="/Coordinador/assets/img/images-removebg-preview.png" alt="Ver" class="icono-menu" />
+          <span>Ver Estudiantes</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
 
-      <a href="contancia.html">
-        <img src="/Coordinador/assets/img/Constancia.png" alt="Constancia" class="icono-menu" />
-        <span>Constancia de Cumplimiento</span>
-      </a>
+      <div class="menu-item">
+        <a href="contancia.html">
+          <img src="/Coordinador/assets/img/Constancia.png" alt="Constancia" class="icono-menu" />
+          <span>Constancia de Cumplimiento</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
 
-      <a href="informe.html">
-        <img src="/Coordinador/assets/img/Informe.png" alt="Informe" class="icono-menu" />
-        <span>Informe de Actividad</span>
-      </a>
+      <div class="menu-item">
+        <a href="informe.html">
+          <img src="/Coordinador/assets/img/Informe.png" alt="Informe" class="icono-menu" />
+          <span>Informe de Actividad</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
 
-      <a href="resultados.html">
-        <img src="/Coordinador/assets/img/Resultados.png" alt="Resultados" class="icono-menu" />
-        <span>Resultados de Actividades</span>
-      </a>
+      <div class="menu-item">
+        <a href="resultados.html">
+          <img src="/Coordinador/assets/img/Resultados.png" alt="Resultados" class="icono-menu" />
+          <span>Resultados de Actividades</span>
+          <span class="menu-indicator">●</span>
+        </a>
+      </div>
     </div>
 
     <div class="contenido">
@@ -179,5 +318,21 @@
     <p>Todos los derechos reservados © 2025 ITVE.</p>
     <p>Para soporte técnico, comunícate con soporte@itv.edu.mx</p>
   </div>
+
+  <script>
+    // Marca el menú actual como activo
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPage = window.location.pathname.split("/").pop();
+      const menuLinks = document.querySelectorAll('.barra-lateral a');
+      
+      menuLinks.forEach(link => {
+        if (link.getAttribute('href') === currentPage) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
