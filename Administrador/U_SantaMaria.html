@@ -720,7 +720,7 @@
             if (e.target.closest('.btn-accion')) return;
             const nombre = nuevoModulo.querySelector('h3').textContent;
             const descripcion = nuevoModulo.querySelector('p').textContent;
-            window.location.href = `detalle-actividad.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
+            window.location.href = `detalle-actividad_2.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
           };
 
           const agregarBtn = contenedorActividadesActual.querySelector(".agregar");
@@ -879,7 +879,7 @@ function eliminarActividad(modulo) {
 function irADetalleActividad(modulo) {
   const nombre = modulo.querySelector('h3').textContent;
   const descripcion = modulo.querySelector('p').textContent;
-  window.location.href = `detalle-actividad.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
+  window.location.href = `detalle-actividad_2.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
 }
   </script>
 </body>
