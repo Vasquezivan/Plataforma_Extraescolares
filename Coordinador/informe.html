@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Informe Semestral</title>
+  <link rel="stylesheet" href="/Coordinador/assets/css/informe.css">
+  <style>
+    body {
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat Alternates', Arial, sans-serif;
+      font-size: 15px;
+    }
+
+    .encabezado {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .encabezado td,
+    .encabezado th {
+      border: 1px solid #999;
+      padding: 5px;
+      vertical-align: top;
+    }
+
+    .logo {
+      width: 100px;
+      text-align: center;
+    }
+
+    .logo img {
+      width: 80px;
+      height: auto;
+    }
+
+    .titulo {
+      font-weight: bold;
+    }
+
+    .derecha {
+      width: 200px;
+    }
+
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 5px 8px;
+      border-radius: 4px;
+      border: 1px solid #bdbdbd;
+      font-size: 1em;
+    }
+
+    .header-inputs {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 18px;
+      justify-content: center;
+    }
+
+    @media print {
+      button {
+        display: none !important;
+      }
+
+      input {
+        display: none;
+      }
+
+      .print-value {
+        display: inline;
+        font-weight: normal;
+      }
+
+      .editable::after {
+        content: attr(data-value);
+        display: inline;
+        margin-left: 5px;
+      }
+    }
+
+    .footer-firmas {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      background: #fff;
+      z-index: 100;
+      padding-bottom: 18px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+    }
+
+    .footer-content {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 60px;
+      padding-top: 18px;
+    }
+
+    .firma {
+      text-align: center;
+      width: 40%;
+    }
+
+    .firma div {
+      height: 60px;
+      border-bottom: 1.5px solid #222;
+      margin-bottom: 6px;
+    }
+
+    .firma span {
+      font-size: 0.98em;
+    }
+
+    /* Ajustar margen superior del contenido principal */
+    .contenido-principal {
+      max-width: 900px;
+      margin: 30px auto 0 auto;
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      padding: 36px 32px 32px 32px;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenido-principal">
+    <table class="encabezado" style="margin-bottom: 32px;">
+      <tr>
+        <td class="logo" rowspan="2"><img src="/Coordinador/assets/img/sgc.jpg" alt="Logo SGC" style="opacity: 0.5;"></td>
+        <td class="titulo" style="text-align: center;">Informe de Actividad Cultural y/o Deportiva</td>
+        <td class="derecha" style="text-align: right;">Código: TecNM-VI-PO-003-02</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">Referencia a la Norma ISO 9001:2015 &nbsp; 8.2.2</td>
+        <td style="text-align: right;">Revisión: 0 <br>Página 1 de 2</td>
+      </tr>
+    </table>
+
+    <h2 style="text-align:center;">INSTITUTO TECNOLÓGICO DE 
+      <span class="editable" data-value="">
+        <input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Nombre del Instituto">
+      </span>
+    </h2>
+    <h3 style="text-align:center;">Subdirección de Planeación y Vinculación</h3>
+    <h3 style="text-align:center;">DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES<br>OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA</h3>
+    <h3 style="text-align:center;">Informe Semestral del Periodo 
+      <span class="editable" data-value="">
+        <input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Periodo">
+      </span>
+    </h3>
+
+    <div class="header-inputs">
+      <label>Actividad Cultural 
+        <span class="editable" data-value="">
+          <input type="text" oninput="this.parentElement.dataset.value = this.value">
+        </span>
+      </label>
+      <label>Deportiva 
+        <span class="editable" data-value="">
+          <input type="text" oninput="this.parentElement.dataset.value = this.value">
+        </span>
+      </label>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 38px;">
+      <thead>
+        <tr style="background: #1B396A; color: #fff;">
+          <th>No.</th>
+          <th>Nombre del Evento</th>
+          <th>Institución Organizadora</th>
+          <th>Fecha</th>
+          <th>Participantes</th>
+          <th>M</th>
+          <th>H</th>
+          <th>Resultados</th>
+        </tr>
+      </thead>
+      <tbody id="eventos-body">
+        <tr>
+          <td>1</td>
+          <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Evento"></span></td>
+          <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Institución"></span></td>
+          <td><span class="editable" data-value=""><input type="date" oninput="this.parentElement.dataset.value = this.value"></span></td>
+          <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+          <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+          <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+          <td><span class="editable" data-value=""><input type="text" placeholder="Resultados" oninput="this.parentElement.dataset.value = this.value"></span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 18px; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+      <button onclick="window.location.href='/Coordinador/Pagina principal.html'" style="background-color: orange; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer;">Regresar</button>
+      <button onclick="agregarFila()">Agregar Evento</button>
+      <button onclick="window.print()">Imprimir</button>
+    </div>
+  </div>
+
+  <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 0; width: 100vw; background: #fff; z-index: 100; padding-bottom: 18px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
+    <div class="footer-content" style="max-width: 900px; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 60px; padding-top: 18px;">
+      <div class="firma" style="text-align: center; width: 40%;">
+        <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+        <span style="font-size: 0.98em;">Jefe(a) de la oficina de promoción</span>
+      </div>
+      <div class="firma" style="text-align: center; width: 40%;">
+        <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+        <span style="font-size: 0.98em;">Jefe(a) del Departamento</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function agregarFila() {
+      const tbody = document.getElementById('eventos-body');
+      const rowCount = tbody.rows.length + 1;
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${rowCount}</td>
+        <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Evento"></span></td>
+        <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Institución"></span></td>
+        <td><span class="editable" data-value=""><input type="date" oninput="this.parentElement.dataset.value = this.value"></span></td>
+        <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+        <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+        <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+        <td><span class="editable" data-value=""><input type="text" placeholder="Resultados" oninput="this.parentElement.dataset.value = this.value"></span></td>
+      `;
+      tbody.appendChild(row);
+    }
+  </script>
+</body>
+</html>
