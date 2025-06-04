@@ -268,6 +268,33 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
       text-align: center;
     }
 
+    .lado-derecho .titulo {
+      margin-top: 120px !important;    /* Menos espacio arriba */
+      margin-bottom: 10px !important; /* Menos espacio abajo */
+      text-align: center;
+    }
+    .formulario-login {
+      margin-top: 40px !important;    /* Menos espacio entre título y formulario */
+    }
+
+    .input-login-pequeno {
+      width: 80%;           /* Menos ancho */
+      min-width: 120px;
+      max-width: 300px;
+      padding: 7px 8px;
+      margin-bottom: 2px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.55rem;
+      font-family: 'Nunito', Arial, sans-serif;
+      background: #f8f9fc;
+    }
+
+    .input-login-pequeno:focus {
+      border-color: #002147;
+      outline: none;
+    }
+
     @media (max-width: 900px) {
       .contenedor-principal {
         flex-direction: column;
@@ -304,10 +331,12 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
       </div>
       <form class="formulario-login" style="margin-top: 30px;" onsubmit="event.preventDefault(); validarAcceso();">
         <div class="campo">
-          <input type="text" id="usuario" name="usuario" class="input-login" placeholder="Ingresa tu nombre de usuario" />
+          <img src="img/user.png" alt="Usuario" style="width:35px; height:35px; margin-right:8px;">
+          <input type="text" id="usuario" name="usuario" class="input-login-pequeno" placeholder="Ingresa tu nombre de usuario" />
         </div>
         <div class="campo">
-          <input type="password" id="contrasena" name="contrasena" class="input-login" placeholder="Ingresa tu contraseña" />
+          <img src="img/pass.png" alt="Contraseña" style="width:35px; height:35px; margin-right:8px;">
+          <input type="password" id="contrasena" name="contrasena" class="input-login-pequeno" placeholder="Ingresa tu contraseña" />
         </div>
         <button type="submit" class="boton-inicio-sesion">
           <i class="fas fa-sign-in-alt"></i> Verificar y Acceder
