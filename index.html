@@ -185,7 +185,7 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
     }
 
     .logo-tecnm {
-      width: 120px; /* Un poco más grande */
+      width: 140px; /* Un poco más grande */
       margin-bottom: 18px;
     }
 
@@ -308,6 +308,14 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
         padding: 20px 10px;
       }
     }
+
+    /* Agrega esto en tu <style> */
+.swal2-title-small {
+  font-size: 1rem !important;
+}
+.swal2-popup-small {
+  font-size: 0.9rem !important;
+}
   </style>
 </head>
 <body>
@@ -341,7 +349,7 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
         <button type="submit" class="boton-inicio-sesion">
           <i class="fas fa-sign-in-alt"></i> Verificar y Acceder
         </button>
-        <div id="mensaje-error" class="mensaje-error">Usuario o contraseña incorrectos.</div>
+        <!-- Eliminado el div de mensaje-error -->
       </form>
     </div>
   </div>
@@ -349,25 +357,72 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
   <!-- FontAwesome -->
   <script src="https://kit.fontawesome.com/your_fontawesome_kit.js" crossorigin="anonymous"></script>
 
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!-- Validación -->
   <script>
-    function validarAcceso() {
-      const usuario = document.getElementById("usuario").value.trim().toLowerCase();
-      const contrasena = document.getElementById("contrasena").value.trim();
-      const mensajeError = document.getElementById("mensaje-error");
+  function validarAcceso() {
+    const usuario = document.getElementById("usuario").value.trim().toLowerCase();
+    const contrasena = document.getElementById("contrasena").value.trim();
 
-      const credenciales = {
-        administrador: "TECVALLE",
-        coordinador: "TEC2025"
-      };
-
-      if (credenciales[usuario] && credenciales[usuario] === contrasena) {
-        mensajeError.style.display = "none";
-        window.location.href = "Pagina principal.html";
-      } else {
-        mensajeError.style.display = "block";
-      }
+    if (!usuario || !contrasena) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Por favor, llena ambos campos.",
+        customClass: {
+          title: 'swal2-title-small',
+          popup: 'swal2-popup-small'
+        }
+      });
+      return;
     }
+
+    // Contraseñas
+    const passAdmin = "TECVALLE";
+    const passCoord = "TEC2025";
+
+    if (contrasena === passAdmin) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "¡Bienvenido Administrador!",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: 'swal2-title-small'
+        }
+      });
+      setTimeout(() => {
+        window.location.href = "Administrador/Principal_Admin.html";
+      }, 1500);
+    } else if (contrasena === passCoord) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "¡Bienvenido Coordinador!",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: 'swal2-title-small'
+        }
+      });
+      setTimeout(() => {
+        window.location.href = "Coordinador/Pagina principal.html";
+      }, 1500);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Usuario o contraseña incorrectos.",
+        customClass: {
+          title: 'swal2-title-small',
+          popup: 'swal2-popup-small'
+        }
+      });
+    }
+  }
   </script>
 </body>
 </html>
