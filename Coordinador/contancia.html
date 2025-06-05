@@ -235,6 +235,65 @@
       background-color: #5a6268;
     }
 
+    /* Estilos para el nuevo modal de confirmación */
+    #confirmacionModal {
+      display: none; /* Oculto por defecto */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--color-texto-claro);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1002; /* Más alto que el overlay y el formulario principal */
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    #confirmacionModal p {
+      font-size: 1.2em;
+      margin-bottom: 25px;
+      color: var(--color-texto-oscuro);
+    }
+
+    #confirmacionModal .modal-buttons {
+      display: flex;
+      justify-content: space-around;
+      gap: 15px;
+    }
+
+    #confirmacionModal .modal-buttons button {
+      flex: 1; /* Distribuye el espacio uniformemente */
+      padding: 12px 20px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 0; /* Anula el margin-top general de los botones */
+    }
+
+    #confirmacionModal .modal-buttons button.confirm-yes {
+      background-color: #28a745; /* Verde para 'Sí' */
+      color: white;
+    }
+
+    #confirmacionModal .modal-buttons button.confirm-yes:hover {
+      background-color: #218838;
+    }
+
+    #confirmacionModal .modal-buttons button.confirm-no {
+      background-color: #dc3545; /* Rojo para 'No' */
+      color: white;
+    }
+
+    #confirmacionModal .modal-buttons button.confirm-no:hover {
+      background-color: #c82333;
+    }
+
+
     .overlay {
       display: none;
       position: fixed;
@@ -290,6 +349,12 @@
       .formulario-constancia button {
         font-size: 0.95em;
         padding: 8px;
+      }
+      #confirmacionModal {
+        padding: 20px;
+      }
+      #confirmacionModal p {
+        font-size: 1em;
       }
     }
 
@@ -410,6 +475,15 @@
     <button onclick="cerrarFormularioEvaluacion()">Cerrar</button>
   </div>
 
+  <!-- Nuevo Modal de Confirmación -->
+  <div id="confirmacionModal">
+    <p>¿Desea generar la constancia con los datos de la evaluación?</p>
+    <div class="modal-buttons">
+      <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar constancia</button>
+      <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
+    </div>
+  </div>
+
   <div id="overlay" class="overlay"></div>
 
   <footer>
@@ -525,83 +599,126 @@
     });
 
     /**
-     * Finaliza la evaluación, preguntando al usuario si desea generar la constancia.
-     * Si confirma, se genera el PDF; de lo contrario, se cierra el formulario.
+     * Muestra el modal de confirmación antes de finalizar la evaluación o generar la constancia.
      */
     function finalizarEvaluacion() {
-      // Usar un modal personalizado en lugar de `confirm()` para mejorar la UX y compatibilidad
-      // En un entorno real, se debería implementar un modal de confirmación en lugar de window.confirm.
-      const userConfirmed = window.confirm(
-        "¿Desea generar la constancia con los datos de la evaluación?"
-      );
-
-      if (userConfirmed) {
-        generarConstanciaPDF();
-      } else {
-        cerrarFormularioEvaluacion();
-      }
+      document.getElementById("confirmacionModal").style.display = "block";
+      document.getElementById("overlay").style.display = "block"; // Asegura que el overlay esté visible
     }
 
     /**
-     * Genera un documento PDF con los datos de la evaluación usando jsPDF.
+     * Confirma la generación de la constancia y cierra ambos modales.
+     */
+    function confirmarGenerarConstancia() {
+      generarConstanciaPDF();
+      document.getElementById("confirmacionModal").style.display = "none";
+      cerrarFormularioEvaluacion(); // Cierra el formulario principal
+    }
+
+    /**
+     * Cancela la generación de la constancia y cierra ambos modales.
+     */
+    function cancelarGenerarConstancia() {
+      document.getElementById("confirmacionModal").style.display = "none";
+      cerrarFormularioEvaluacion(); // Cierra el formulario principal
+    }
+
+    /**
+     * Genera un documento PDF con los datos de la evaluación usando jsPDF,
+     * adaptando el formato al documento de Word proporcionado.
      */
     function generarConstanciaPDF() {
-      // Importar la librería jsPDF desde el objeto window
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const doc = new jsPDF(); // Por defecto, A4 en mm
 
       // Recoger los datos del formulario
-      const nombre = document.getElementById("nombreEstudianteEval").value;
-      const actividad = document.getElementById("actividadComplementaria").value;
-      const periodo = document.getElementById("periodo").value;
-      const observaciones = document.getElementById("observaciones").value;
+      const nombreEstudiante = document.getElementById("nombreEstudianteEval").value;
+      const actividadComplementaria = document.getElementById("actividadComplementaria").value;
+      const periodoRealizacion = document.getElementById("periodo").value;
       const valorNumerico = document.getElementById("valorNumericoEval").value;
       const nivelDesempeno = document.getElementById("nivelDesempenoEval").value;
-      const nombreResponsable = document.getElementById("nombreResponsable").value;
-      const nombreJefeExtra = document.getElementById("nombreJefeExtra").value;
-      const fechaExpedicion = document.getElementById("fechaExpedicion").value;
+      const nombreProfesorResponsable = document.getElementById("nombreResponsable").value;
+      const nombreJefeExtraescolares = document.getElementById("nombreJefeExtra").value;
+      const fechaExpedicionStr = document.getElementById("fechaExpedicion").value;
 
-      // Configurar el título del PDF
-      doc.setFontSize(18);
-      doc.text("Constancia de Evaluación de Actividades Complementarias", 20, 20);
+      // Parsear la fecha de expedición para obtener día, mes y año
+      const fecha = new Date(fechaExpedicionStr + 'T12:00:00'); // Añadir T12:00:00 para evitar problemas de zona horaria
+      const dia = fecha.getDate();
+      const mes = fecha.toLocaleString('es-ES', { month: 'long' });
+      const anio = fecha.getFullYear();
 
-      // Añadir los datos del formulario al PDF
-      doc.setFontSize(12);
-      let y = 40; // Posición inicial en el eje Y
 
-      doc.text(`Nombre del Estudiante: ${nombre}`, 20, y);
-      y += 10;
-      doc.text(`Actividad Complementaria: ${actividad}`, 20, y);
-      y += 10;
-      doc.text(`Periodo de Realización: ${periodo}`, 20, y);
-      y += 10;
-      doc.text(`Valor Numérico: ${valorNumerico}`, 20, y);
-      y += 10;
-      doc.text(`Nivel de Desempeño: ${nivelDesempeno}`, 20, y);
-      y += 10;
-      doc.text("Observaciones:", 20, y);
-      y += 10;
-      // Ajustar texto largo en varias líneas si es necesario para las observaciones
-      const splitObs = doc.splitTextToSize(observaciones, 170);
-      doc.text(splitObs, 20, y);
-      y += splitObs.length * 10; // Ajustar la posición Y según las líneas de observaciones
+      // --- Configuración inicial de fuentes ---
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(0, 0, 0); // Texto negro por defecto
 
-      y += 10; // Espacio adicional
-      doc.text(`Nombre del Profesor Responsable: ${nombreResponsable}`, 20, y);
-      y += 10;
-      doc.text(
-        `Nombre del Jefe(a) de Actividades Extraescolares: ${nombreJefeExtra}`,
-        20,
-        y
-      );
-      y += 10;
-      doc.text(`Fecha de Expedición: ${fechaExpedicion}`, 20, y);
+      // --- Cabecera de la constancia (similar a la imagen del documento Word) ---
+      // Hoja membretada oficial (alineado a la derecha)
+      doc.setFontSize(10);
+      doc.text("“Hoja membretada oficial”", 190, 20, null, null, 'right');
 
-      // Guardar el documento PDF con un nombre basado en el nombre del estudiante
-      doc.save(`Constancia_${nombre.replace(/\s/g, "_")}.pdf`);
+      // Título principal
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text("CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA", 105, 40, null, null, 'center');
+      doc.setFont('helvetica', 'normal');
 
-      // Cerrar el formulario después de generar el PDF
-      cerrarFormularioEvaluacion();
+      // Destinatario
+      doc.setFontSize(11);
+      doc.text("C. _____________________", 20, 60);
+      doc.text("JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES", 20, 65);
+      doc.text("PRESENTE", 20, 70);
+
+      // --- Cuerpo de la constancia ---
+      let yOffset = 85; // Posición inicial para el cuerpo del texto
+
+      // Construir el párrafo principal con los datos del formulario y placeholders
+      const textoPrincipal1 = `El que suscribe ${nombreProfesorResponsable || '_______________________'}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${nombreEstudiante || '________________________________'}, con número de control _____________ de la carrera de ______________________, ha cumplido su actividad ${actividadComplementaria || '______________________'} con el nivel de desempeño ${nivelDesempeno || '__________________'}`;
+      const textoPrincipal2 = ` y un valor numérico de ${valorNumerico || '____'} durante el periodo escolar ${periodoRealizacion || '___________________'} con un valor curricular de ______ créditos.`;
+
+      // Combinar y dividir el texto para que se ajuste al ancho
+      const textoCompleto = textoPrincipal1 + textoPrincipal2;
+      const splitTextoCompleto = doc.splitTextToSize(textoCompleto, 170); // Ancho máximo de 170mm
+
+      doc.text(splitTextoCompleto, 20, yOffset);
+      yOffset += (splitTextoCompleto.length * 6) + 15; // Ajustar yOffset por el número de líneas, un poco más de espacio
+
+      // Fecha de expedición
+      doc.text(`Se extiende la presente en la ____________ a los ${dia} días del mes de ${mes} de ${anio}.`, 20, yOffset);
+      yOffset += 20; // Espacio para "ATENTAMENTE"
+
+      // --- Firmas y sellos ---
+      doc.setFont('helvetica', 'bold');
+      doc.text("ATENTAMENTE", 105, yOffset, null, null, 'center');
+      yOffset += 25; // Espacio para la línea de firma
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+
+      // Línea y nombre del profesor responsable
+      doc.text("________________________________", 35, yOffset);
+      doc.text(`Nombre y firma del (de la) profesor(a) responsable`, 35, yOffset + 5);
+
+      // Línea y nombre del Jefe(a) de Actividades Extraescolares
+      doc.text("________________________________", 135, yOffset);
+      doc.text(`Jefe(a) del Depto. de Actividades Extraescolares`, 135, yOffset + 5);
+
+      yOffset += 20; // Espacio para el CCP
+
+      // Copia a departamento correspondiente
+      doc.text("c.c.p. Jefe (a) de Departamento Correspondiente", 20, yOffset);
+
+      // Simulación de "SELLO" (puedes ajustar las posiciones si necesitas un sello gráfico real)
+      doc.setFontSize(8);
+      doc.text("SELLO", 70, yOffset - 30); // Posición aproximada para el sello del profesor
+      doc.text("SELLO", 170, yOffset - 30); // Posición aproximada para el sello del jefe
+
+      // Vo. Bo.
+      doc.setFontSize(10);
+      doc.text("Vo. Bo.", 145, yOffset - 40); // Posición aproximada para Vo. Bo.
+
+      // Guardar el documento PDF
+      doc.save(`Constancia_${nombreEstudiante.replace(/\s/g, "_")}.pdf`);
     }
   </script>
 </body>
