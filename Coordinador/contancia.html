@@ -1,472 +1,324 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Lista Danza</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/Coordinador/assets/css/estiloconstancia.css">
-    <style>
-        /* Estilos adicionales para el formulario de constancia */
-        .formulario-constancia {
-            display: none;
-            position: fixed;
-            top: 10%;
-            left: 10%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: .01px;
-            border: 1px solid #ccc;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            border-radius: 1px;
-            max-width: 245px;
-            width: 20%;
-            margin: 0 auto;
-        }
-
-        .formulario-constancia h2 {
-            font-size: 1.2em;
-            margin-bottom: 1px;
-            text-align: center;
-        }
-
-        .formulario-constancia label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia input[type="text"],
-        .formulario-constancia input[type="number"] {
-            width: calc(100% - 10px);
-            padding: .001px;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia textarea {
-            width: calc(100% - 10px);
-            padding: .01px;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            resize: vertical;
-            min-height: 60px;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia button {
-            padding: 1px 2px;
-            background-color: #004080;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia button:hover {
-            background-color: #003366;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .btn-generar-constancia {
-            padding: 1px 2px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
-
-        .btn-generar-constancia:hover {
-            background-color: #0056b3;
-        }
-
-        .upload-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-
-        .upload-bar input[type="file"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .upload-bar button {
-            padding: 8px 12px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .upload-bar button:hover {
-            background-color: #1e7e34;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Lista Danza</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="/Coordinador/assets/css/estiloconstancia.css" />
+  <style>
+    /* --- estilos iguales que antes --- */
+    .formulario-constancia {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px 20px 40px 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      border-radius: 8px;
+      max-height: 90vh;
+      overflow-y: auto;
+      max-width: 600px;
+      width: 90%;
+    }
+    .formulario-constancia h2 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .formulario-constancia label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .formulario-constancia input,
+    .formulario-constancia textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .formulario-constancia button {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .formulario-constancia button:hover {
+      background-color: #0056b3;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+  </style>
 </head>
-
 <body>
-
-    <div class="barra-guinda"></div>
-
-    <header>
-        <div class="logos">
-            <img src="/Coordinador/assets/img/educacion1.png" alt="SEP">
-            <img src="/Coordinador/assets/img/gobierno de mexico.jpeg" alt="Gobierno">
-            <img src="/Coordinador/assets/img/logo tec etla.png" alt="Tec ELA">
-            <img src="/Coordinador/assets/img/tec mex.png" alt="TECNM">
-        </div>
-
-        <h2>Gobierno de México<br>Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
-    </header>
-
-    <div class="barra-guinda"></div>
-
-    <div class="top-bar">
-        <div>Club Cultural</div>
-        <div>Admin. <i class="fa-solid fa-user-gear"></i> <i class="fa-solid fa-bell"></i></div>
+  <div class="barra-guinda"></div>
+  <header>
+    <div class="logos">
+      <img src="/Coordinador/assets/img/educacion1.png" alt="SEP" />
+      <img src="/Coordinador/assets/img/gobierno de mexico.jpeg" alt="Gobierno" />
+      <img src="/Coordinador/assets/img/logo tec etla.png" alt="Tec ELA" />
+      <img src="/Coordinador/assets/img/tec mex.png" alt="TECNM" />
     </div>
+    <h2>
+      Gobierno de México<br />
+      Secretaría de Educación Pública | TecNM | IT Valle de Etla
+    </h2>
+  </header>
+  <div class="barra-guinda"></div>
 
-    <div class="container">
-        <div class="title-bar">Lista Danza</div>
-        <div class="upload-bar">
-            <input type="file" id="excelFile" accept=".xlsx, .xls">
-            <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
-        </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
+  <div class="container">
+    <div class="title-bar">Lista Danza</div>
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nombres y Apellidos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-alumnos">
+        <tr>
+          <td>1</td>
+          <td>Adán Cristóbal Cruz Espinoza</td>
+          <td>
+            <i class="fa-solid fa-eye" title="Ver"></i>
+            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
+            <i class="fa-solid fa-trash" title="Eliminar"></i>
+            <button
+              class="btn-generar-constancia"
+              onclick="mostrarFormularioEvaluacion(1)"
+            >
+              <i class="fa-solid fa-clipboard-check"></i> Evaluar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Nombres y Apellidos</th>
-                    <th>Num. Control</th>
-                    <th>Carrera</th>
-                    <th>Correo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-alumnos">
-                <tr>
-                    <td>1</td>
-                    <td>Adán Cristóbal Cruz Espinoza </td>
-                    <td>19770035</td>
-                    <td>Sistemas computacionales</td>
-                    <td>Adan@gmail.com</td>
-                    <td class="acciones">
-                        <i class="fa-solid fa-eye" title="Ver"></i>
-                        <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                        <i class="fa-solid fa-trash" title="Eliminar"></i>
-                        <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(1)">
-                            <i class="fa-solid fa-certificate"></i> Constancia
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Alan Javier Santiago Cruz</td>
-                    <td>1234567890</td>
-                    <td>Arquitectura</td>
-                    <td>AlanJavier@example.com</td>
-                    <td class="acciones">
-                        <i class="fa-solid fa-eye" title="Ver"></i>
-                        <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                        <i class="fa-solid fa-trash" title="Eliminar"></i>
-                        <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(2)">
-                            <i class="fa-solid fa-certificate"></i> Constancia
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <div id="formularioEvaluacion" class="formulario-constancia">
+    <h2>Evaluación de Actividades Complementarias</h2>
+    <label for="nombreEstudianteEval">Nombre del Estudiante:</label>
+    <input type="text" id="nombreEstudianteEval" readonly />
 
-        <div id="formularioConstancia" class="formulario-constancia">
-            <h2>Generar Constancia</h2>
-            <label for="nombreJefe">Nombre del Jefe(a) de Servicios Escolares:</label>
-            <input type="text" id="nombreJefe" name="nombreJefe" required>
+    <label for="actividadComplementaria">Actividad Complementaria:</label>
+    <input type="text" id="actividadComplementaria" />
 
-            <label for="nombreEstudiante">Nombre del Estudiante:</label>
-            <input type="text" id="nombreEstudiante" name="nombreEstudiante" required>
+    <label for="periodo">Periodo de Realización:</label>
+    <input type="text" id="periodo" />
 
-            <label for="numControl">Número de Control:</label>
-            <input type="text" id="numControl" name="numControl" required>
+    <fieldset>
+      <legend>Criterios de Evaluación</legend>
+      <div id="criteriosContainer"></div>
+    </fieldset>
 
-            <label for="carrera">Carrera:</label>
-            <input type="text" id="carrera" name="carrera" required>
+    <label for="observaciones">Observaciones:</label>
+    <textarea id="observaciones"></textarea>
 
-            <label for="nivelDesempeno">Nivel de Desempeño:</label>
-            <input type="text" id="nivelDesempeno" name="nivelDesempeno" required>
+    <label for="valorNumericoEval">Valor Numérico:</label>
+    <input type="number" id="valorNumericoEval" readonly />
 
-            <label for="valorNumerico">Valor Numérico:</label>
-            <input type="number" id="valorNumerico" name="valorNumerico" required>
+    <label for="nivelDesempenoEval">Nivel de Desempeño:</label>
+    <input type="text" id="nivelDesempenoEval" readonly />
 
-            <label for="periodoEscolar">Periodo Escolar:</label>
-            <input type="text" id="periodoEscolar" name="periodoEscolar" required>
+    <hr />
+    <h3>Validación Final (Segunda Hoja)</h3>
+    <label for="nombreResponsable">Nombre del Profesor Responsable:</label>
+    <input type="text" id="nombreResponsable" />
 
-            <label for="valorCurricular">Valor Curricular (Créditos):</label>
-            <input type="number" id="valorCurricular" name="valorCurricular" required>
+    <label for="nombreJefeExtra"
+      >Nombre del Jefe(a) de Actividades Extraescolares:</label
+    >
+    <input type="text" id="nombreJefeExtra" />
 
-            <label for="lugarExpedicion">Lugar de Expedición:</label>
-            <input type="text" id="lugarExpedicion" name="lugarExpedicion" required>
+    <label for="fechaExpedicion">Fecha de Expedición:</label>
+    <input type="date" id="fechaExpedicion" />
 
-            <label for="fechaExpedicionDia">Fecha de Expedición (día):</label>
-            <input type="number" id="fechaExpedicionDia" name="fechaExpedicion" min="1" max="31" required>
+    <button onclick="finalizarEvaluacion()">Finalizar Evaluación</button>
+    <button onclick="cerrarFormularioEvaluacion()">Cerrar</button>
+  </div>
 
-            <label for="fechaExpedicionMes">Fecha de Expedición (mes):</label>
-            <input type="text" id="fechaExpedicionMes" name="fechaExpedicionMes" required>
+  <div id="overlay" class="overlay"></div>
 
-            <label for="fechaExpedicionAnio">Fecha de Expedición (año):</label>
-            <input type="number" id="fechaExpedicionAnio" name="fechaExpedicionAnio" min="2000" max="2099" required>
+  <footer>
+    &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
+  </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const criterios = [
+      "Cumple en tiempo y forma con las actividades encomendadas alcanzando los objetivo.",
+      "Trabaja en equipo y se adapta a nuevas situaciones.",
+      "Muestra liderazgo en las actividades encomendadas.",
+      "Organiza su tiempo y trabaja de manera proactiva.",
+      "Interpreta la realidad y se sensibiliza aportando soluciones a la problemática.",
+      "Realiza sugerencias innovadoras para beneficio o mejora del programa.",
+      "Tiene iniciativa para ayudar y muestra espíritu de servicio.",
+    ];
 
-            <label for="nombreProfesor">Nombre del Profesor(a) Responsable:</label>
-            <input type="text" id="nombreProfesor" name="nombreProfesor" required>
+    function mostrarFormularioEvaluacion(filaIndex) {
+      const fila = document.getElementById("tabla-alumnos").rows[filaIndex - 1];
+      const nombre = fila.cells[1].textContent;
+      document.getElementById("formularioEvaluacion").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
 
-            <label for="nombreJefeExtraescolares">Nombre del Jefe(a) del Depto. de Actividades Extraescolares:</label>
-            <input type="text" id="nombreJefeExtraescolares" name="nombreJefeExtraescolares" required>
+      document.getElementById("nombreEstudianteEval").value = nombre;
+      document.getElementById("actividadComplementaria").value = "";
+      document.getElementById("periodo").value = "";
+      document.getElementById("observaciones").value = "";
+      document.getElementById("valorNumericoEval").value = "";
+      document.getElementById("nivelDesempenoEval").value = "";
+      document.getElementById("nombreResponsable").value = "";
+      document.getElementById("nombreJefeExtra").value = "";
+      document.getElementById("fechaExpedicion").value = "";
 
-            <button type="button" onclick="generarConstancia()">Generar PDF</button>
-            <button type="button" onclick="cerrarFormularioConstancia()">Cerrar</button>
-        </div>
+      const container = document.getElementById("criteriosContainer");
+      container.innerHTML = "";
+      criterios.forEach((texto, i) => {
+        const div = document.createElement("div");
+        div.innerHTML = `<label>${i + 1}. ${texto}</label><br>
+          ${[
+            "Insuficiente",
+            "Suficiente",
+            "Bueno",
+            "Notable",
+            "Excelente",
+          ]
+            .map(
+              (nivel, idx) =>
+                `<label><input type='radio' name='criterio${i}' value='${idx}'> ${nivel}</label>`
+            )
+            .join(" ")}<br><br>`;
+        container.appendChild(div);
+      });
+    }
 
-        <div id="overlay" class="overlay"></div>
-    </div>
+    function cerrarFormularioEvaluacion() {
+      document.getElementById("formularioEvaluacion").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+    }
 
-    <footer>
-        &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        const formularioConstancia = document.getElementById('formularioConstancia');
-        const overlay = document.getElementById('overlay');
-        const tablaAlumnosBody = document.getElementById('tabla-alumnos');
-        const excelFile = document.getElementById('excelFile');
-
-        function mostrarFormularioConstancia(filaIndex) {
-            formularioConstancia.style.display = 'block';
-            overlay.style.display = 'block';
-
-            const fila = tablaAlumnosBody.rows[filaIndex - 1];
-            const nombreEstudiante = fila.cells[1].textContent;
-            const numControl = fila.cells[2].textContent;
-            const carrera = fila.cells[3].textContent;
-
-            document.getElementById('nombreEstudiante').value = nombreEstudiante;
-            document.getElementById('numControl').value = numControl;
-            document.getElementById('carrera').value = carrera;
-
-            document.getElementById('nombreJefe').value = '';
-            document.getElementById('nivelDesempeno').value = '';
-            document.getElementById('valorNumerico').value = '';
-            document.getElementById('periodoEscolar').value = '';
-            document.getElementById('valorCurricular').value = '';
-            document.getElementById('lugarExpedicion').value = '';
-            document.getElementById('fechaExpedicionDia').value = '';
-            document.getElementById('fechaExpedicionMes').value = '';
-            document.getElementById('fechaExpedicionAnio').value = '';
-            document.getElementById('nombreProfesor').value = '';
-            document.getElementById('nombreJefeExtraescolares').value = '';
+    function calcularPromedioYDesempeno() {
+      let total = 0;
+      let count = 0;
+      for (let i = 0; i < criterios.length; i++) {
+        const radios = document.getElementsByName(`criterio${i}`);
+        for (const radio of radios) {
+          if (radio.checked) {
+            total += parseInt(radio.value);
+            count++;
+            break;
+          }
         }
+      }
+      const promedio = count ? total / count : 0;
+      let nivel = "";
+      if (promedio >= 3.5) nivel = "Excelente";
+      else if (promedio >= 2.5) nivel = "Notable";
+      else if (promedio >= 1.5) nivel = "Bueno";
+      else if (promedio >= 1.0) nivel = "Suficiente";
+      else nivel = "Insuficiente";
 
-        function cerrarFormularioConstancia() {
-            formularioConstancia.style.display = 'none';
-            overlay.style.display = 'none';
-        }
+      document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
+      document.getElementById("nivelDesempenoEval").value = nivel;
+    }
 
-        function generarConstancia() {
-            // Recolectar datos del formulario
-            const nombreJefe = document.getElementById('nombreJefe').value;
-            const nombreEstudiante = document.getElementById('nombreEstudiante').value;
-            const numControl = document.getElementById('numControl').value;
-            const carrera = document.getElementById('carrera').value;
-            const nivelDesempeno = document.getElementById('nivelDesempeno').value;
-            const valorNumerico = document.getElementById('valorNumerico').value;
-            const periodoEscolar = document.getElementById('periodoEscolar').value;
-            const valorCurricular = document.getElementById('valorCurricular').value;
-            const lugarExpedicion = document.getElementById('lugarExpedicion').value;
-            const fechaExpedicionDia = document.getElementById('fechaExpedicionDia').value;
-            const fechaExpedicionMes = document.getElementById('fechaExpedicionMes').value;
-            const fechaExpedicionAnio = document.getElementById('fechaExpedicionAnio').value;
-            const nombreProfesor = document.getElementById('nombreProfesor').value;
-            const nombreJefeExtraescolares = document.getElementById('nombreJefeExtraescolares').value;
+    document.addEventListener("change", (e) => {
+      if (e.target.name && e.target.name.startsWith("criterio")) {
+        calcularPromedioYDesempeno();
+      }
+    });
 
-            // Generar PDF con jsPDF
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+    function finalizarEvaluacion() {
+      // Preguntar si quiere generar constancia
+      const quiereGenerar = confirm(
+        "¿Desea generar la constancia con los datos de la evaluación?"
+      );
+      if (quiereGenerar) {
+        generarConstanciaPDF();
+      } else {
+        cerrarFormularioEvaluacion();
+      }
+    }
 
-                // Estilos y contenido del PDF
-                doc.setFont('arial', 'normal');
-                doc.setFontSize(12);
+    function generarConstanciaPDF() {
+      // Importar la librería jsPDF
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-                // Posiciones y espaciado (ajusta según sea necesario)
-                const startX = 20;
-                let currentY = 20;
-                const lineHeight = 5;
+      // Recoger los datos del formulario
+      const nombre = document.getElementById("nombreEstudianteEval").value;
+      const actividad = document.getElementById("actividadComplementaria").value;
+      const periodo = document.getElementById("periodo").value;
+      const observaciones = document.getElementById("observaciones").value;
+      const valorNumerico = document.getElementById("valorNumericoEval").value;
+      const nivelDesempeno = document.getElementById("nivelDesempenoEval").value;
+      const nombreResponsable = document.getElementById("nombreResponsable").value;
+      const nombreJefeExtra = document.getElementById("nombreJefeExtra").value;
+      const fechaExpedicion = document.getElementById("fechaExpedicion").value;
 
-                // Título
-                doc.setFontSize(14);
-                doc.text("CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA", startX, currentY);
-                currentY += 2 * lineHeight;
-                doc.setFontSize(12);
+      // Título
+      doc.setFontSize(18);
+      doc.text("Constancia de Evaluación de Actividades Complementarias", 20, 20);
 
-                // Encabezado
-                doc.text(`C. ${nombreJefe}`, startX, currentY);
-                currentY += lineHeight;
-                doc.text("JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES", startX, currentY);
-                currentY += 2 * lineHeight;
+      doc.setFontSize(12);
+      let y = 40;
 
-                // Cuerpo del texto
-                let cuerpoTexto =
-                    `El que suscribe ${nombreProfesor}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${nombreEstudiante}, con número de control ${numControl} de la carrera de ${carrera}, ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño ${nivelDesempeno} y un valor numérico de ${valorNumerico} durante el periodo escolar ${periodoEscolar} con un valor curricular de ${valorCurricular} créditos.`;
-                doc.text(cuerpoTexto, startX, currentY, {
-                    maxWidth: 170,
-                    align: 'justify'
-                });
-                currentY = doc.getTextDimensions(cuerpoTexto, {
-                    maxWidth: 170
-                }).h + currentY + 2 * lineHeight;
+      doc.text(`Nombre del Estudiante: ${nombre}`, 20, y);
+      y += 10;
+      doc.text(`Actividad Complementaria: ${actividad}`, 20, y);
+      y += 10;
+      doc.text(`Periodo de Realización: ${periodo}`, 20, y);
+      y += 10;
+      doc.text(`Valor Numérico: ${valorNumerico}`, 20, y);
+      y += 10;
+      doc.text(`Nivel de Desempeño: ${nivelDesempeno}`, 20, y);
+      y += 10;
+      doc.text("Observaciones:", 20, y);
+      y += 10;
+      // Ajustar texto largo en varias líneas si es necesario
+      const splitObs = doc.splitTextToSize(observaciones, 170);
+      doc.text(splitObs, 20, y);
+      y += splitObs.length * 10;
 
-                // Fecha
-                doc.text(
-                    `Se extiende la presente en la ${lugarExpedicion} a los ${fechaExpedicionDia} días del mes de ${fechaExpedicionMes} de ${fechaExpedicionAnio}.`,
-                    startX,
-                    currentY
-                );
-                currentY += 2 * lineHeight;
+      y += 10;
+      doc.text(`Nombre del Profesor Responsable: ${nombreResponsable}`, 20, y);
+      y += 10;
+      doc.text(
+        `Nombre del Jefe(a) de Actividades Extraescolares: ${nombreJefeExtra}`,
+        20,
+        y
+      );
+      y += 10;
+      doc.text(`Fecha de Expedición: ${fechaExpedicion}`, 20, y);
 
-                // Atentamente
-                doc.text("ATENTAMENTE", startX, currentY);
-                currentY += 15;
+      // Guardar PDF
+      doc.save(`Constancia_${nombre.replace(/\s/g, "_")}.pdf`);
 
-                // Tabla de firmas
-                const firmaY = currentY;
-                doc.line(startX, firmaY, startX + 70, firmaY);
-                doc.text("Nombre y firma del (de la) profesor(a) responsable", startX, firmaY + lineHeight);
-
-                doc.line(startX + 100, firmaY, startX + 170, firmaY);
-                doc.text("Jefe(a) del Depto. de Actividades Extraescolares", startX + 100, firmaY + lineHeight);
-
-                // Sellos (esto es solo un ejemplo, necesitarás imágenes)
-                doc.rect(startX, firmaY + 15, 20, 20);
-                doc.rect(startX + 150, firmaY + 15, 20, 20);
-
-                // c.c.p.
-                currentY = firmaY + 40;
-                doc.text("c.c.p. Jefe (a) de Departamento Correspondiente", startX, currentY);
-
-                // Guardar el PDF
-                doc.save(`Constancia_${nombreEstudiante}.pdf`);
-
-            } catch (error) {
-                console.error("Error al generar PDF:", error);
-                alert("Ocurrió un error al generar el PDF.");
-            }
-
-            // Cerrar el formulario
-            cerrarFormularioConstancia();
-        }
-
-        function cargarDatosExcel() {
-            const file = excelFile.files[0];
-            if (!file) {
-                alert('Por favor, seleccione un archivo Excel.');
-                return;
-            }
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const data = e.target.result;
-                const workbook = XLSX.read(data, {
-                    type: 'array'
-                });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                    header: 1,
-                    raw: true
-                });
-
-                // Limpiar la tabla antes de agregar nuevos datos
-                tablaAlumnosBody.innerHTML = '';
-
-                // Procesar los datos y agregarlos a la tabla
-                for (let i = 1; i < jsonData.length; i++) { // Comenzar desde 1 para evitar la fila del encabezado
-                    const rowData = jsonData[i];
-                    if (rowData && rowData.length > 4) { // Asegurarse de que la fila tenga suficientes datos
-                        const no = rowData[0] || '';
-                        const nombresApellidos = rowData[1] || '';
-                        const numControl = rowData[2] || '';
-                        const carrera = rowData[3] || '';
-                        const correo = rowData[4] || '';
-
-                        const row = tablaAlumnosBody.insertRow();
-                        const cellNo = row.insertCell();
-                        const cellNombre = row.insertCell();
-                        const cellNumControl = row.insertCell();
-                        const cellCarrera = row.insertCell();
-                        const cellCorreo = row.insertCell();
-                        const cellAcciones = row.insertCell();
-
-                        cellNo.textContent = no;
-                        cellNombre.textContent = nombresApellidos;
-                        cellNumControl.textContent = numControl;
-                        cellCarrera.textContent = carrera;
-                        cellCorreo.textContent = correo;
-                        cellAcciones.className = 'acciones';
-                        cellAcciones.innerHTML = `
-                            <i class="fa-solid fa-eye" title="Ver"></i>
-                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                            <i class="fa-solid fa-trash" title="Eliminar"></i>
-                            <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(${i+1})">
-                                <i class="fa-solid fa-certificate"></i> Constancia
-                            </button>
-                        `;
-                    }
-                }
-            };
-
-            reader.onerror = function(error) {
-                console.error("Error al leer el archivo Excel:", error);
-                alert('Ocurrió un error al leer el archivo. Por favor, inténtelo de nuevo.');
-            };
-
-            reader.readAsArrayBuffer(file);
-        }
-    </script>
+      // Cerrar formulario
+      cerrarFormularioEvaluacion();
+    }
+  </script>
 </body>
-
 </html>
