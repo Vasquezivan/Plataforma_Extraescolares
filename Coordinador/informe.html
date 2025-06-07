@@ -130,9 +130,51 @@
       border-radius: 12px;
       padding: 36px 32px 32px 32px;
     }
+
+    /* Estilos para los botones fijos */
+    .btn-fixed {
+      position: fixed;
+      top: 32px;
+      z-index: 200;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .btn-regresar {
+      left: 32px;
+      background-color: orange;
+      color: white;
+    }
+
+    .btn-agregar {
+      right: 32px;
+      bottom: 80px;
+      top: auto;
+      background-color: #1B396A;
+      color: white;
+      display: block;
+    }
+
+    .btn-imprimir {
+      right: 32px;
+      bottom: 32px;
+      top: auto;
+      background-color: #4CAF50;
+      color: white;
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <!-- Botón Regresar en la parte superior izquierda -->
+  <div style="position: fixed; top: 32px; left: 32px; z-index: 200;">
+    <button onclick="window.location.href='/Coordinador/Pagina principal.html'" style="background-color: orange; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-size: 1em;">Regresar</button>
+  </div>
+
+  <!-- Contenido principal aquí -->
   <div class="contenido-principal">
     <table class="encabezado" style="margin-bottom: 32px;">
       <tr>
@@ -199,11 +241,9 @@
       </tbody>
     </table>
 
-    <div style="margin-top: 18px; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
-      <button onclick="window.location.href='/Coordinador/Pagina principal.html'" style="background-color: orange; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer;">Regresar</button>
-      <button onclick="agregarFila()">Agregar Evento</button>
-      <button onclick="window.print()">Imprimir</button>
-    </div>
+    <!-- Botones Agregar Evento e Imprimir fuera del documento, parte inferior derecha -->
+    <button class="btn-fixed btn-agregar" onclick="agregarFila()">Agregar Evento</button>
+    <button class="btn-fixed btn-imprimir" onclick="window.print()">Imprimir</button>
   </div>
 
   <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 0; width: 100vw; background: #fff; z-index: 100; padding-bottom: 18px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
