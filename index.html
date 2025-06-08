@@ -322,8 +322,8 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
   <div class="contenedor-principal">
     <div class="lado-izquierdo">
       <div class="logos-institucionales">
-        <img src="/1.png" alt="Logo del Tecnológico Nacional de México" class="logo-tecnm" />
-        <img src="/2.png" alt="Logo del Instituto Tecnológico del Valle de Etla" class="logo-itvetla" />
+        <img src="1.png" alt="Logo del Tecnológico Nacional de México" class="logo-tecnm" />
+        <img src="2.png" alt="Logo del Instituto Tecnológico del Valle de Etla" class="logo-itvetla" />
       </div>
       <div class="lema">
         Impulsando el futuro desde el Valle de Etla
@@ -363,7 +363,7 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
   <!-- Validación -->
   <script>
   function validarAcceso() {
-    const usuario = document.getElementById("usuario").value.trim().toLowerCase();
+    const usuario = document.getElementById("usuario").value.trim();
     const contrasena = document.getElementById("contrasena").value.trim();
 
     if (!usuario || !contrasena) {
@@ -379,49 +379,64 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
       return;
     }
 
-    // Contraseñas
-    const passAdmin = "TECVALLE";
-    const passCoord = "TEC2025";
-
-    if (contrasena === passAdmin) {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "¡Bienvenido Administrador!",
-        showConfirmButton: false,
-        timer: 1500,
-        customClass: {
-          title: 'swal2-title-small'
+    fetch('login.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: usuario,
+        password: contrasena
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        let mensaje = "";
+        let destino = "";
+        if (data.role === "Administrador") {
+          mensaje = "¡Bienvenido Administrador!";
+          destino = "Administrador/Principal_Admin.html";
+        } else if (data.role === "Coordinador") {
+          mensaje = "¡Bienvenido Coordinador!";
+          destino = "Coordinador/Pagina principal.html";
         }
-      });
-      setTimeout(() => {
-        window.location.href = "Administrador/Principal_Admin.html";
-      }, 1500);
-    } else if (contrasena === passCoord) {
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "¡Bienvenido Coordinador!",
-        showConfirmButton: false,
-        timer: 1500,
-        customClass: {
-          title: 'swal2-title-small'
-        }
-      });
-      setTimeout(() => {
-        window.location.href = "Coordinador/Pagina principal.html";
-      }, 1500);
-    } else {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: mensaje,
+          showConfirmButton: false,
+          timer: 1500,
+          customClass: {
+            title: 'swal2-title-small'
+          }
+        });
+        setTimeout(() => {
+          window.location.href = destino;
+        }, 1500);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: data.message || "Usuario o contraseña incorrectos.",
+          customClass: {
+            title: 'swal2-title-small',
+            popup: 'swal2-popup-small'
+          }
+        });
+      }
+    })
+    .catch(error => {
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Usuario o contraseña incorrectos.",
+        title: "Error",
+        text: "No se pudo conectar con el servidor.",
         customClass: {
           title: 'swal2-title-small',
           popup: 'swal2-popup-small'
         }
       });
-    }
+    });
   }
   </script>
 </body>
