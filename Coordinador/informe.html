@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Informe Semestral</title>
-  <link rel="stylesheet" href="/Coordinador/assets/css/informe.css">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>navbar Dos</title>
+  <link rel="stylesheet" href="/Coordinador/assets/css/informe.css" />
+</head>
+<body>
+
+
+ <div class="barra-blanca">
+    <img src="/Coordinador/assets/img/Educacion.png" alt="Logo 1" />
+    <img src="/Coordinador/assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
+    <img src="/Coordinador/assets/img/pleca-ITVE.png" alt="Logo 3" />
+  </div>
+
+
+  <div class="barra-secundaria">
+    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+  <img src="/Coordinador/assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+</a>
+  <ul>
+    <li><a href="Pagina principal.html">Inicio</a></li>
+      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
+      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
+      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
+      <li><a href="#">Informe de Actividad</a></li>
+      <li><a href="#">Resultados de Actividades</a></li>
+    </ul>
+  </div>
+
   <style>
     body {
       background: #fff;
-      margin: 0;
-      padding: 0;
+      margin: 0 !important;
+      padding: 0 !important;
       font-family: 'Montserrat Alternates', Arial, sans-serif;
       font-size: 15px;
     }
@@ -60,15 +87,18 @@
       margin-bottom: 18px;
       justify-content: center;
     }
-
-    @media print {
-      button {
-        display: none !important;
-      }
-
-      input {
-        display: none;
-      }
+@media print {
+  button,
+  input,
+  .barra-blanca,
+  .barra-secundaria,
+  .barra-informativa,
+  .btn-fixed {
+    display: none !important;
+  }
+  .footer-firmas {
+    display: flex !important;
+  }
 
       .print-value {
         display: inline;
@@ -123,13 +153,11 @@
 
     /* Ajustar margen superior del contenido principal */
     .contenido-principal {
-      max-width: 900px;
-      margin: 30px auto 0 auto;
-      background: #fff;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-      border-radius: 12px;
-      padding: 36px 32px 32px 32px;
-    }
+    margin-top: 60px !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding-top: 0 !important;
+  }
 
     /* Estilos para los botones fijos */
     .btn-fixed {
@@ -166,17 +194,39 @@
       color: white;
       display: block;
     }
+
+  @media print {
+  /* Aumentar tamaño general del texto */
+  body, h2, h3, h4, h5, h6, label, span, .editable::after {
+    font-size: 18px !important;
+  }
+
+  /* Tamaño de inputs si aparecen en la impresión */
+  input {
+    font-size: 18px !important;
+  }
+
+  /* Reducir tamaño del texto de la tabla */
+  .tabla-estilo th,
+  .tabla-estilo td {
+    font-size: 12px !important;
+  }
+
+  /* Ocultar el botón de imprimir */
+  .btn-imprimir {
+    display: none !important;
+  }
+}
+
+
   </style>
 </head>
 <body>
-  <!-- Botón Regresar en la parte superior izquierda -->
-  <div style="position: fixed; top: 32px; left: 32px; z-index: 200;">
-    <button onclick="window.location.href='/Coordinador/Pagina principal.html'" style="background-color: orange; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-size: 1em;">Regresar</button>
-  </div>
+
 
   <!-- Contenido principal aquí -->
   <div class="contenido-principal">
-    <table class="encabezado" style="margin-bottom: 32px;">
+    <table class="tabla-estilo" style="margin-bottom: 32px;">
       <tr>
         <td class="logo" rowspan="2"><img src="/Coordinador/assets/img/sgc.jpg" alt="Logo SGC" style="opacity: 0.5;"></td>
         <td class="titulo" style="text-align: center;">Informe de Actividad Cultural y/o Deportiva</td>
@@ -214,7 +264,7 @@
       </label>
     </div>
 
-    <table style="width: 100%; border-collapse: collapse; margin-top: 38px;">
+    <table class="tabla-estilo" style="width: 100%; border-collapse: collapse; margin-top: 38px;">
       <thead>
         <tr style="background: #1B396A; color: #fff;">
           <th>No.</th>
@@ -277,5 +327,30 @@
       tbody.appendChild(row);
     }
   </script>
+
+ <div class="barra-informativa">
+    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
+    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
+    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+  </div>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          toggleSeccion(id);
+        });
+      });
+    });
+
+    function toggleSeccion(id) {
+      const contenedor = document.getElementById(id);
+      contenedor.classList.toggle('visible');
+      contenedor.classList.toggle('oculto');
+    }
+  </script>
+  
 </body>
 </html>
