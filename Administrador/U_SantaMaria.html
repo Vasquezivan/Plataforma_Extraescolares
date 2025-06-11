@@ -630,7 +630,7 @@
       // Si es edición
       if (idActividadEditando) {
         formData.append('id_actividad', idActividadEditando);
-        fetch('editar_actividad_santamaria.php', {
+        fetch('php/editar_actividad_santamaria.php', {
           method: 'POST',
           body: formData
         })
@@ -646,7 +646,7 @@
         });
       } else {
         // Alta nueva
-        fetch('guardar_actividad_santamaria.php', {
+        fetch('php/guardar_actividad_santamaria.php', {
           method: 'POST',
           body: formData
         })
@@ -681,7 +681,7 @@
         backdrop: 'rgba(0, 33, 71, 0.4)'
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch('eliminar_actividad_santamaria.php', {
+          fetch('php/eliminar_actividad_santamaria.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({id_actividad: id_actividad})
@@ -774,7 +774,7 @@
           }
 
           // GUARDAR EN LA BASE DE DATOS
-          fetch('guardar_categoria_santamaria.php', {
+          fetch('php/guardar_categoria_santamaria.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombre_categoria: nuevaCategoria})
@@ -822,7 +822,7 @@
     function cargarCategorias() {
       const categoriasContainer = document.getElementById("categorias-container");
       categoriasContainer.innerHTML = "";
-      fetch('obtener_categorias_santamaria.php')
+      fetch('php/obtener_categorias_santamaria.php')
         .then(res => res.json())
         .then(categorias => {
           categorias.forEach(cat => {
@@ -853,7 +853,7 @@
     }
 
     function cargarActividades(idCategoria, actividadesContainer) {
-      fetch('obtener_actividades_santamaria.php?id_categoria=' + idCategoria)
+      fetch('php/obtener_actividades_santamaria.php?id_categoria=' + idCategoria)
         .then(res => res.json())
         .then(actividades => {
           actividadesContainer.querySelectorAll('.modulo:not(.agregar)').forEach(el => el.remove());
