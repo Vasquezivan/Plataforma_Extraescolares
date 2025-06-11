@@ -502,57 +502,7 @@
       </div>
 
       <!-- Contenedor de categorías -->
-      <div id="categorias-container">
-        <!-- Categoría Deporte con sus actividades -->
-        <div class="contenedor-categoria">
-          <div class="categoria">Deporte</div>
-          <div class="actividades-container">
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/basquetbol.png" alt="Basquetbol">
-              <h3>Basquetbol</h3>
-              <p>Únete a un equipo dinámico, desarrolla habilidades como dribleo, tiro y defensa. Se compite contra otros campus del TecNM.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/futbol.png" alt="Futbol">
-              <h3>Futbol</h3>
-              <p>Entrena con tu equipo en horarios programados, mejora tu condición física y representa al TecNM en torneos locales y regionales.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/Atletismo.png" alt="Atletismo">
-              <h3>Atletismo</h3>
-              <p>Participa en sesiones de resistencia, velocidad y técnica de salto. Ideal para quienes disfrutan del reto individual y las competencias.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo agregar" onclick="abrirModal(this.closest('.actividades-container'))">+</div>
-          </div>
-        </div>
-      </div>
+      <div id="categorias-container"></div>
 
       <!-- Modal para agregar categoría -->
       <div id="modal-categoria" class="modal">
@@ -675,63 +625,50 @@
     function guardarActividad() {
       const nombre = document.getElementById('nombre').value;
       const descripcion = document.getElementById('descripcion').value;
-      const imagenSrc = vistaPrevia.src;
+      const imagenFile = document.getElementById('imagen').files[0];
+      const categoriaDiv = contenedorActividadesActual.closest('.contenedor-categoria').querySelector('.categoria');
+      const id_categoria = categoriaDiv.dataset.id_categoria;
 
-      if (nombre && descripcion && imagenSrc) {
-        if (actividadEditando) {
-          // Editar actividad existente
-          actividadEditando.querySelector('h3').textContent = nombre;
-          actividadEditando.querySelector('p').textContent = descripcion;
-          actividadEditando.querySelector('img').src = imagenSrc;
-        } else {
-          // Crear nueva actividad
-          const nuevoModulo = document.createElement('div');
-          nuevoModulo.classList.add('modulo');
+      const formData = new FormData();
+      formData.append('nombre', nombre);
+      formData.append('descripcion', descripcion);
+      formData.append('id_categoria', id_categoria);
+      if (imagenFile) {
+        formData.append('imagen', imagenFile);
+      }
 
-          const nuevaImagen = document.createElement('img');
-          nuevaImagen.src = imagenSrc;
-          nuevaImagen.alt = nombre;
-
-          const nuevoTitulo = document.createElement('h3');
-          nuevoTitulo.textContent = nombre;
-
-          const nuevaDescripcion = document.createElement('p');
-          nuevaDescripcion.textContent = descripcion;
-
-          const accionesDiv = document.createElement('div');
-          accionesDiv.className = 'acciones-modulo';
-          accionesDiv.innerHTML = `
-            <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement)">
-              <img src="assets/img/editar.png" alt="Editar">
-            </button>
-            <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement)">
-              <img src="assets/img/eliminar.png" alt="Eliminar">
-            </button>
-          `;
-
-          nuevoModulo.appendChild(nuevaImagen);
-          nuevoModulo.appendChild(nuevoTitulo);
-          nuevoModulo.appendChild(nuevaDescripcion);
-          nuevoModulo.appendChild(accionesDiv);
-
-          // NUEVO: Manejo de clics en el módulo
-          nuevoModulo.onclick = function(e) {
-            // Evita que el clic en los botones de editar/eliminar dispare la navegación
-            if (e.target.closest('.btn-accion')) return;
-            const nombre = nuevoModulo.querySelector('h3').textContent;
-            const descripcion = nuevoModulo.querySelector('p').textContent;
-            window.location.href = `detalle-actividad_1.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
-          };
-
-          const agregarBtn = contenedorActividadesActual.querySelector(".agregar");
-          contenedorActividadesActual.insertBefore(nuevoModulo, agregarBtn);
-        }
-
-        // Limpiar y cerrar
-        document.getElementById('formulario-actividad').reset();
-        vistaPrevia.style.display = 'none';
-        dropArea.style.display = 'block';
-        cerrarModal();
+      // Si es edición
+      if (actividadEditando) {
+        formData.append('id_actividad', actividadEditando.dataset.id_actividad);
+        fetch('editar_actividad_demetrio.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            cargarCategorias();
+            cerrarModal();
+          } else {
+            alert(data.error || "Error al editar actividad");
+          }
+          actividadEditando = null;
+        });
+      } else {
+        // Alta nueva
+        fetch('guardar_actividad_demetrio.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            cargarCategorias();
+            cerrarModal();
+          } else {
+            alert("Error al guardar actividad");
+          }
+        });
       }
     }
 
@@ -833,39 +770,20 @@ function eliminarActividad(modulo) {
       guardarBtn.addEventListener("click", function () {
         const nuevaCategoria = input.value.trim();
         if (nuevaCategoria !== "") {
-          const categorias = document.querySelectorAll('.categoria');
-          const existe = Array.from(categorias).some(c => 
-            c.textContent.toLowerCase() === nuevaCategoria.toLowerCase()
-          );
-          
-          if (existe) {
-            alert("La categoría ya existe.");
-            return;
-          }
-
-          const contenedorCategoria = document.createElement("div");
-          contenedorCategoria.className = "contenedor-categoria";
-          
-          const nuevaDivCategoria = document.createElement("div");
-          nuevaDivCategoria.className = "categoria";
-          nuevaDivCategoria.textContent = nuevaCategoria.charAt(0).toUpperCase() + nuevaCategoria.slice(1).toLowerCase();
-          contenedorCategoria.appendChild(nuevaDivCategoria);
-
-          const actividadesContainer = document.createElement("div");
-          actividadesContainer.className = "actividades-container";
-          
-          const moduloAgregar = document.createElement("div");
-          moduloAgregar.className = "modulo agregar";
-          moduloAgregar.innerHTML = "+";
-          moduloAgregar.onclick = function() { 
-            abrirModal(this.closest('.actividades-container')); 
-          };
-          actividadesContainer.appendChild(moduloAgregar);
-          
-          contenedorCategoria.appendChild(actividadesContainer);
-
-          categoriasContainer.insertBefore(contenedorCategoria, categoriasContainer.firstChild);
-          modalCategoria.style.display = "none";
+          fetch('guardar_categoria_demetrio.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({nombre_categoria: nuevaCategoria})
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              cargarCategorias();
+              modalCategoria.style.display = "none";
+            } else {
+              alert("Error al guardar categoría");
+            }
+          });
         }
       });
 
@@ -874,12 +792,92 @@ function eliminarActividad(modulo) {
           guardarBtn.click();
         }
       });
+
+      cargarCategorias();
     });
 
 function irADetalleActividad(modulo) {
   const nombre = modulo.querySelector('h3').textContent;
   const descripcion = modulo.querySelector('p').textContent;
   window.location.href = `detalle-actividad_1.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
+}
+
+function cargarCategorias() {
+  const categoriasContainer = document.getElementById("categorias-container");
+  categoriasContainer.innerHTML = "";
+  fetch('obtener_categorias_demetrio.php')
+    .then(res => res.json())
+    .then(categorias => {
+      categorias.forEach(cat => {
+        const contenedorCategoria = document.createElement("div");
+        contenedorCategoria.className = "contenedor-categoria";
+        const nuevaDivCategoria = document.createElement("div");
+        nuevaDivCategoria.className = "categoria";
+        nuevaDivCategoria.textContent = cat.nombre_categoria;
+        nuevaDivCategoria.dataset.id_categoria = cat.id_categoria;
+        contenedorCategoria.appendChild(nuevaDivCategoria);
+
+        const actividadesContainer = document.createElement("div");
+        actividadesContainer.className = "actividades-container";
+        const moduloAgregar = document.createElement("div");
+        moduloAgregar.className = "modulo agregar";
+        moduloAgregar.innerHTML = "+";
+        moduloAgregar.onclick = function() {
+          abrirModal(this.closest('.actividades-container'));
+        };
+        actividadesContainer.appendChild(moduloAgregar);
+
+        contenedorCategoria.appendChild(actividadesContainer);
+        categoriasContainer.appendChild(contenedorCategoria);
+
+        cargarActividades(cat.id_categoria, actividadesContainer);
+      });
+    });
+}
+
+function cargarActividades(idCategoria, actividadesContainer) {
+  fetch('obtener_actividad_demetrio.php?id_categoria=' + idCategoria)
+    .then(res => res.json())
+    .then(actividades => {
+      actividadesContainer.querySelectorAll('.modulo:not(.agregar)').forEach(el => el.remove());
+      actividades.forEach(act => {
+        const modulo = document.createElement("div");
+        modulo.className = "modulo";
+        modulo.dataset.id_actividad = act.id_actividad;
+        modulo.onclick = function(e) {
+          if (e.target.closest('.btn-accion')) return;
+          window.location.href = `detalle-actividad_1.html?id_actividad=${act.id_actividad}`;
+        };
+
+        const img = document.createElement("img");
+        img.src = act.imagen_url;
+        img.alt = act.nombre_actividad;
+        modulo.appendChild(img);
+
+        const h3 = document.createElement("h3");
+        h3.textContent = act.nombre_actividad;
+        modulo.appendChild(h3);
+
+        const p = document.createElement("p");
+        p.textContent = act.descripcion;
+        modulo.appendChild(p);
+
+        // Acciones (editar/eliminar)
+        const accionesDiv = document.createElement('div');
+        accionesDiv.className = 'acciones-modulo';
+        accionesDiv.innerHTML = `
+          <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement, ${act.id_actividad});event.stopPropagation();">
+            <img src="assets/img/editar.png" alt="Editar">
+          </button>
+          <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement, ${act.id_actividad});event.stopPropagation();">
+            <img src="assets/img/eliminar.png" alt="Eliminar">
+          </button>
+        `;
+        modulo.appendChild(accionesDiv);
+
+        actividadesContainer.insertBefore(modulo, actividadesContainer.querySelector('.modulo.agregar'));
+      });
+    });
 }
   </script>
 </body>
