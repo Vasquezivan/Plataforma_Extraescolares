@@ -639,7 +639,7 @@
 
       if (actividadEditando) {
         formData.append('id_actividad', actividadEditando.dataset.id_actividad);
-        fetch('editar_actividad_union.php', {
+        fetch('php/editar_actividad_union.php', {
           method: 'POST',
           body: formData
         })
@@ -654,7 +654,7 @@
           actividadEditando = null;
         });
       } else {
-        fetch('guardar_actividad_union.php', {
+        fetch('php/guardar_actividad_union.php', {
           method: 'POST',
           body: formData
         })
@@ -691,7 +691,7 @@ function eliminarActividad(modulo, id_actividad) {
     backdrop: 'rgba(0, 33, 71, 0.4)'
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch('eliminar_actividad_union.php', {
+      fetch('php/eliminar_actividad_union.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({id_actividad: id_actividad})
@@ -780,7 +780,7 @@ function eliminarActividad(modulo, id_actividad) {
       guardarBtn.addEventListener("click", function () {
         const nuevaCategoria = input.value.trim();
         if (nuevaCategoria !== "") {
-          fetch('guardar_categoria_union.php', {
+          fetch('php/guardar_categoria_union.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombre_categoria: nuevaCategoria})
@@ -815,7 +815,7 @@ function irADetalleActividad(modulo) {
 function cargarCategorias() {
   const categoriasContainer = document.getElementById("categorias-container");
   categoriasContainer.innerHTML = "";
-  fetch('obtener_categorias_union.php')
+  fetch('php/obtener_categorias_union.php')
     .then(res => res.json())
     .then(categorias => {
       categorias.forEach(cat => {
@@ -846,7 +846,7 @@ function cargarCategorias() {
 }
 
 function cargarActividades(idCategoria, actividadesContainer) {
-  fetch('obtener_actividades_union.php?id_categoria=' + idCategoria)
+  fetch('php/obtener_actividades_union.php?id_categoria=' + idCategoria)
     .then(res => res.json())
     .then(actividades => {
       actividadesContainer.querySelectorAll('.modulo:not(.agregar)').forEach(el => el.remove());

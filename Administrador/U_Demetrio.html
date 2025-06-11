@@ -640,7 +640,7 @@
       // Si es edición
       if (actividadEditando) {
         formData.append('id_actividad', actividadEditando.dataset.id_actividad);
-        fetch('editar_actividad_demetrio.php', {
+        fetch('php/editar_actividad_demetrio.php', {
           method: 'POST',
           body: formData
         })
@@ -656,7 +656,7 @@
         });
       } else {
         // Alta nueva
-        fetch('guardar_actividad_demetrio.php', {
+        fetch('php/guardar_actividad_demetrio.php', {
           method: 'POST',
           body: formData
         })
@@ -770,7 +770,7 @@ function eliminarActividad(modulo) {
       guardarBtn.addEventListener("click", function () {
         const nuevaCategoria = input.value.trim();
         if (nuevaCategoria !== "") {
-          fetch('guardar_categoria_demetrio.php', {
+          fetch('php/guardar_categoria_demetrio.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombre_categoria: nuevaCategoria})
@@ -805,7 +805,7 @@ function irADetalleActividad(modulo) {
 function cargarCategorias() {
   const categoriasContainer = document.getElementById("categorias-container");
   categoriasContainer.innerHTML = "";
-  fetch('obtener_categorias_demetrio.php')
+  fetch('php/obtener_categorias_demetrio.php')
     .then(res => res.json())
     .then(categorias => {
       categorias.forEach(cat => {
@@ -836,7 +836,7 @@ function cargarCategorias() {
 }
 
 function cargarActividades(idCategoria, actividadesContainer) {
-  fetch('obtener_actividad_demetrio.php?id_categoria=' + idCategoria)
+  fetch('php/obtener_actividades_demetrio.php?id_categoria=' + idCategoria)
     .then(res => res.json())
     .then(actividades => {
       actividadesContainer.querySelectorAll('.modulo:not(.agregar)').forEach(el => el.remove());

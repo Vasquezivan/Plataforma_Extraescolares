@@ -451,7 +451,7 @@
     const params = new URLSearchParams(window.location.search);
     const id_actividad = params.get('id_actividad');
 
-    fetch('obtener_alumnos_inscritos.php?id_actividad=' + id_actividad)
+    fetch('php/obtener_alumnos_inscritos.php?id_actividad=' + id_actividad)
       .then(res => res.json())
       .then(alumnos => {
         // Muestra los alumnos en una tabla o lista

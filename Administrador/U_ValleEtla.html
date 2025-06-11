@@ -502,57 +502,7 @@
       </div>
 
       <!-- Contenedor de categorías -->
-      <div id="categorias-container">
-        <!-- Categoría Deporte con sus actividades -->
-        <div class="contenedor-categoria">
-          <div class="categoria">Deporte</div>
-          <div class="actividades-container">
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/basquetbol.png" alt="Basquetbol">
-              <h3>Basquetbol</h3>
-              <p>Únete a un equipo dinámico, desarrolla habilidades como dribleo, tiro y defensa. Se compite contra otros campus del TecNM.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/futbol.png" alt="Futbol">
-              <h3>Futbol</h3>
-              <p>Entrena con tu equipo en horarios programados, mejora tu condición física y representa al TecNM en torneos locales y regionales.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo" onclick="irADetalleActividad(this)">
-              <img src="assets/img/Atletismo.png" alt="Atletismo">
-              <h3>Atletismo</h3>
-              <p>Participa en sesiones de resistencia, velocidad y técnica de salto. Ideal para quienes disfrutan del reto individual y las competencias.</p>
-              <div class="acciones-modulo">
-                <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/editar.png" alt="Editar">
-                </button>
-                <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement);event.stopPropagation();">
-                  <img src="assets/img/eliminar.png" alt="Eliminar">
-                </button>
-              </div>
-            </div>
-            
-            <div class="modulo agregar" onclick="abrirModal(this.closest('.actividades-container'))">+</div>
-          </div>
-        </div>
-      </div>
+      <div id="categorias-container"></div>
 
       <!-- Modal para agregar categoría -->
       <div id="modal-categoria" class="modal">
@@ -691,7 +641,7 @@
       // Si es edición
       if (window.idActividadEditando) {
         formData.append('id_actividad', window.idActividadEditando);
-        fetch('editar_actividad.php', {
+        fetch('php/editar_actividad.php', {
           method: 'POST',
           body: formData
         })
@@ -707,7 +657,7 @@
         });
       } else {
         // Código para agregar (como ya tienes)
-        fetch('guardar_actividad.php', {
+        fetch('php/guardar_actividad.php', {
           method: 'POST',
           body: formData
         })
@@ -745,7 +695,7 @@ function eliminarActividad(modulo, id_actividad) {
     backdrop: 'rgba(0, 33, 71, 0.4)'
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch('eliminar_actividad.php', {
+      fetch('php/eliminar_actividad.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({id_actividad: id_actividad})
@@ -822,7 +772,7 @@ function eliminarActividad(modulo, id_actividad) {
       const cancelarBtn = document.getElementById("cancelar-categoria");
 
       // Cargar categorías existentes
-fetch('obtener_categorias.php')
+fetch('php/obtener_categorias.php')
   .then(res => res.json())
   .then(categorias => {
     categorias.forEach(cat => {
@@ -867,7 +817,7 @@ fetch('obtener_categorias.php')
       guardarBtn.addEventListener("click", function () {
         const nuevaCategoria = input.value.trim();
         if (nuevaCategoria !== "") {
-          fetch('guardar_categoria.php', {
+          fetch('php/guardar_categoria.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({nombre_categoria: nuevaCategoria})
@@ -922,7 +872,7 @@ function irADetalleActividad(modulo) {
 }
 
 function cargarActividades(idCategoria, actividadesContainer) {
-  fetch('obtener_actividades.php?id_categoria=' + idCategoria)
+  fetch('php/obtener_actividades.php?id_categoria=' + idCategoria)
     .then(res => res.json())
     .then(actividades => {
       // Limpia el contenedor (excepto el botón agregar)

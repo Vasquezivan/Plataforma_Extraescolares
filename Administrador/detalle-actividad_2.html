@@ -385,7 +385,7 @@
 const params = new URLSearchParams(window.location.search);
 const id_actividad = params.get('id_actividad');
 
-fetch('obtener_actividad_santamaria.php?id_actividad=' + id_actividad)
+fetch('php/obtener_actividad_santamaria.php?id_actividad=' + id_actividad)
   .then(res => res.json())
   .then(actividad => {
     document.getElementById('nombre-actividad').textContent = actividad.nombre_actividad || 'Actividad no especificada';
@@ -393,7 +393,7 @@ fetch('obtener_actividad_santamaria.php?id_actividad=' + id_actividad)
   });
 
 // Cargar alumnos inscritos desde la base de datos
-fetch('obtener_alumnos_inscritos_santamaria.php?id_actividad=' + id_actividad)
+fetch('php/obtener_alumnos_inscritos_santamaria.php?id_actividad=' + id_actividad)
   .then(res => res.json())
   .then(alumnos => {
     const tbody = document.getElementById('tabla-estudiantes');
