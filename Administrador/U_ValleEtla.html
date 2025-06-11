@@ -675,97 +675,98 @@
     function guardarActividad() {
       const nombre = document.getElementById('nombre').value;
       const descripcion = document.getElementById('descripcion').value;
-      const imagenSrc = vistaPrevia.src;
+      const imagenFile = document.getElementById('imagen').files[0];
+      const categoriaDiv = contenedorActividadesActual.closest('.contenedor-categoria').querySelector('.categoria');
+      const id_categoria = categoriaDiv.dataset.id_categoria;
 
-      if (nombre && descripcion && imagenSrc) {
-        if (actividadEditando) {
-          // Editar actividad existente
-          actividadEditando.querySelector('h3').textContent = nombre;
-          actividadEditando.querySelector('p').textContent = descripcion;
-          actividadEditando.querySelector('img').src = imagenSrc;
-        } else {
-          // Crear nueva actividad
-          const nuevoModulo = document.createElement('div');
-          nuevoModulo.classList.add('modulo');
+      const formData = new FormData();
+      formData.append('nombre', nombre);
+      formData.append('descripcion', descripcion);
+      formData.append('id_categoria', id_categoria);
 
-          const nuevaImagen = document.createElement('img');
-          nuevaImagen.src = imagenSrc;
-          nuevaImagen.alt = nombre;
+      if (imagenFile) {
+        formData.append('imagen', imagenFile);
+      }
 
-          const nuevoTitulo = document.createElement('h3');
-          nuevoTitulo.textContent = nombre;
-
-          const nuevaDescripcion = document.createElement('p');
-          nuevaDescripcion.textContent = descripcion;
-
-          const accionesDiv = document.createElement('div');
-          accionesDiv.className = 'acciones-modulo';
-          accionesDiv.innerHTML = `
-            <button class="btn-accion" onclick="editarActividad(this.parentElement.parentElement)">
-              <img src="assets/img/editar.png" alt="Editar">
-            </button>
-            <button class="btn-accion" onclick="eliminarActividad(this.parentElement.parentElement)">
-              <img src="assets/img/eliminar.png" alt="Eliminar">
-            </button>
-          `;
-
-          nuevoModulo.appendChild(nuevaImagen);
-          nuevoModulo.appendChild(nuevoTitulo);
-          nuevoModulo.appendChild(nuevaDescripcion);
-          nuevoModulo.appendChild(accionesDiv);
-
-          // NUEVO: Manejo de clics en el módulo
-          nuevoModulo.onclick = function(e) {
-            // Evita que el clic en los botones de editar/eliminar dispare la navegación
-            if (e.target.closest('.btn-accion')) return;
-            const nombre = nuevoModulo.querySelector('h3').textContent;
-            const descripcion = nuevoModulo.querySelector('p').textContent;
-            window.location.href = `detalle-actividad_3.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
-          };
-
-          const agregarBtn = contenedorActividadesActual.querySelector(".agregar");
-          contenedorActividadesActual.insertBefore(nuevoModulo, agregarBtn);
-        }
-
-        // Limpiar y cerrar
-        document.getElementById('formulario-actividad').reset();
-        vistaPrevia.style.display = 'none';
-        dropArea.style.display = 'block';
-        cerrarModal();
+      // Si es edición
+      if (window.idActividadEditando) {
+        formData.append('id_actividad', window.idActividadEditando);
+        fetch('editar_actividad.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          if (data.success) {
+            location.reload();
+          } else {
+            alert(data.error || "Error al editar actividad");
+          }
+          window.idActividadEditando = null;
+        });
+      } else {
+        // Código para agregar (como ya tienes)
+        fetch('guardar_actividad.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert("Error al guardar actividad");
+          }
+        });
       }
     }
 
     // Función para editar actividad
-    function editarActividad(modulo) {
-      const contenedorActividades = modulo.closest('.actividades-container');
-      abrirModal(contenedorActividades, modulo);
+    function editarActividad(modulo, id_actividad) {
+      // Lógica para abrir el modal y cargar los datos actuales (ya lo tienes en abrirModal)
+      abrirModal(modulo.closest('.actividades-container'), modulo);
+      // Guarda el id_actividad en una variable global para saber si es edición
+      window.idActividadEditando = id_actividad;
     }
 
     // Versión con botón verde de eliminar
-function eliminarActividad(modulo) {
+function eliminarActividad(modulo, id_actividad) {
   Swal.fire({
     title: '¿Eliminar actividad?',
     text: "¡No podrás revertir esta acción!",
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonColor: '#28a745',  // Verde: #28a745
-    cancelButtonColor: '#d33',      // Rojo: #d33 (se mantiene)
+    confirmButtonColor: '#28a745',
+    cancelButtonColor: '#d33',
     confirmButtonText: 'Sí, eliminar',
     cancelButtonText: 'Cancelar',
     background: '#fff',
     backdrop: 'rgba(0, 33, 71, 0.4)'
   }).then((result) => {
     if (result.isConfirmed) {
-      modulo.remove();
-      Swal.fire({
-        title: '¡Eliminado!',
-        text: 'La actividad ha sido eliminada.',
-        icon: 'success',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-        background: '#fff',
-        backdrop: 'rgba(0, 33, 71, 0.4)'
+      fetch('eliminar_actividad.php', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id_actividad: id_actividad})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          modulo.remove();
+          Swal.fire({
+            title: '¡Eliminado!',
+            text: 'La actividad ha sido eliminada.',
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            background: '#fff',
+            backdrop: 'rgba(0, 33, 71, 0.4)'
+          });
+        } else {
+          Swal.fire('Error', 'No se pudo eliminar la actividad.', 'error');
+        }
       });
     }
   });
@@ -820,6 +821,39 @@ function eliminarActividad(modulo) {
       const guardarBtn = document.getElementById("guardar-categoria");
       const cancelarBtn = document.getElementById("cancelar-categoria");
 
+      // Cargar categorías existentes
+fetch('obtener_categorias.php')
+  .then(res => res.json())
+  .then(categorias => {
+    categorias.forEach(cat => {
+      const contenedorCategoria = document.createElement("div");
+      contenedorCategoria.className = "contenedor-categoria";
+      
+      const nuevaDivCategoria = document.createElement("div");
+      nuevaDivCategoria.className = "categoria";
+      nuevaDivCategoria.textContent = cat.nombre_categoria.charAt(0).toUpperCase() + cat.nombre_categoria.slice(1).toLowerCase();
+      nuevaDivCategoria.dataset.id_categoria = cat.id_categoria; // <-- Aquí
+      contenedorCategoria.appendChild(nuevaDivCategoria);
+
+      const actividadesContainer = document.createElement("div");
+      actividadesContainer.className = "actividades-container";
+      
+      const moduloAgregar = document.createElement("div");
+      moduloAgregar.className = "modulo agregar";
+      moduloAgregar.innerHTML = "+";
+      moduloAgregar.onclick = function() { 
+        abrirModal(this.closest('.actividades-container')); 
+      };
+      actividadesContainer.appendChild(moduloAgregar);
+      
+      contenedorCategoria.appendChild(actividadesContainer);
+      categoriasContainer.appendChild(contenedorCategoria);
+
+      // Cargar actividades de esta categoría
+      cargarActividades(cat.id_categoria, actividadesContainer);
+    });
+  });
+
       agregarBtn.addEventListener("click", function () {
         input.value = "";
         modalCategoria.style.display = "flex";
@@ -833,39 +867,45 @@ function eliminarActividad(modulo) {
       guardarBtn.addEventListener("click", function () {
         const nuevaCategoria = input.value.trim();
         if (nuevaCategoria !== "") {
-          const categorias = document.querySelectorAll('.categoria');
-          const existe = Array.from(categorias).some(c => 
-            c.textContent.toLowerCase() === nuevaCategoria.toLowerCase()
-          );
-          
-          if (existe) {
-            alert("La categoría ya existe.");
-            return;
-          }
+          fetch('guardar_categoria.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({nombre_categoria: nuevaCategoria})
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              // Agrega la categoría al DOM sin recargar
+              const contenedorCategoria = document.createElement("div");
+              contenedorCategoria.className = "contenedor-categoria";
+              
+              const nuevaDivCategoria = document.createElement("div");
+              nuevaDivCategoria.className = "categoria";
+              nuevaDivCategoria.textContent = nuevaCategoria.charAt(0).toUpperCase() + nuevaCategoria.slice(1).toLowerCase();
+              contenedorCategoria.appendChild(nuevaDivCategoria);
 
-          const contenedorCategoria = document.createElement("div");
-          contenedorCategoria.className = "contenedor-categoria";
-          
-          const nuevaDivCategoria = document.createElement("div");
-          nuevaDivCategoria.className = "categoria";
-          nuevaDivCategoria.textContent = nuevaCategoria.charAt(0).toUpperCase() + nuevaCategoria.slice(1).toLowerCase();
-          contenedorCategoria.appendChild(nuevaDivCategoria);
+              const actividadesContainer = document.createElement("div");
+              actividadesContainer.className = "actividades-container";
+              
+              const moduloAgregar = document.createElement("div");
+              moduloAgregar.className = "modulo agregar";
+              moduloAgregar.innerHTML = "+";
+              moduloAgregar.onclick = function() { 
+                abrirModal(this.closest('.actividades-container')); 
+              };
+              actividadesContainer.appendChild(moduloAgregar);
+              
+              contenedorCategoria.appendChild(actividadesContainer);
 
-          const actividadesContainer = document.createElement("div");
-          actividadesContainer.className = "actividades-container";
-          
-          const moduloAgregar = document.createElement("div");
-          moduloAgregar.className = "modulo agregar";
-          moduloAgregar.innerHTML = "+";
-          moduloAgregar.onclick = function() { 
-            abrirModal(this.closest('.actividades-container')); 
-          };
-          actividadesContainer.appendChild(moduloAgregar);
-          
-          contenedorCategoria.appendChild(actividadesContainer);
-
-          categoriasContainer.insertBefore(contenedorCategoria, categoriasContainer.firstChild);
-          modalCategoria.style.display = "none";
+              categoriasContainer.insertBefore(contenedorCategoria, categoriasContainer.firstChild);
+              modalCategoria.style.display = "none";
+            } else {
+              alert("Error al guardar categoría");
+            }
+          })
+          .catch(() => {
+            alert("Error de conexión con el servidor");
+          });
         }
       });
 
@@ -877,9 +917,66 @@ function eliminarActividad(modulo) {
     });
 
 function irADetalleActividad(modulo) {
-  const nombre = modulo.querySelector('h3').textContent;
-  const descripcion = modulo.querySelector('p').textContent;
-  window.location.href = `detalle-actividad_3.html?nombre=${encodeURIComponent(nombre)}&descripcion=${encodeURIComponent(descripcion)}`;
+  const id_actividad = modulo.dataset.id_actividad; // Debes agregar este atributo al crear el módulo
+  window.location.href = `detalle-actividad_3.html?id_actividad=${id_actividad}`;
+}
+
+function cargarActividades(idCategoria, actividadesContainer) {
+  fetch('obtener_actividades.php?id_categoria=' + idCategoria)
+    .then(res => res.json())
+    .then(actividades => {
+      // Limpia el contenedor (excepto el botón agregar)
+      actividadesContainer.querySelectorAll('.modulo:not(.agregar)').forEach(el => el.remove());
+
+      actividades.forEach(act => {
+        const modulo = document.createElement("div");
+        modulo.className = "modulo";
+        modulo.onclick = function() { irADetalleActividad(modulo); };
+
+        const img = document.createElement("img");
+        img.src = act.imagen_url;
+        img.alt = act.nombre_actividad;
+        modulo.appendChild(img);
+
+        const h3 = document.createElement("h3");
+        h3.textContent = act.nombre_actividad;
+        modulo.appendChild(h3);
+
+        const p = document.createElement("p");
+        p.textContent = act.descripcion;
+        modulo.appendChild(p);
+
+        // Acciones (editar/eliminar)
+        const acciones = document.createElement("div");
+        acciones.className = "acciones-modulo";
+
+        // Botón editar
+        const btnEditar = document.createElement("button");
+        btnEditar.className = "btn-accion";
+        btnEditar.innerHTML = '<img src="assets/img/editar.png" alt="Editar">';
+        btnEditar.onclick = function(e) {
+          e.stopPropagation();
+          editarActividad(modulo, act.id_actividad);
+        };
+        acciones.appendChild(btnEditar);
+
+        // Botón eliminar
+        const btnEliminar = document.createElement("button");
+        btnEliminar.className = "btn-accion";
+        btnEliminar.innerHTML = '<img src="assets/img/eliminar.png" alt="Eliminar">';
+        btnEliminar.onclick = function(e) {
+          e.stopPropagation();
+          eliminarActividad(modulo, act.id_actividad);
+        };
+        acciones.appendChild(btnEliminar);
+
+        modulo.appendChild(acciones);
+        modulo.dataset.id_actividad = act.id_actividad; // <-- Aquí
+
+        // Inserta antes del botón agregar
+        actividadesContainer.insertBefore(modulo, actividadesContainer.querySelector('.modulo.agregar'));
+      });
+    });
 }
   </script>
 </body>
