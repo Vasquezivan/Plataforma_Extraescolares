@@ -381,72 +381,44 @@
     document.getElementById('nombre-actividad').textContent = nombreActividad;
     document.getElementById('descripcion-actividad').textContent = descripcionActividad;
     
-    // Datos de estudiantes (almacenados por nombre de actividad)
-    let estudiantes = JSON.parse(localStorage.getItem(`estudiantes_${nombreActividad}`)) || [];
-    
-    function guardarEstudiantes() {
-      localStorage.setItem(`estudiantes_${nombreActividad}`, JSON.stringify(estudiantes));
-    }
-    
-    function cargarEstudiantes() {
-      const tbody = document.getElementById('tabla-estudiantes');
-      tbody.innerHTML = '';
-      
-      if (estudiantes.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
-              No hay estudiantes registrados en esta actividad
-            </td>
-          </tr>
-        `;
-        return;
-      }
-      
-      estudiantes.forEach((estudiante) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${estudiante.nombre}</td>
-          <td>${estudiante.control}</td>
-          <td>${estudiante.carrera}</td>
-          <td>${estudiante.semestre}°</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
+    // Obtener el id_actividad de la URL
+const params = new URLSearchParams(window.location.search);
+const id_actividad = params.get('id_actividad');
 
-    function eliminarEstudiante(index) {
-      Swal.fire({
-        title: '¿Eliminar estudiante?',
-        html: `¿Estás seguro de eliminar a <b>${estudiantes[index].nombre}</b> (${estudiantes[index].control}) de esta actividad?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#002147',
-        confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          estudiantes.splice(index, 1);
-          guardarEstudiantes();
-          cargarEstudiantes();
-          Swal.fire({
-            title: 'Eliminado',
-            text: 'El estudiante ha sido eliminado',
-            icon: 'success',
-            confirmButtonColor: '#002147'
-          });
-        }
-      });
+fetch('obtener_actividad_santamaria.php?id_actividad=' + id_actividad)
+  .then(res => res.json())
+  .then(actividad => {
+    document.getElementById('nombre-actividad').textContent = actividad.nombre_actividad || 'Actividad no especificada';
+    document.getElementById('descripcion-actividad').textContent = actividad.descripcion || 'Descripción no disponible';
+  });
+
+// Cargar alumnos inscritos desde la base de datos
+fetch('obtener_alumnos_inscritos_santamaria.php?id_actividad=' + id_actividad)
+  .then(res => res.json())
+  .then(alumnos => {
+    const tbody = document.getElementById('tabla-estudiantes');
+    tbody.innerHTML = '';
+    if (alumnos.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 20px; color: #666;">
+            No hay estudiantes registrados en esta actividad
+          </td>
+        </tr>
+      `;
+      return;
     }
-
-    // Si quieres también quitar la edición, elimina la función editarEstudiante y el botón de editar en la tabla
-
-    function editarEstudiante(index) {
-      // Puedes dejar vacía o eliminar esta función si no quieres edición
-    }
-
-    cargarEstudiantes();
+    alumnos.forEach(al => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${al.nombre}</td>
+        <td>${al.numero_control}</td>
+        <td>${al.carrera}</td>
+        <td>${al.semestre}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
   </script>
 </body>
 </html>
