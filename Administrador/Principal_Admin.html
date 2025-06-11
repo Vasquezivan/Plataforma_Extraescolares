@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Administrativo</title>
   <link rel="stylesheet" href="./assets/css/Administrador.css" />
-  <script src="./assets/js/Administrador.js"></script>
   
   <!-- Carga de Font Awesome desde CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -47,227 +46,32 @@
     <div class="sidebar-section">
       <h3 style="font-family: 'Open Sans', sans-serif;">PANEL PRINCIPAL</h3>
       <ul style="font-family: 'Segoe UI', sans-serif; font-size: 16px; color: rgba(255, 255, 255, 0.7); background-color: #1B396A; border-radius: 6px; padding: 8px;">
-        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" class="inicio-dashboard"><i class="fas fa-home" style="margin-right: 8px;"></i>Inicio</li>
+        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" class="inicio-dashboard"><i class="fas fa-home" style="margin-right: 8px;"></i>Inicio</li>
       </ul>
     </div>
     <div class="sidebar-section">
-      <h3 style="font-family: 'Open Sans', sans-serif;">UNIDADES
+      <h3 style="font-family: 'Open Sans', sans-serif;">UNIDADES</h3>
       <ul style="font-family: 'Segoe UI', sans-serif; font-size: 16px; color: rgba(255, 255, 255, 0.7); background-color: #1B396A; border-radius: 6px; padding: 8px;">
-        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('CIDERS unión Hidalgo')"><i class="fas fa-building" style="margin-right: 8px;"></i>Unión Hidalgo</li>
-        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Unidad Demetrio Vallejo en el Espinal')"><i class="fas fa-building" style="margin-right: 8px;"></i>Demetrio Vallejo</li>
-        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Unidad académica Tlahuitoltepec')"><i class="fas fa-building" style="margin-right: 8px;"></i>Tlahuitoltepec</li>
-        <li style="transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Valle de Etla')"><i class="fas fa-building" style="margin-right: 8px;"></i>Valle de Etla</li>
+        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('CIDERS unión Hidalgo')"><i class="fas fa-building" style="margin-right: 8px;"></i>Unión Hidalgo</li>
+        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Unidad Demetrio Vallejo en el Espinal')"><i class="fas fa-building" style="margin-right: 8px;"></i>Demetrio Vallejo</li>
+        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Unidad académica Tlahuitoltepec')"><i class="fas fa-building" style="margin-right: 8px;"></i>Tlahuitoltepec</li>
+        <li style="transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" onclick="mostrarInformacionUnidad('Valle de Etla')"><i class="fas fa-building" style="margin-right: 8px;"></i>Valle de Etla</li>
       </ul>
     </div>
     <div class="sidebar-section">
       <h3 style="font-family: 'Open Sans', sans-serif;">ADMINISTRACIÓN</h3>
       <ul style="font-family: 'Segoe UI', sans-serif; font-size: 16px; color: rgba(255, 255, 255, 0.7); background-color: #1B396A; border-radius: 6px; padding: 8px;">
-        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" class="gestion-usuarios"><i class="fas fa-users" style="margin-right: 8px;"></i>Gestión de Usuarios</li>
+        <li style="margin-bottom: 10px; transition: all 0.3s; text-decoration: none; cursor: pointer;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'" class="gestion-usuarios"><i class="fas fa-users" style="margin-right: 8px;"></i>Gestión de Usuarios</li>
       </ul>
     </div>
   </div>
 
-  <!-- Main Content -->
+  <!-- Main Content - Contenedor vacío -->
   <div class="main-content">
-    <!-- Aquí se mostrará directamente la información de la unidad seleccionada -->
-    <div class="encabezado-modal">
-      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
-      <h2 class="titulo-modal">Actividades Extraescolares - Unión Hidalgo</h2>
-    </div>
-
-    <div class="barra-actividades">
-      <button class="boton-actividad activo" onclick="seleccionarActividad('Basquetbol')">Basquetbol</button>
-      <button class="boton-actividad" onclick="seleccionarActividad('Danza')">Danza</button>
-      <button class="boton-actividad" onclick="seleccionarActividad('Escolta')">Escolta</button>
-      <button class="boton-actividad" onclick="seleccionarActividad('Futbol')">Futbol</button>
-      <button class="boton-actividad" onclick="seleccionarActividad('Atletismo')">Atletismo</button>
-    </div>
-
-    <div class="seccion-alumnos">
-      <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a Basquetbol</h3>
-
-      <div class="contenedor-busqueda">
-        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
-        <div class="contador-alumnos" id="contadorAlumnos">
-          <span class="numero">2</span> alumnos inscritos
-        </div>
-      </div>
-
-      <div class="contenedor-tabla">
-        <table class="tabla-alumnos">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>No. de Control</th>
-              <th>Semestre</th>
-              <th>Carrera</th>
-              <th>Unidad Académica</th>
-            </tr>
-          </thead>
-          <tbody id="cuerpoTablaAlumnos">
-            <tr class="alumno-basquetbol">
-              <td class="numero-lista">1</td>
-              <td>Juan Pérez</td>
-              <td>20500123</td>
-              <td>4º</td>
-              <td>Ingeniería Electrónica</td>
-              <td>Unión Hidalgo</td>
-            </tr>
-            <tr class="alumno-basquetbol">
-              <td class="numero-lista">2</td>
-              <td>Laura González</td>
-              <td>20500130</td>
-              <td>3º</td>
-              <td>Ingeniería Mecánica</td>
-              <td>Unión Hidalgo</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Sección de Gestión de Usuarios -->
-    <div class="gestion-usuarios" style="margin-top: 20px;">
-      <h1 class="titulo-recuadro" style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 24px; text-align: center;">G E S T I Ó N &nbsp; D E &nbsp; U S U A R I O S</h1>
-      <p class="mb-4" style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 16px; text-align: center; margin-top: 10px;">Administra de forma sencilla la información de los usuarios. Agrega, edita o elimina perfiles, y controla los accesos al sistema de manera eficiente y segura.</p>
-
-      <div class="card shadow mb-4" style="margin: 0 auto; max-width: 90%; height: 10px;">
-        <div class="card-header py-3 encabezado-con-boton" style="display: flex; justify-content: space-between; align-items: center; background-color: #1B396A; color: white; padding: 10px; border-radius: 5px;">
-          <h6 class="m-0 font-weight-bold text-primary" style="font-family: 'Segoe UI', sans-serif; font-size: 18px;">Tabla de datos</h6>
-          <button class="btn btn-personalizado btn-sm btn-agregar-usuario" id="btnAgregarUsuario" style="background-color: #ff7f00; color: white; padding: 5px 10px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer;">
-            <i class="fas fa-user-plus"></i> Agregar
-          </button>
-        </div>
-
-        <div class="card-body" style="padding: 15px;">
-          <!-- Añadido nuevo campo de búsqueda para usuarios -->
-          <div style="margin-bottom: 15px;">
-            <input type="text" id="busquedaUsuarios" placeholder="Buscar usuario..." style="width: 50%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px;" onkeyup="filtrarUsuarios()">
-          </div>
-          
-          <div class="table-responsive" style="overflow-x: auto;">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-              <thead>
-                <tr style="background-color: #1B396A; color: white;">
-                  <th>Nombre</th>
-                  <th>Unidad Académica</th>
-                  <th>Contacto</th>
-                  <th>Rol</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="tablaUsuarios">
-                <tr>
-                  <td>Juan Pérez</td>
-                  <td>Unidad Demetrio Vallejo</td>
-                  <td>juan.perez@example.com</td>
-                  <td>Administrador</td>
-                  <td>
-                    <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px;"></i>
-                    <i class="fas fa-trash" style="cursor: pointer; color: #d33;"></i>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Laura González</td>
-                  <td>Unidad Valle de Etla</td>
-                  <td>laura.gonzalez@example.com</td>
-                  <td>Usuario</td>
-                  <td>
-                    <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px;"></i>
-                    <i class="fas fa-trash" style="cursor: pointer; color: #d33;"></i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bienvenida-panel" style="text-align: center; margin-top: 50px;">
-      <h1 style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 36px;">Bienvenido al Panel Administrador</h1>
-      <p style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 18px; margin-top: 20px;">Aquí podrás gestionar las actividades extraescolares, administrar usuarios y mucho más.</p>
-      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" style="width: 150px; margin-top: 30px;">
-      <div style="margin-top: 40px;">
-      </div>
-    </div>
-   
+    <!-- Todo el contenido se generará dinámicamente desde JavaScript -->
   </div>
 
-  <script>
-    // Función para abrir el modal de actividades de una unidad específica
-    function abrirModalActividades(unidad) {
-      const modal = document.getElementById('modalActividades');
-      const tituloModal = modal.querySelector('.titulo-modal');
-      const tituloActividad = modal.querySelector('#tituloActividad');
-
-      // Cambiar el título del modal según la unidad
-      tituloModal.textContent = `Actividades Extraescolares - ${unidad}`;
-      tituloActividad.textContent = `Alumnos inscritos a Basquetbol en ${unidad}`;
-
-      // Mostrar el modal
-      modal.style.display = 'block';
-    }
-
-    // Función para cerrar el modal de actividades
-    function cerrarModal() {
-      const modal = document.getElementById('modalActividades');
-      modal.style.display = 'none';
-    }
-
-    // Función para filtrar la tabla de alumnos según la búsqueda
-    function filtrarTabla() {
-      const input = document.getElementById('busquedaAlumnos');
-      const filtro = input.value.toLowerCase();
-      const filas = document.querySelectorAll('#cuerpoTablaAlumnos tr');
-
-      filas.forEach(fila => {
-        const celdas = fila.getElementsByTagName('td');
-        let coincide = false;
-
-        for (let i = 0; i < celdas.length; i++) {
-          if (celdas[i].textContent.toLowerCase().includes(filtro)) {
-            coincide = true;
-            break;
-          }
-        }
-
-        fila.style.display = coincide ? '' : 'none';
-      });
-    }
-
-    // Función para filtrar la tabla de usuarios según la búsqueda
-    function filtrarUsuarios() {
-      const input = document.getElementById('busquedaUsuarios');
-      const filtro = input.value.toLowerCase();
-      const filas = document.querySelectorAll('#tablaUsuarios tr');
-
-      filas.forEach(fila => {
-        const celdas = fila.getElementsByTagName('td');
-        let coincide = false;
-
-        for (let i = 0; i < celdas.length; i++) {
-          if (celdas[i].textContent.toLowerCase().includes(filtro)) {
-            coincide = true;
-            break;
-          }
-        }
-
-        fila.style.display = coincide ? '' : 'none';
-      });
-    }
-
-    // Agregar eventos a los botones de cada unidad
-    document.querySelectorAll('.unidad .acciones button[data-action="view"]').forEach(boton => {
-      boton.addEventListener('click', (e) => {
-        const unidad = e.target.closest('.unidad').querySelector('h2').textContent;
-        abrirModalActividades(unidad);
-      });
-    });
-
-
-
-  </script>
+  <!-- Cargar JavaScript al final del documento -->
+  <script src="./assets/js/Administrador.js"></script>
 </body>
 </html>
