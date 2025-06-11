@@ -133,7 +133,7 @@ function mostrarInicio() {
   const mainContent = document.querySelector('.main-content');
   mainContent.innerHTML = `
     <div class="bienvenida-panel" style="text-align: center; margin-top: 50px;">
-      <h1 style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 36px;">Bienvenido al Panel Administrador</h1>
+      <h1 style="font-family: 'Segoe UI', sans-serif; color:#1B396A; font-size: 36px;">Bienvenido al Panel Administrador</h1>
       <p style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 18px; margin-top: 20px;">Aquí podrás gestionar las actividades extraescolares, administrar usuarios y mucho más.</p>
       <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" style="width: 150px; margin-top: 30px;">
       <div style="margin-top: 25px;">
@@ -413,15 +413,15 @@ function cargarUsuariosDesdeBaseDeDatos() {
   if (tablaUsuarios) {
     tablaUsuarios.innerHTML = `
       <tr>
-        <td colspan="6" style="text-align: center; padding: 20px;">
+        <td colspan="7" style="text-align: center; padding: 20px;">
           <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
           <p style="margin-top: 10px;">Cargando usuarios...</p>
         </td>
       </tr>
     `;
     
-    // Realizar la solicitud para obtener usuarios - corregimos la ruta
-    fetch('../../obtener_usuarios.php')
+    // Realizar la solicitud para obtener usuarios
+    fetch('../php/obtener_usuarios.php')
       .then(response => {
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
@@ -438,15 +438,16 @@ function cargarUsuariosDesdeBaseDeDatos() {
             // Agregar cada usuario a la tabla
             result.data.forEach(usuario => {
               const fila = document.createElement('tr');
-              // Añadimos el ID como atributo data-id para operaciones posteriores
+              // Añadimos el ID real como atributo data-id para operaciones posteriores
               fila.setAttribute('data-id', usuario.id_usuario);
               
+              // Asegurar que el contenido de la fila está en el orden correcto de las columnas
               fila.innerHTML = `
-                <td>${usuario.nombre}</td>
+                <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.unidad_academica || 'No especificado'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
-                <td>${usuario.contraseña}</td>
-                <td>${usuario.rol}</td>
+                <td>${usuario.contraseña || 'No especificada'}</td>
+                <td>${usuario.rol || 'No especificado'}</td>
                 <td>
                   <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
                   <i class="fas fa-trash" style="cursor: pointer; color: #d33; font-size: 18px;"></i>
@@ -457,7 +458,7 @@ function cargarUsuariosDesdeBaseDeDatos() {
           } else {
             tablaUsuarios.innerHTML = `
               <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">
+                <td colspan="7" style="text-align: center; padding: 20px;">
                   No hay usuarios registrados.
                 </td>
               </tr>
@@ -467,7 +468,7 @@ function cargarUsuariosDesdeBaseDeDatos() {
           console.error('Error al obtener usuarios:', result.message);
           tablaUsuarios.innerHTML = `
             <tr>
-              <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
+              <td colspan="7" style="text-align: center; padding: 20px; color: #d33;">
                 <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
                 Error al cargar usuarios. Por favor, intente nuevamente.
               </td>
@@ -479,7 +480,7 @@ function cargarUsuariosDesdeBaseDeDatos() {
         console.error('Error:', error);
         tablaUsuarios.innerHTML = `
           <tr>
-            <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
+            <td colspan="7" style="text-align: center; padding: 20px; color: #d33;">
               <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
               Error de conexión. Por favor, verifique su conexión a internet o al servidor. (${error.message})
             </td>
@@ -643,7 +644,7 @@ function guardarNuevoUsuario() {
     });
 
     // Enviar la solicitud al servidor mediante fetch - corregimos la ruta
-    fetch('../../php/guardar_usuarios.php', {
+    fetch('../php/guardar_usuario.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -674,7 +675,7 @@ function guardarNuevoUsuario() {
           <td>${nombre}</td>
           <td>${unidad}</td>
           <td>${contacto}</td>
-          <td>${password}</td>
+          <td>••••••••</td>
           <td>${rol}</td>
           <td>
             <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
@@ -690,6 +691,11 @@ function guardarNuevoUsuario() {
           icon: "success",
           confirmButtonColor: "#1B396A"
         });
+        
+        // Recargar la tabla para mostrar datos actualizados
+        setTimeout(() => {
+          cargarUsuariosDesdeBaseDeDatos();
+        }, 1000);
       } else {
         // Mostrar mensaje de error
         Swal.fire({
@@ -718,11 +724,12 @@ function guardarNuevoUsuario() {
 
 // Función para editar usuario
 function editarUsuario(filaUsuario) {
-  const nombre = filaUsuario.children[0].textContent;
-  const unidad = filaUsuario.children[1].textContent;
-  const contacto = filaUsuario.children[2].textContent;
-  const password = filaUsuario.children[3].textContent;
-  const rol = filaUsuario.children[4].textContent;
+  // Obtener los datos de cada celda en el orden correcto según la nueva estructura de la tabla
+  const nombre = filaUsuario.cells[0].textContent;
+  const unidad = filaUsuario.cells[1].textContent;
+  const contacto = filaUsuario.cells[2].textContent;
+  const password = filaUsuario.cells[3].textContent;
+  const rol = filaUsuario.cells[4].textContent;
   
   const modalHTML = `
     <div id="modalEditarUsuario" class="modal" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 999;">
@@ -862,7 +869,7 @@ function guardarCambiosUsuario(filaUsuario) {
       });
 
       // Enviar la solicitud al servidor mediante fetch - corregimos la ruta
-      fetch('../../php/actualizar_usuario.php', {
+      fetch('../php/actualizar_usuario.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -979,7 +986,7 @@ function eliminarUsuario(filaUsuario) {
         });
 
         // Enviar la solicitud al servidor mediante fetch - corregimos la ruta
-        fetch('../../php/eliminar_usuario.php', {
+        fetch('../php/eliminar_usuario.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1255,7 +1262,7 @@ function filtrarTabla() {
     const textoFila = Array.from(celdas).map(celda => celda.textContent.toLowerCase()).join(' ');
 
     if (textoFila.includes(filtro)) {
-      fila.classList
+      fila.classList.remove('ocultar');
     } else {
       fila.classList.add('ocultar');
     }
@@ -1330,7 +1337,7 @@ function mostrarInformacionUnidad(unidad) {
           </thead>
           <tbody id="cuerpoTablaAlumnos">
             ${datosUnidad.alumnos[datosUnidad.actividades[0]].map((alumno, index) => 
-              `<tr>
+              `<tr class="alumno-${datosUnidad.actividades[0].toLowerCase()}">
                 <td>${index + 1}</td>
                 <td>${alumno.nombre}</td>
                 <td>${alumno.control}</td>
