@@ -1,116 +1,114 @@
 <?php
-// api.php
-header('Content-Type: application/json'); // Indicamos que la respuesta será en formato JSON
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *'); // Considera restringir esto al origen de tu frontend en producción
 
-// 1. Configuración de la Base de Datos
-$servidor = "localhost"; // Generalmente es "localhost"
-$usuario = "root";       // Usuario por defecto de XAMPP/WAMP (usualmente vacía)
-$password = "";          // Contraseña por defecto de XAMPP/WAMP (usualmente vacía)
-$basededatos = "plataforma_extraescolares"; // El nombre que le diste en phpMyAdmin
+// Parámetros de conexión a la base de datos (reemplaza con tus credenciales reales)
+$servername = "localhost";
+$username = "root"; // Tu nombre de usuario de la base de datos
+$password = ""; // Tu contraseña de la base de datos
+$dbname = "extraescolares"; // Tu nombre de la base de datos (asegúrate de que esta base de datos y la tabla 'estudiantes' existan)
 
 // Crear conexión
-$conexion = new mysqli($servidor, $usuario, $password, $basededatos);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar conexión
-if ($conexion->connect_error) {
-    echo json_encode(["exito" => false, "mensaje" => "Error de conexión a la base de datos: " . $conexion->connect_error]);
-    exit();
-} else {
-    // TEMPORAL: Esto te dirá si la conexión es exitosa
-    // Elimínalo después de depurar
-    // echo json_encode(["exito" => true, "mensaje" => "Conexión exitosa."]);
-    // exit();
+if ($conn->connect_error) {
+    die(json_encode(["exito" => false, "mensaje" => "Fallo en la conexión: " . $conn->connect_error]));
 }
 
-// 2. Obtener los datos enviados desde el JavaScript (el array de alumnos)
-$input = file_get_contents('php://input');
-$alumnos_data = json_decode($input, true); // Decodificar el JSON como un array asociativo
+$method = $_SERVER['REQUEST_METHOD'];
 
-// Verificar si hubo un error al decodificar el JSON
-if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(['exito' => false, 'mensaje' => 'Error al decodificar JSON: ' . json_last_error_msg()]);
-    exit();
-}
+if ($method === 'POST') {
+    // Manejar la solicitud POST (guardar estudiantes desde Excel)
+    $data = json_decode(file_get_contents("php://input"), true);
 
-// Verificar si se recibieron datos. Si el array está vacío, no hay alumnos que procesar.
-if (empty($alumnos_data)) {
-    echo json_encode(['exito' => false, 'mensaje' => 'No se recibieron datos de alumnos para guardar.']);
-    exit();
-}
-
-$inserted_count = 0; // Contador de alumnos insertados exitosamente
-$failed_count = 0;   // Contador de alumnos que fallaron al insertarse
-$errors = [];        // Array para almacenar detalles de errores
-
-// 3. Preparar la sentencia INSERT para evitar Inyección SQL (¡MUY IMPORTANTE!)
-$sql = "INSERT INTO alumnos (numero_control, nombre_completo, carrera, semestre, actividad, correo_electronico) VALUES (?, ?, ?, ?, ?, ?)";
-$stmt = $conexion->prepare($sql);
-
-// Verificar si la preparación de la sentencia fue exitosa
-if ($stmt === false) {
-    echo json_encode(['exito' => false, 'mensaje' => 'Error al preparar la consulta: ' . $conexion->error]);
-    exit();
-}
-
-// 4. Iterar sobre cada alumno en el array recibido y ejecutar la inserción
-foreach ($alumnos_data as $alumno) {
-    // Verificar que los datos necesarios existan en cada objeto de alumno
-    // Las claves deben coincidir exactamente con las que envías desde tu JavaScript (ej. 'numeroControl', 'nombre')
-    if (
-        !isset($alumno['numeroControl']) ||
-        !isset($alumno['nombre']) ||
-        !isset($alumno['carrera']) ||
-        !isset($alumno['semestre']) ||
-        !isset($alumno['correo']) ||
-        !isset($alumno['actividad'])
-    ) {
-        $failed_count++;
-        $errors[] = [
-            'alumno' => $alumno,
-            'error' => 'Datos incompletos para este alumno en el archivo Excel.'
-        ];
-        continue; // Saltar a la siguiente iteración del bucle y no intentar insertar este alumno
+    if (empty($data)) {
+        echo json_encode(["exito" => false, "mensaje" => "No se recibieron datos."]);
+        exit;
     }
 
-    // Sanitizar y validar los datos antes de insertarlos
-    // FILTER_SANITIZE_STRING es obsoleto en PHP 8.1+, considera FILTER_UNSAFE_RAW o htmlentities()
-    // Sin embargo, para este ejemplo, lo mantenemos como estaba en el contexto anterior.
-    $numero_control = filter_var($alumno['numeroControl'], FILTER_SANITIZE_STRING);
-    $nombre_completo = filter_var($alumno['nombre'], FILTER_SANITIZE_STRING);
-    $carrera = filter_var($alumno['carrera'], FILTER_SANITIZE_STRING);
-    $semestre = filter_var($alumno['semestre'], FILTER_SANITIZE_STRING);
-    $actividad = filter_var($alumno['actividad'], FILTER_SANITIZE_STRING);
-    $correo_electronico = filter_var($alumno['correo'], FILTER_VALIDATE_EMAIL); // Valida el formato del correo electrónico
+    $exito = true;
+    $errores = [];
+    $alumnosGuardados = 0;
 
-    // Vincular los parámetros a la sentencia preparada
-    // Las 's' indican que cada parámetro es de tipo string
-    $stmt->bind_param("ssssss", $numero_control, $nombre_completo, $carrera, $semestre, $actividad, $correo_electronico);
+    foreach ($data as $student) {
+        // Asegurarse de que las claves coincidan con lo enviado desde JavaScript y limpiar espacios
+        $numeroControl = $conn->real_escape_string(trim($student['numeroControl'] ?? ''));
+        $nombre = $conn->real_escape_string(trim($student['nombre'] ?? ''));
+        $carrera = $conn->real_escape_string(trim($student['carrera'] ?? ''));
+        $semestre = $conn->real_escape_string(trim($student['semestre'] ?? ''));
+        $actividad = $conn->real_escape_string(trim($student['actividad'] ?? ''));
+        $correo = $conn->real_escape_string(trim($student['correo'] ?? ''));
 
-    // Ejecutar la sentencia preparada
-    if ($stmt->execute()) {
-        $inserted_count++;
+        // Validación básica (añade más según sea necesario)
+        if (empty($numeroControl) || empty($nombre) || empty($actividad)) {
+            $errores[] = "Faltan datos requeridos para un estudiante (No. Control, Nombre o Actividad).";
+            continue;
+        }
+
+        // Verificar si el estudiante con este número de control ya existe para esta actividad
+        $check_sql = "SELECT COUNT(*) FROM estudiantes WHERE numeroControl = '$numeroControl' AND actividad = '$actividad'";
+        $result = $conn->query($check_sql);
+        $row = $result->fetch_row();
+
+        if ($row[0] > 0) {
+            // Estudiante ya registrado para esta actividad, omitir o actualizar
+            $errores[] = "Alumno con No. Control '{$numeroControl}' ya está registrado en '{$actividad}'.";
+            // Opcional: Actualizar el registro existente en lugar de omitirlo
+            // $update_sql = "UPDATE estudiantes SET nombre = '$nombre', carrera = '$carrera', semestre = '$semestre', correo = '$correo' WHERE numeroControl = '$numeroControl' AND actividad = '$actividad'";
+            // if (!$conn->query($update_sql)) {
+            //     $errores[] = "Error al actualizar alumno '{$nombre}': " . $conn->error;
+            // }
+            continue;
+        }
+
+        // Insertar nuevo estudiante
+        $sql = "INSERT INTO estudiantes (numeroControl, nombre, carrera, semestre, actividad, correo) VALUES ('$numeroControl', '$nombre', '$carrera', '$semestre', '$actividad', '$correo')";
+
+        if ($conn->query($sql) === TRUE) {
+            $alumnosGuardados++;
+        } else {
+            $errores[] = "Error al insertar alumno '{$nombre}': " . $conn->error;
+            $exito = false;
+        }
+    }
+
+    if ($exito && empty($errores)) {
+        echo json_encode(["exito" => true, "mensaje" => "Todos los {$alumnosGuardados} alumnos se guardaron correctamente."]);
     } else {
-        $failed_count++;
-        $errors[] = [
-            'alumno' => $alumno,
-            'error' => $stmt->error // Captura el error específico de MySQL para depuración
-        ];
+        echo json_encode([
+            "exito" => false,
+            "mensaje" => "Se guardaron {$alumnosGuardados} alumnos, pero hubo errores con otros. " . (empty($errores) ? "Error desconocido." : implode(", ", $errores)),
+            "errores" => $errores
+        ]);
     }
-    // Después de cada execute, es una buena práctica "resetear" el stmt si vas a reutilizarlo en el mismo bucle
-    // $stmt->reset(); // Esto no es estrictamente necesario si solo cambias bind_param
-}
 
-// 5. Cerrar la sentencia preparada y la conexión a la base de datos
-$stmt->close();
-$conexion->close();
+} elseif ($method === 'GET') {
+    // Manejar la solicitud GET (obtener todos los estudiantes o filtrar por actividad)
+    $activity_filter = isset($_GET['actividad']) ? $conn->real_escape_string($_GET['actividad']) : '';
 
-// 6. Devolver la respuesta final al cliente (JavaScript)
-if ($inserted_count > 0 && $failed_count === 0) {
-    echo json_encode(['exito' => true, 'mensaje' => "$inserted_count alumnos guardados exitosamente en la base de datos."]);
-} elseif ($inserted_count > 0 && $failed_count > 0) {
-    echo json_encode(['exito' => true, 'mensaje' => "$inserted_count alumnos guardados, $failed_count fallidos.", 'errores' => $errors]);
+    $sql = "SELECT * FROM estudiantes";
+    if (!empty($activity_filter)) {
+        $sql .= " WHERE actividad = '$activity_filter'";
+    }
+    $sql .= " ORDER BY nombre ASC"; // Ordenar por nombre para una mejor visualización
+
+    $result = $conn->query($sql);
+
+    $students = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $students[] = $row;
+        }
+    }
+
+    echo json_encode(["exito" => true, "data" => $students, "mensaje" => "Datos de alumnos recuperados exitosamente."]);
+
 } else {
-    echo json_encode(['exito' => false, 'mensaje' => "No se pudo guardar ningún alumno en la base de datos.", 'errores' => $errors]);
+    // Manejar otros métodos HTTP
+    http_response_code(405); // Método no permitido
+    echo json_encode(["exito" => false, "mensaje" => "Método no permitido."]);
 }
 
+$conn->close();
 ?>
