@@ -1,663 +1,243 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>navbar Dos</title>
-  <link rel="stylesheet" href="assets/css/tarjetas.css" />
-</head>
-<body>
-
- 
-
- <div class="barra-blanca">
-    <img src="assets/img/Educacion.png" alt="Logo 1" />
-    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
-    <img src="assets/img/pleca-ITVE.png" alt="Logo 3" />
-  </div>
-
-
-  <div class="barra-secundaria">
-    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
-  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
-</a>
-  <ul>
-    <li><a href="Pagina principal.html">Inicio</a></li>
-      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
-      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
-      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
-      <li><a href="#">Informe de Actividad</a></li>
-      <li><a href="#">Resultados de Actividades</a></li>
-    </ul>
-  </div>
-
-
-<!--tarjetas -->
-
-
- <div class="seccion">
-    <button class="toggle-btn" data-id="cultural">Cultural</button>
-    <div id="cultural" class="tarjetas-contenedor visible">
-
-
-  <!-- Danza -->
-<div class="tarjeta" style="background-image: url('assets/img/danza.jpeg');">
-  <!-- Enlace invisible cubriendo toda la tarjeta -->
-  <a href="contancia.html" class="overlay-link"></a>
-
-  <div class="tarjeta-header">
-    <span class="titulo">Danza</span>
-    <div class="acciones">
-      <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-
-
-  <!-- Teatro -->
- <div class="tarjeta" style="background-image: url('assets/img/teatro.jpg');">
-  <a href="contancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Teatro</span>
-    <div class="acciones">
-       <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
- <!-- Pintura -->
-<div class="tarjeta" style="background-image: url('assets/img/pintura.jpg');">
-  <a href="contancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Pintura</span>
-    <div class="acciones">
-        <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- Música -->
-<div class="tarjeta" style="background-image: url('assets/img/musica.jpg');">
-  <a href="constancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Música</span>
-    <div class="acciones">
-       <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-<div class="seccion">
-    <button class="toggle-btn" data-id="deportivo">Deportivo</button>
-    <div id="deportivo" class="tarjetas-contenedor visible">
-
-
-<!-- Fútbol -->
-<div class="tarjeta" style="background-image: url('assets/img/futbol.png');">
-  <a href="constancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Fútbol</span>
-    <div class="acciones">
-        <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- Básquetbol -->
-<div class="tarjeta" style="background-image: url('assets/img/basquetbol.jpg');">
-  <a href="constancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Básquetbol</span>
-    <div class="acciones">
-         <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- Voleibol -->
-<div class="tarjeta" style="background-image: url('assets/img/voleibol.jpg');">
-  <a href="constancia.html" class="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Voleibol</span>
-    <div class="acciones">
-          <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-<!-- Ajedrez -->
-<div class="tarjeta" style="background-image: url('assets/img/ajedrez.jpeg');">
-  <a href="constancia.html" cl<!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Lista Danza</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Actividades Extraescolares</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/Coordinador/assets/css/estiloconstancia.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Estilos adicionales para el formulario de constancia */
-        .formulario-constancia {
-            display: none;
-            position: fixed;
-            top: 10%;
-            left: 10%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: .01px;
-            border: 1px solid #ccc;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            border-radius: 1px;
-            max-width: 245px;
-            width: 20%;
-            margin: 0 auto;
+        :root {
+            --color-azul-principal: #1a3461;
+            --color-azul-hover: #12284b;
+            --color-fondo: #f8f9fa;
+            --color-superficie: #ffffff;
+            --color-texto-claro: #ffffff;
+            --color-texto-oscuro: #333;
+            --color-borde: #e0e0e0;
+            --color-verde: #28a745;
+            --color-rojo: #dc3545;
+            --color-naranja: #fd7e14;
+            --color-gris: #6c757d;
+            --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transicion: all 0.3s ease;
         }
-
-        .formulario-constancia h2 {
-            font-size: 1.2em;
-            margin-bottom: 1px;
-            text-align: center;
-        }
-
-        .formulario-constancia label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia input[type="text"],
-        .formulario-constancia input[type="number"] {
-            width: calc(100% - 10px);
-            padding: .001px;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia textarea {
-            width: calc(100% - 10px);
-            padding: .01px;
-            margin-bottom: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            resize: vertical;
-            min-height: 60px;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia button {
-            padding: 1px 2px;
-            background-color: #004080;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-right: 5px;
-            font-size: 0.9em;
-        }
-
-        .formulario-constancia button:hover {
-            background-color: #003366;
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-
-        .btn-generar-constancia {
-            padding: 1px 2px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8em;
-        }
-
-        .btn-generar-constancia:hover {
-            background-color: #0056b3;
-        }
-
-        .upload-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-
-        .upload-bar input[type="file"] {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .upload-bar button {
-            padding: 8px 12px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .upload-bar button:hover {
-            background-color: #1e7e34;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: var(--color-azul-principal); color: var(--color-texto-claro); padding: 15px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        header .logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; width: 100%; max-width: 960px; margin-bottom: 15px; }
+        header .logos img { height: 50px; object-fit: contain; }
+        header h2 { font-size: 1.1em; margin: 0; font-weight: 500; }
+        main { flex-grow: 1; }
+        
+        /* --- VISTA DE TARJETAS --- */
+        #vista-tarjetas .seccion { padding: 20px; }
+        .seccion-titulo { background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; padding: 10px 20px; font-size: 1.2em; margin-bottom: 20px; width: 100%; text-align: left; border-radius: 5px; box-sizing: border-box; }
+        .tarjetas-contenedor { display: flex; flex-wrap: wrap; gap: 20px; }
+        .tarjeta { cursor: pointer; position: relative; width: 280px; height: 180px; border-radius: 10px; background-size: cover; background-position: center; color: var(--color-texto-claro); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: var(--transicion); }
+        .tarjeta:hover { transform: scale(1.05); }
+        .tarjeta-header { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 15px; }
+        .tarjeta .titulo { font-size: 1.4em; font-weight: bold; }
+        
+        /* --- VISTA DE LISTA DE ALUMNOS --- */
+        #vista-lista-alumnos { display: none; }
+        .container { max-width: 1200px; margin: 30px auto; background-color: var(--color-superficie); padding: 20px; border-radius: 8px; box-shadow: var(--sombra-profesional); }
+        .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-top-left-radius: 6px; border-top-right-radius: 6px; }
+        .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
+        #btn-regresar { background: none; border: 2px solid white; color: white; font-size: 0.8em; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: var(--transicion); }
+        #btn-regresar:hover { background: white; color: var(--color-azul-principal); }
+        .search-wrapper { position: relative; }
+        .search-wrapper .fa-search { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        #searchInput { padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid var(--color-borde); font-size: 0.9em; }
+        .upload-bar { display: flex; justify-content: center; align-items: center; margin: 20px 0; gap: 10px; }
+        .upload-bar button { background-color: var(--color-verde); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--color-borde); text-align: left; }
+        thead th { background-color: #f2f2f2; color: var(--color-texto-oscuro); font-weight: 700; }
+        .empty-row td { text-align: center; color: var(--color-gris); padding: 40px; font-style: italic; }
+        /* ... el resto de tus estilos de tabla y acciones ... */
     </style>
 </head>
-
 <body>
-
-    <div class="barra-guinda"></div>
 
     <header>
         <div class="logos">
-            <img src="/Coordinador/assets/img/educacion1.png" alt="SEP">
-            <img src="/Coordinador/assets/img/gobierno de mexico.jpeg" alt="Gobierno">
-            <img src="/Coordinador/assets/img/logo tec etla.png" alt="Tec ELA">
-            <img src="/Coordinador/assets/img/tec mex.png" alt="TECNM">
+            <img src="assets/img/educacion1.png" alt="SEP">
+            <img src="assets/img/gobierno de mexico.jpeg" alt="Gobierno">
+            <img src="assets/img/logo tec etla.png" alt="Tec Etla">
+            <img src="assets/img/tec mex.png" alt="TECNM">
         </div>
-
         <h2>Gobierno de México<br>Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
     </header>
 
-    <div class="barra-guinda"></div>
+    <main>
+        <div id="vista-tarjetas">
+            <div class="seccion">
+                <h2 class="seccion-titulo">Actividades Culturales</h2>
+                <div class="tarjetas-contenedor">
+                    <div class="tarjeta" style="background-image: url('assets/img/danza.jpeg');" onclick="mostrarVistaLista('Danza')">
+                        <div class="tarjeta-header"><span class="titulo">Danza</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/teatro.jpg');" onclick="mostrarVistaLista('Teatro')">
+                        <div class="tarjeta-header"><span class="titulo">Teatro</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/pintura.jpg');" onclick="mostrarVistaLista('Pintura')">
+                        <div class="tarjeta-header"><span class="titulo">Pintura</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="seccion">
+                <h2 class="seccion-titulo">Actividades Deportivas</h2>
+                <div class="tarjetas-contenedor">
+                    <div class="tarjeta" style="background-image: url('assets/img/futbol.png');" onclick="mostrarVistaLista('Fútbol')">
+                        <div class="tarjeta-header"><span class="titulo">Fútbol</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/basquetbol.jpg');" onclick="mostrarVistaLista('Básquetbol')">
+                        <div class="tarjeta-header"><span class="titulo">Básquetbol</span></div>
+                    </div>
+                     <div class="tarjeta" style="background-image: url('assets/img/ajedrez.jpeg');" onclick="mostrarVistaLista('Ajedrez')">
+                        <div class="tarjeta-header"><span class="titulo">Ajedrez</span></div>
+                    </div>
+                </div>
+            </div>
+        </main>
 
-    <div class="top-bar">
-        <div>Club Cultural</div>
-        <div>Admin. <i class="fa-solid fa-user-gear"></i> <i class="fa-solid fa-bell"></i></div>
-    </div>
-
-    <div class="container">
-        <div class="title-bar">Lista Danza</div>
-        <div class="upload-bar">
-            <input type="file" id="excelFile" accept=".xlsx, .xls">
-            <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
-        </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Nombres y Apellidos</th>
-                    <th>Num. Control</th>
-                    <th>Carrera</th>
-                    <th>Correo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-alumnos">
-                <tr>
-                    <td>1</td>
-                    <td>Adán Cristóbal Cruz Espinoza </td>
-                    <td>19770035</td>
-                    <td>Sistemas computacionales</td>
-                    <td>Adan@gmail.com</td>
-                    <td class="acciones">
-                        <i class="fa-solid fa-eye" title="Ver"></i>
-                        <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                        <i class="fa-solid fa-trash" title="Eliminar"></i>
-                        <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(1)">
-                            <i class="fa-solid fa-certificate"></i> Constancia
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Alan Javier Santiago Cruz</td>
-                    <td>1234567890</td>
-                    <td>Arquitectura</td>
-                    <td>AlanJavier@example.com</td>
-                    <td class="acciones">
-                        <i class="fa-solid fa-eye" title="Ver"></i>
-                        <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                        <i class="fa-solid fa-trash" title="Eliminar"></i>
-                        <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(2)">
-                            <i class="fa-solid fa-certificate"></i> Constancia
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div id="formularioConstancia" class="formulario-constancia">
-            <h2>Generar Constancia</h2>
-            <label for="nombreJefe">Nombre del Jefe(a) de Servicios Escolares:</label>
-            <input type="text" id="nombreJefe" name="nombreJefe" required>
-
-            <label for="nombreEstudiante">Nombre del Estudiante:</label>
-            <input type="text" id="nombreEstudiante" name="nombreEstudiante" required>
-
-            <label for="numControl">Número de Control:</label>
-            <input type="text" id="numControl" name="numControl" required>
-
-            <label for="carrera">Carrera:</label>
-            <input type="text" id="carrera" name="carrera" required>
-
-            <label for="nivelDesempeno">Nivel de Desempeño:</label>
-            <input type="text" id="nivelDesempeno" name="nivelDesempeno" required>
-
-            <label for="valorNumerico">Valor Numérico:</label>
-            <input type="number" id="valorNumerico" name="valorNumerico" required>
-
-            <label for="periodoEscolar">Periodo Escolar:</label>
-            <input type="text" id="periodoEscolar" name="periodoEscolar" required>
-
-            <label for="valorCurricular">Valor Curricular (Créditos):</label>
-            <input type="number" id="valorCurricular" name="valorCurricular" required>
-
-            <label for="lugarExpedicion">Lugar de Expedición:</label>
-            <input type="text" id="lugarExpedicion" name="lugarExpedicion" required>
-
-            <label for="fechaExpedicionDia">Fecha de Expedición (día):</label>
-            <input type="number" id="fechaExpedicionDia" name="fechaExpedicion" min="1" max="31" required>
-
-            <label for="fechaExpedicionMes">Fecha de Expedición (mes):</label>
-            <input type="text" id="fechaExpedicionMes" name="fechaExpedicionMes" required>
-
-            <label for="fechaExpedicionAnio">Fecha de Expedición (año):</label>
-            <input type="number" id="fechaExpedicionAnio" name="fechaExpedicionAnio" min="2000" max="2099" required>
-
-
-            <label for="nombreProfesor">Nombre del Profesor(a) Responsable:</label>
-            <input type="text" id="nombreProfesor" name="nombreProfesor" required>
-
-            <label for="nombreJefeExtraescolares">Nombre del Jefe(a) del Depto. de Actividades Extraescolares:</label>
-            <input type="text" id="nombreJefeExtraescolares" name="nombreJefeExtraescolares" required>
-
-            <button type="button" onclick="generarConstancia()">Generar PDF</button>
-            <button type="button" onclick="cerrarFormularioConstancia()">Cerrar</button>
-        </div>
-
-        <div id="overlay" class="overlay"></div>
-    </div>
-
-    <footer>
-        &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
-    </footer>
+        <div id="vista-lista-alumnos">
+            <div class="container">
+                <div class="table-controls">
+                    <button id="btn-regresar" onclick="mostrarVistaTarjetas()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+                    <h3 id="activity-title" class="title"></h3>
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
+                    </div>
+                </div>
+                <div class="upload-bar">
+                    <input type="file" id="excelFile" accept=".xlsx, .xls">
+                    <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No. Control</th>
+                            <th>Nombre Completo</th>
+                            <th>Carrera</th>
+                            <th>Semestre</th>
+                            <th>Actividad</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-alumnos">
+                        </tbody>
+                </table>
+            </div>
+        </main>
+    </main>
+    
+    <div id="overlay" class="overlay"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        const formularioConstancia = document.getElementById('formularioConstancia');
-        const overlay = document.getElementById('overlay');
-        const tablaAlumnosBody = document.getElementById('tabla-alumnos');
-        const excelFile = document.getElementById('excelFile');
+        const vistaTarjetas = document.getElementById('vista-tarjetas');
+        const vistaListaAlumnos = document.getElementById('vista-lista-alumnos');
+        const activityTitle = document.getElementById('activity-title');
+        
+        let students = []; // La lista de estudiantes inicia vacía
+        let currentActivity = ''; // Guardará el nombre de la actividad actual
 
-        function mostrarFormularioConstancia(filaIndex) {
-            formularioConstancia.style.display = 'block';
-            overlay.style.display = 'block';
-
-            const fila = tablaAlumnosBody.rows[filaIndex - 1];
-            const nombreEstudiante = fila.cells[1].textContent;
-            const numControl = fila.cells[2].textContent;
-            const carrera = fila.cells[3].textContent;
-
-            document.getElementById('nombreEstudiante').value = nombreEstudiante;
-            document.getElementById('numControl').value = numControl;
-            document.getElementById('carrera').value = carrera;
-
-            document.getElementById('nombreJefe').value = '';
-            document.getElementById('nivelDesempeno').value = '';
-            document.getElementById('valorNumerico').value = '';
-            document.getElementById('periodoEscolar').value = '';
-            document.getElementById('valorCurricular').value = '';
-            document.getElementById('lugarExpedicion').value = '';
-            document.getElementById('fechaExpedicionDia').value = '';
-            document.getElementById('fechaExpedicionMes').value = '';
-            document.getElementById('fechaExpedicionAnio').value = '';
-            document.getElementById('nombreProfesor').value = '';
-            document.getElementById('nombreJefeExtraescolares').value = '';
+        // --- NAVEGACIÓN ---
+        function mostrarVistaLista(nombreActividad) {
+            currentActivity = nombreActividad; // Guarda la actividad actual
+            vistaTarjetas.style.display = 'none';
+            vistaListaAlumnos.style.display = 'block';
+            activityTitle.textContent = "Gestión de " + nombreActividad;
+            
+            students = []; // Limpia la lista de estudiantes al cambiar de actividad
+            renderTable(); // Dibuja la tabla (que estará vacía)
         }
 
-        function cerrarFormularioConstancia() {
-            formularioConstancia.style.display = 'none';
-            overlay.style.display = 'none';
+        function mostrarVistaTarjetas() {
+            vistaTarjetas.style.display = 'block';
+            vistaListaAlumnos.style.display = 'none';
         }
 
-        function generarConstancia() {
-            // Recolectar datos del formulario
-            const nombreJefe = document.getElementById('nombreJefe').value;
-            const nombreEstudiante = document.getElementById('nombreEstudiante').value;
-            const numControl = document.getElementById('numControl').value;
-            const carrera = document.getElementById('carrera').value;
-            const nivelDesempeno = document.getElementById('nivelDesempeno').value;
-            const valorNumerico = document.getElementById('valorNumerico').value;
-            const periodoEscolar = document.getElementById('periodoEscolar').value;
-            const valorCurricular = document.getElementById('valorCurricular').value;
-            const lugarExpedicion = document.getElementById('lugarExpedicion').value;
-            const fechaExpedicionDia = document.getElementById('fechaExpedicionDia').value;
-            const fechaExpedicionMes = document.getElementById('fechaExpedicionMes').value;
-            const fechaExpedicionAnio = document.getElementById('fechaExpedicionAnio').value;
-            const nombreProfesor = document.getElementById('nombreProfesor').value;
-            const nombreJefeExtraescolares = document.getElementById('nombreJefeExtraescolares').value;
+        // --- RENDERIZADO DE TABLA ---
+        function renderTable() {
+            const tableBody = document.getElementById('tabla-alumnos');
+            tableBody.innerHTML = ''; 
 
-            // Generar PDF con jsPDF
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-
-                // Estilos y contenido del PDF
-                doc.setFont('arial', 'normal');
-                doc.setFontSize(12);
-
-                // Posiciones y espaciado (ajusta según sea necesario)
-                const startX = 20;
-                let currentY = 20;
-                const lineHeight = 5;
-
-                // Título
-                doc.setFontSize(14);
-                doc.text("CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA", startX, currentY);
-                currentY += 2 * lineHeight;
-                doc.setFontSize(12);
-
-                // Encabezado
-                doc.text(`C. ${nombreJefe}`, startX, currentY);
-                currentY += lineHeight;
-                doc.text("JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES", startX, currentY);
-                currentY += 2 * lineHeight;
-
-                // Cuerpo del texto
-                let cuerpoTexto =
-                    `El que suscribe ${nombreProfesor}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${nombreEstudiante}, con número de control ${numControl} de la carrera de ${carrera}, ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño ${nivelDesempeno} y un valor numérico de ${valorNumerico} durante el periodo escolar ${periodoEscolar} con un valor curricular de ${valorCurricular} créditos.`;
-                doc.text(cuerpoTexto, startX, currentY, {
-                    maxWidth: 170,
-                    align: 'justify'
-                });
-                currentY = doc.getTextDimensions(cuerpoTexto, {
-                    maxWidth: 170
-                }).h + currentY + 2 * lineHeight;
-
-                // Fecha
-                doc.text(
-                    `Se extiende la presente en la ${lugarExpedicion} a los ${fechaExpedicionDia} días del mes de ${fechaExpedicionMes} de ${fechaExpedicionAnio}.`,
-                    startX,
-                    currentY
-                );
-                currentY += 2 * lineHeight;
-
-                // Atentamente
-                doc.text("ATENTAMENTE", startX, currentY);
-                currentY += 15;
-
-                // Tabla de firmas
-                const firmaY = currentY;
-                doc.line(startX, firmaY, startX + 70, firmaY);
-                doc.text("Nombre y firma del (de la) profesor(a) responsable", startX, firmaY + lineHeight);
-
-                doc.line(startX + 100, firmaY, startX + 170, firmaY);
-                doc.text("Jefe(a) del Depto. de Actividades Extraescolares", startX + 100, firmaY + lineHeight);
-
-                // Sellos (esto es solo un ejemplo, necesitarás imágenes)
-                doc.rect(startX, firmaY + 15, 20, 20);
-                doc.rect(startX + 150, firmaY + 15, 20, 20);
-
-                // c.c.p.
-                currentY = firmaY + 40;
-                doc.text("c.c.p. Jefe (a) de Departamento Correspondiente", startX, currentY);
-
-                // Guardar el PDF
-                doc.save(`Constancia_${nombreEstudiante}.pdf`);
-
-            } catch (error) {
-                console.error("Error al generar PDF:", error);
-                alert("Ocurrió un error al generar el PDF.");
+            if (students.length === 0) {
+                // Muestra un mensaje si no hay estudiantes
+                tableBody.innerHTML = `
+                    <tr class="empty-row">
+                        <td colspan="7">No hay alumnos cargados. Por favor, suba un archivo de Excel para comenzar.</td>
+                    </tr>
+                `;
+                return;
             }
 
-            // Cerrar el formulario
-            cerrarFormularioConstancia();
+            students.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.numeroControl || ''}</td>
+                        <td>${student.nombre || ''}</td>
+                        <td>${student.carrera || ''}</td>
+                        <td>${student.semestre || ''}</td>
+                        <td>${student.actividad || ''}</td>
+                        <td>${student.correo || ''}</td>
+                        <td class="acciones-tabla">
+                            <i class="fa-solid fa-eye" title="Ver"></i>
+                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
+                            <i class="fa-solid fa-trash" title="Eliminar"></i>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
         }
 
+        // --- CARGA DE EXCEL ---
         function cargarDatosExcel() {
-            const file = excelFile.files[0];
+            const file = document.getElementById('excelFile').files[0];
             if (!file) {
                 alert('Por favor, seleccione un archivo Excel.');
                 return;
             }
 
             const reader = new FileReader();
-
             reader.onload = function(e) {
                 const data = e.target.result;
-                const workbook = XLSX.read(data, {
-                    type: 'array'
-                });
+                const workbook = XLSX.read(data, { type: 'array' });
                 const sheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                    header: 1,
-                    raw: true
-                });
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-                // Limpiar la tabla antes de agregar nuevos datos
-                tablaAlumnosBody.innerHTML = '';
+                // Convierte los datos del JSON a nuestro formato de 'students'
+                students = jsonData.map((row, index) => ({
+                    id: index + 1, // Un ID simple
+                    // Asigna los nombres de las columnas de tu Excel a las propiedades
+                    numeroControl: row['Numero de Control'] || row['numero de control'],
+                    nombre: row['Nombre Completo'] || row['nombre completo'],
+                    carrera: row['Carrera'] || row['carrera'],
+                    semestre: row['Semestre'] || row['semestre'],
+                    correo: row['Correo Electronico'] || row['correo electronico'],
+                    actividad: currentActivity, // Asigna la actividad actual
+                    status: 'Pendiente' // Estado por defecto
+                }));
 
-                // Procesar los datos y agregarlos a la tabla
-                for (let i = 1; i < jsonData.length; i++) { // Comenzar desde 1 para evitar la fila del encabezado
-                    const rowData = jsonData[i];
-                    if (rowData && rowData.length > 4) { // Asegurarse de que la fila tenga suficientes datos
-                        const no = rowData[0] || '';
-                        const nombresApellidos = rowData[1] || '';
-                        const numControl = rowData[2] || '';
-                        const carrera = rowData[3] || '';
-                        const correo = rowData[4] || '';
-
-                        const row = tablaAlumnosBody.insertRow();
-                        const cellNo = row.insertCell();
-                        const cellNombre = row.insertCell();
-                        const cellNumControl = row.insertCell();
-                        const cellCarrera = row.insertCell();
-                        const cellCorreo = row.insertCell();
-                        const cellAcciones = row.insertCell();
-
-                        cellNo.textContent = no;
-                        cellNombre.textContent = nombresApellidos;
-                        cellNumControl.textContent = numControl;
-                        cellCarrera.textContent = carrera;
-                        cellCorreo.textContent = correo;
-                        cellAcciones.className = 'acciones';
-                        cellAcciones.innerHTML = `
-                            <i class="fa-solid fa-eye" title="Ver"></i>
-                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                            <i class="fa-solid fa-trash" title="Eliminar"></i>
-                            <button class="btn-generar-constancia" onclick="mostrarFormularioConstancia(${i+1})">
-                                <i class="fa-solid fa-certificate"></i> Constancia
-                            </button>
-                        `;
-                    }
-                }
+                renderTable(); // Vuelve a dibujar la tabla con los nuevos datos
+                alert(`${students.length} alumnos han sido cargados exitosamente.`);
             };
-
-            reader.onerror = function(error) {
-                console.error("Error al leer el archivo Excel:", error);
-                alert('Ocurrió un error al leer el archivo. Por favor, inténtelo de nuevo.');
-            };
-
             reader.readAsArrayBuffer(file);
         }
+
+        // ... Aquí iría el resto de tus funciones para filtrar, modales, etc. ...
+
     </script>
-</body>
-
-</html>ass="overlay-link"></a>
-  <div class="tarjeta-header">
-    <span class="titulo">Ajedrez</span>
-    <div class="acciones">
-         <a href="constancia.html" onclick="event.stopPropagation();"><img src="assets/img/document.png" alt="Doc"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/edit.png" alt="Edit"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/settings.png" alt="Config"></a>
-      <a href="#" onclick="event.stopPropagation();"><img src="assets/img/profile.png" alt="Users"><span class="contador">23</span></a>
-    </div>
-  </div>
-</div>
-
-
-
-
- <div class="barra-informativa">
-    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
-    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
-    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
-  </div>
-
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          toggleSeccion(id);
-        });
-      });
-    });
-
-    function toggleSeccion(id) {
-      const contenedor = document.getElementById(id);
-      contenedor.classList.toggle('visible');
-      contenedor.classList.toggle('oculto');
-    }
-  </script>
 </body>
 </html>
