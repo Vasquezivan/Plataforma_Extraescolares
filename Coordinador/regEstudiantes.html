@@ -1,281 +1,448 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Gestión de Actividades Extraescolares</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resultados</title>
+  <link rel="stylesheet" href="assets/css/resultados.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --color-azul-principal: #1a3461;
-            --color-azul-hover: #12284b;
-            --color-fondo: #f8f9fa;
-            --color-superficie: #ffffff;
-            --color-texto-claro: #ffffff;
-            --color-texto-oscuro: #333;
-            --color-borde: #e0e0e0;
-            --color-verde: #28a745;
-            --color-rojo: #dc3545;
-            --color-naranja: #fd7e14;
-            --color-gris: #6c757d;
-            --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --transicion: all 0.3s ease;
-        }
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background-color: var(--color-azul-principal); color: var(--color-texto-claro); padding: 15px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        header .logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; width: 100%; max-width: 960px; margin-bottom: 15px; }
-        header .logos img { height: 50px; object-fit: contain; }
-        header h2 { font-size: 1.1em; margin: 0; font-weight: 500; }
-        main { flex-grow: 1; }
-        
-        #vista-tarjetas .seccion { padding: 20px; }
-        .seccion-titulo { background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; padding: 10px 20px; font-size: 1.2em; margin-bottom: 20px; width: 100%; text-align: left; border-radius: 5px; box-sizing: border-box; }
-        .tarjetas-contenedor { display: flex; flex-wrap: wrap; gap: 20px; }
-        .tarjeta { cursor: pointer; position: relative; width: 280px; height: 180px; border-radius: 10px; background-size: cover; background-position: center; color: var(--color-texto-claro); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: var(--transicion); }
-        .tarjeta:hover { transform: scale(1.05); }
-        .tarjeta-header { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 15px; }
-        .tarjeta .titulo { font-size: 1.4em; font-weight: bold; }
-        
-        #vista-lista-alumnos { display: none; }
-        .container { max-width: 1200px; margin: 30px auto; background-color: var(--color-superficie); padding: 20px; border-radius: 8px; box-shadow: var(--sombra-profesional); }
-        .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-top-left-radius: 6px; border-top-right-radius: 6px; }
-        .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
-        #btn-regresar { background: none; border: 2px solid white; color: white; font-size: 0.8em; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: var(--transicion); }
-        #btn-regresar:hover { background: white; color: var(--color-azul-principal); }
-        .search-wrapper { position: relative; }
-        .search-wrapper .fa-search { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
-        #searchInput { padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid var(--color-borde); font-size: 0.9em; }
-        .upload-bar { display: flex; justify-content: center; align-items: center; margin: 20px 0; gap: 10px; }
-        .upload-bar button { background-color: var(--color-verde); color:white; border:none; padding:10px 15px; border-radius:4px; cursor:pointer; font-size:1em; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid var(--color-borde); text-align: left; }
-        thead th { background-color: #f2f2f2; }
-        .empty-row td { text-align: center; color: var(--color-gris); padding: 40px; font-style: italic; }
-        footer { text-align: center; padding: 20px; background-color: #333; color: white; margin-top: 20px; }
-    </style>
 </head>
 <body>
-    <header>
-        <div class="logos">
-            <img src="assets/img/educacion1.png" alt="SEP">
-            <img src="assets/img/gobierno de mexico.jpeg" alt="Gobierno">
-            <img src="assets/img/logo tec etla.png" alt="Tec Etla">
-            <img src="assets/img/tec mex.png" alt="TECNM">
-        </div>
-        <h2>Gobierno de México<br>Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
-    </header>
 
-    <main>
-        <div id="vista-tarjetas">
-            <div class="seccion">
-                <h2 class="seccion-titulo">Actividades Culturales</h2>
-                <div class="tarjetas-contenedor">
-                    <div class="tarjeta" style="background-image: url('assets/img/danza.jpeg');" onclick="mostrarVistaLista('Danza')">
-                        <div class="tarjeta-header"><span class="titulo">Danza</span></div>
-                    </div>
-                    <div class="tarjeta" style="background-image: url('assets/img/teatro.jpg');" onclick="mostrarVistaLista('Teatro')">
-                        <div class="tarjeta-header"><span class="titulo">Teatro</span></div>
-                    </div>
-                    <div class="tarjeta" style="background-image: url('assets/img/pintura.jpg');" onclick="mostrarVistaLista('Pintura')">
-                        <div class="tarjeta-header"><span class="titulo">Pintura</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="seccion">
-                <h2 class="seccion-titulo">Actividades Deportivas</h2>
-                <div class="tarjetas-contenedor">
-                    <div class="tarjeta" style="background-image: url('assets/img/futbol.png');" onclick="mostrarVistaLista('Fútbol')">
-                        <div class="tarjeta-header"><span class="titulo">Fútbol</span></div>
-                    </div>
-                    <div class="tarjeta" style="background-image: url('assets/img/basquetbol.jpg');" onclick="mostrarVistaLista('Básquetbol')">
-                        <div class="tarjeta-header"><span class="titulo">Básquetbol</span></div>
-                    </div>
-                    <div class="tarjeta" style="background-image: url('assets/img/ajedrez.jpeg');" onclick="mostrarVistaLista('Ajedrez')">
-                        <div class="tarjeta-header"><span class="titulo">Ajedrez</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <div class="barra-blanca">
+    <img src="assets/img/Educacion.png" alt="Logo 1" />
+    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
+    <img src="assets/img/pleca-ITVE.png" alt="Logo 3" />
+  </div>
 
-        <div id="vista-lista-alumnos" style="display: none;">
-            <div class="container">
-                <div class="table-controls">
-                    <button id="btn-regresar" onclick="mostrarVistaTarjetas()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
-                    <h3 id="activity-title" class="title"></h3>
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
-                    </div>
-                </div>
-                <div class="upload-bar">
-                    <input type="file" id="excelFile" accept=".xlsx, .xls">
-                    <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No. Control</th>
-                            <th>Nombre Completo</th>
-                            <th>Carrera</th>
-                            <th>Semestre</th>
-                            <th>Actividad</th>
-                            <th>Correo Electrónico</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-alumnos"></tbody>
-                </table>
-            </div>
-        </div>
-    </main> 
-    <div id="overlay" class="overlay"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script>
-        const vistaTarjetas = document.getElementById('vista-tarjetas');
-        const vistaListaAlumnos = document.getElementById('vista-lista-alumnos');
-        const activityTitle = document.getElementById('activity-title');
-        
-        let students = [];
-        let currentActivity = '';
+  <div class="barra-secundaria">
+    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+</a>
+  <ul>
+    <li><a href="Pagina principal.html">Inicio</a></li>
+      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
+      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
+      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
+      <li><a href="informe.html">Informe de Actividad</a></li>
+      <li><a href="resultados.html">Resultados de Actividades</a></li>
+    </ul>
+  </div>
 
-        function mostrarVistaLista(nombreActividad) {
-            currentActivity = nombreActividad;
-            vistaTarjetas.style.display = 'none';
-            vistaListaAlumnos.style.display = 'block';
-            activityTitle.textContent = "Gestión de " + nombreActividad;
-            students = []; // Reiniciar la lista de estudiantes al cambiar de actividad
-            renderTable(); // Renderizar la tabla vacía inicialmente
+    <style>
+    @media print {
+      .vista-pantalla {
+        display: block !important;
+      }
+      .contenido-principal {
+        display: block !important;
+      }
+        /* Ocultar navegación y otros elementos no imprimibles */
+        .barra-blanca, .barra-secundaria, .barra-informativa, button {
+            display: none !important;
         }
-
-        function mostrarVistaTarjetas() {
-            vistaTarjetas.style.display = 'block';
-            vistaListaAlumnos.style.display = 'none';
+        body {
+            margin: 0;
+            padding: 0;
         }
-
-        function renderTable() {
-            const tableBody = document.getElementById('tabla-alumnos');
-            tableBody.innerHTML = ''; 
-
-            if (students.length === 0) {
-                tableBody.innerHTML = `<tr class="empty-row"><td colspan="7">No hay alumnos cargados. Por favor, suba un archivo de Excel para comenzar.</td></tr>`;
-                return;
-            }
-
-            students.forEach(student => {
-                const row = `
-                    <tr>
-                        <td>${student.numeroControl || ''}</td>
-                        <td>${student.nombre || ''}</td>
-                        <td>${student.carrera || ''}</td>
-                        <td>${student.semestre || ''}</td>
-                        <td>${student.actividad || ''}</td>
-                        <td>${student.correo || ''}</td>
-                        <td class="acciones-tabla">
-                            <i class="fa-solid fa-eye" title="Ver"></i>
-                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-                            <i class="fa-solid fa-trash" title="Eliminar"></i>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
+        .contenido-principal {
+            position: static !important; /* Permitir que el contenido fluya naturalmente para imprimir */
+            box-shadow: none !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
         }
+        .footer-firmas {
+            position: relative !important; /* Ajustar para imprimir */
+            bottom: auto !important;
+            left: auto !important;
+            width: auto !important;
+            box-shadow: none !important;
+            padding-bottom: 0 !important;
+            margin-top: 50px; /* Espacio desde la tabla */
+        }
+    }
 
-        function cargarDatosExcel() {
-            console.log("Función cargarDatosExcel() se está ejecutando."); // Agregado para depuración
-            const file = document.getElementById('excelFile').files[0];
-            if (!file) {
-                alert('Por favor, seleccione un archivo Excel.');
-                return;
-            }
+    .barra-blanca img {
+  max-height: 48px;
+  height: 48px;
+  width: auto;
+}
+.encabezado .logo img {
+  width: 70px !important;
+  max-width: 70px !important;
+  height: auto !important;
+}
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = e.target.result;
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+/* Estilos existentes para la página de resultados */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: #f4f4f4; /* Fondo claro para la página */
+    color: #333;
+}
 
-                // Mapear los datos del Excel a un formato que el PHP espera
-                // Asegurarse de que los valores sean cadenas y limpiar espacios
-                students = jsonData.map((row, index) => ({
-                    // El 'id' es solo para uso temporal en el frontend si fuera necesario.
-                    // El backend generará su propio ID para la base de datos.
-                    id: index + 1, 
-                    numeroControl: String(row['Numero de Control'] || row['numero de control'] || '').trim(),
-                    nombre: String(row['Nombre Completo'] || row['nombre completo'] || '').trim(),
-                    carrera: String(row['Carrera'] || row['carrera'] || '').trim(),
-                    semestre: String(row['Semestre'] || row['semestre'] || '').trim(),
-                    correo: String(row['Correo Electronico'] || row['correo electronico'] || '').trim(),
-                    actividad: currentActivity // Se usa la actividad seleccionada en la tarjeta
-                }));
+.barra-blanca {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-                // --- INICIO DE LA LÓGICA PARA ENVIAR DATOS AL SERVIDOR ---
-                if (students.length > 0) {
-                    // *** CAMBIO CRÍTICO AQUÍ: Ruta relativa a api.php ***
-                    fetch('../php/api.php', { // RUTA CORREGIDA. Asume que api.php está en ../php/
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
-                        },
-                        body: JSON.stringify(students) // Convierte el array de alumnos a una cadena JSON
-                    })
-                    .then(response => {
-                        // Verifica si la respuesta HTTP fue exitosa (código 2xx)
-                        if (!response.ok) { 
-                            // Si no es exitosa, intenta leer el error del texto de la respuesta
-                            return response.text().then(text => { 
-                                throw new Error('Error HTTP ' + response.status + ': ' + text);
-                            });
-                        }
-                        // Si es exitosa, intenta parsear la respuesta como JSON
-                        return response.json(); 
-                    })
-                    .then(data => {
-                        if (data.exito) { // Usamos 'exito' porque así lo nombramos en PHP
-                            alert(data.mensaje); // Muestra el mensaje de éxito del servidor
-                            renderTable(); // Vuelve a renderizar la tabla con los datos cargados desde el Excel
-                            // Opcional: Si quisieras que los datos se recargaran desde la BD para confirmar
-                            // podrías hacer otra llamada fetch aquí para obtenerlos.
-                        } else {
-                            // Muestra el mensaje de error del servidor
-                            alert('Error al guardar datos en la base de datos: ' + (data.mensaje || 'Error desconocido.'));
-                            if (data.errores) {
-                                console.error("Errores detallados al guardar:", data.errores);
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        // Maneja errores de red o errores lanzados en el bloque .then()
-                        console.error('Error al enviar datos o al procesar la respuesta del servidor:', error);
-                        alert('Error de conexión o problema en el servidor al intentar guardar los datos. Por favor, revisa la consola del navegador (F12) para más detalles.');
-                    });
-                } else {
-                    alert('No se encontraron datos de alumnos válidos en el archivo Excel.');
+.barra-secundaria {
+    background-color: #1a3461; /* Azul oscuro */
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start; /* Alinear elementos al inicio */
+    align-items: center;
+    gap: 20px; /* Espacio entre la flecha y la lista */
+}
+
+.barra-secundaria ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px; /* Espacio entre los elementos del menú */
+}
+
+.barra-secundaria ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+.barra-secundaria ul li a:hover {
+    color: #a7d9f7; /* Azul más claro al pasar el ratón */
+}
+
+.flecha-regreso {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 1em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.flecha-regreso:hover {
+    background-color: #284c8a; /* Azul más oscuro al pasar el ratón */
+}
+
+.flecha-regreso img {
+    margin-right: 8px; /* Espacio entre la imagen de la flecha y el texto */
+}
+
+.vista-pantalla {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.vista-pantalla h1, .vista-pantalla h2 {
+    color: #1a3461;
+    margin-bottom: 10px;
+}
+
+.vista-pantalla button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.vista-pantalla button:hover {
+    background-color: #218838;
+}
+
+.tabla-estilo {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tabla-estilo th, .tabla-estilo td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabla-estilo th {
+    background-color: #1a3461;
+    color: white;
+    font-weight: bold;
+}
+
+.tabla-estilo tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.tabla-estilo tr:hover {
+    background-color: #e9e9e9;
+}
+
+/* Estilos específicos para impresión (estos son de tu CSS original, asegúrate de que coincidan) */
+.contenido-principal {
+    display: none; /* Oculto por defecto, se muestra al imprimir */
+    padding: 20mm; /* Margen estándar para documentos impresos */
+    font-family: 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.5;
+}
+
+.encabezado {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.encabezado td {
+    border: 1px solid black;
+    padding: 5px 10px;
+    vertical-align: top;
+}
+
+.encabezado .logo {
+    width: 15%;
+    text-align: center;
+}
+
+.encabezado .titulo {
+    width: 70%;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.2em;
+    vertical-align: middle;
+}
+
+.encabezado .subtitulo {
+    width: 70%;
+    text-align: center;
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+.encabezado .derecha {
+    width: 15%;
+    text-align: right;
+    font-size: 0.8em;
+}
+
+.footer-firmas {
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ccc; /* Línea sutil sobre las firmas */
+}
+.firma {
+    flex: 1; /* Distribuir el espacio de manera uniforme */
+    text-align: center;
+}
+.firma div {
+    margin-bottom: 5px;
+}
+.firma span {
+    display: block;
+    font-size: 0.9em;
+}
+
+.barra-informativa {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 0.9em;
+    margin-top: auto; /* Empuja hacia abajo */
+}
+.barra-informativa p {
+    margin: 5px 0;
+}
+  </style>
+</head>
+<body>
+    <div style="height: 30px;"></div> 
+    <div class="vista-pantalla pantalla-solo">
+    <h1>DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h1>
+    <h2>En este apartado podrás visualizar los resultados de las actividades extraescolares en general</h2>
+    <h2>y de las actividades culturales en particular.</h2>
+    <h2>además de que podrás imprimir este documento.</h2>
+
+    <button onclick="window.print()">Imprimir</button>
+
+    <div style="display: flex; align-items: center; justify-content: center; gap: 180px; margin-bottom: 18px;">
+      <img src="assets/img/ITVE.png" alt="Logo Izquierdo" style="height: 170px;">
+      <table class="tabla-estilo" style="margin: 0;">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Nombre</th>
+            <th>No. Control</th>
+            <th>Carrera</th>
+            <th>Sem</th>
+            <th>Actividad</th>             <th>Firma</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-cuerpo">
+                  </tbody>
+      </table>
+      <img src="assets/img/ITVE.png" alt="Logo Derecho" style="height: 170px;">
+    </div>
+  </div>
+
+    <div class="contenido-principal">
+    <table class="encabezado">
+      <tr>
+        <td class="logo" rowspan="2"><img src="assets/img/sgc.jpg" alt="Logo SGC" style="opacity: 0.5; width: 100px;"></td>
+        <td class="titulo">Informe de Actividad Cultural y/o Deportiva</td>
+        <td class="derecha">Código: TecNM-VI-PO-003-02</td>
+      </tr>
+      <tr>
+        <td class="subtitulo">Referencia a la Norma ISO 9001:2015 &nbsp; 8.2.2</td>
+        <td class="derecha">Revisión: 0 <br>Página 1 de 2</td>
+      </tr>
+    </table>
+
+    <h2 style="text-align: center; margin-bottom: 12px;">DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h2>
+    <h2 style="text-align: center; margin-bottom: 12px;">OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA</h2>
+    <h2 id="print-activity-title" style="text-align: center; margin-bottom: 12px;">ACTIVIDAD GENERAL</h2>     <div style="height: 40px;"></div>     <table class="tabla-estilo">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Nombre</th>
+          <th>No. Control</th>
+          <th>Carrera</th>
+          <th>Sem</th>
+          <th>Actividad</th>           <th>Firma</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-impresion">
+              </tbody>
+    </table>
+
+    <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 70px; width: 100vw; background: #fff; z-index: 100; padding-bottom: 1px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
+      <div class="footer-content" style="max-width: 900px; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 40px; padding-top: 18px;">
+        <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
+          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+          <span style="font-size: 0.98em;">Promotor Cultural o Deportivo <p></p></span>
+        </div>
+        <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
+          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+          <span style="font-size: 0.98em;">Jefe(a) de Oficinas de Promoción <p></p><p></p></span>
+        </div>
+        <div class="firma" style="text-align: center; width: 33%;">
+          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+          <span style="font-size: 0.98em;">Alejandro Loma Bolaños <br>Jefe de Departamentos de Oficinas Extraescolares</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Función para obtener y mostrar estudiantes
+        async function fetchAndDisplayStudents(activity = '') {
+            const tableBodyScreen = document.getElementById('tabla-cuerpo');
+            const tableBodyPrint = document.getElementById('tabla-impresion');
+            const printActivityTitle = document.getElementById('print-activity-title');
+
+            tableBodyScreen.innerHTML = '<tr><td colspan="7">Cargando datos...</td></tr>';
+            tableBodyPrint.innerHTML = '<tr><td colspan="7">Cargando datos...</td></tr>';
+
+            try {
+                // Ajusta la ruta a tu api.php según la estructura de tus archivos
+                // Si resultados.html está en 'root/' y api.php está en 'root/php/', entonces la ruta es 'php/api.php'
+                // Si resultados.html está en 'root/html/' y api.php está en 'root/php/', entonces la ruta es '../php/api.php'
+                const response = await fetch(`../php/api.php${activity ? '?actividad=' + encodeURIComponent(activity) : ''}`);
+                
+                if (!response.ok) {
+                    throw new Error(`¡Error HTTP! estado: ${response.status}`);
                 }
-                // --- FIN DE LA LÓGICA DE ENVÍO ---
-            };
-            reader.readAsArrayBuffer(file);
-        }
+                const data = await response.json();
 
-        function filterTable() {
-            const filter = document.getElementById("searchInput").value.toUpperCase();
-            const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
-            for (let row of rows) {
-                // Saltar la fila de "No hay alumnos cargados" si está presente
-                if(row.classList.contains('empty-row')) continue;
-                const text = row.textContent || row.innerText;
-                row.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+                if (data.exito && data.data.length > 0) {
+                    tableBodyScreen.innerHTML = '';
+                    tableBodyPrint.innerHTML = '';
+                    
+                    data.data.forEach((student, index) => {
+                        const rowHtml = `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${student.nombre || ''}</td>
+                                <td>${student.numeroControl || ''}</td>
+                                <td>${student.carrera || ''}</td>
+                                <td>${student.semestre || ''}</td>
+                                <td>${student.actividad || ''}</td>
+                                <td></td> </tr>
+                        `;
+                        tableBodyScreen.innerHTML += rowHtml;
+                        tableBodyPrint.innerHTML += rowHtml;
+                    });
+                    
+                    // Rellenar filas vacías para la impresión, si hay menos de 15 estudiantes
+                    const minRows = 15; // O 20 si es tu estándar para impresión
+                    const currentRows = data.data.length;
+                    for (let i = currentRows; i < minRows; i++) {
+                        const emptyRowHtml = `<tr><td>${i + 1}</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+                        tableBodyScreen.innerHTML += emptyRowHtml;
+                        tableBodyPrint.innerHTML += emptyRowHtml;
+                    }
+
+                    printActivityTitle.textContent = activity ? `ACTIVIDAD: ${activity.toUpperCase()}` : 'ACTIVIDAD GENERAL';
+
+                } else {
+                    tableBodyScreen.innerHTML = '<tr><td colspan="7">No se encontraron alumnos registrados.</td></tr>';
+                    tableBodyPrint.innerHTML = '<tr><td colspan="7">No se encontraron alumnos registrados.</td></tr>';
+                    printActivityTitle.textContent = 'ACTIVIDAD GENERAL';
+                }
+            } catch (error) {
+                console.error("Error al obtener estudiantes:", error);
+                tableBodyScreen.innerHTML = '<tr><td colspan="7">Error al cargar los datos. Intente de nuevo más tarde.</td></tr>';
+                tableBodyPrint.innerHTML = '<tr><td colspan="7">Error al cargar los datos. Intente de nuevo más tarde.</td></tr>';
+                printActivityTitle.textContent = 'ACTIVIDAD GENERAL';
             }
         }
-    </script>
+
+        // Llamar a la función cuando la página se carga
+        fetchAndDisplayStudents(); // Esto obtendrá todos los estudiantes inicialmente
+
+        // Es posible que quieras añadir menús desplegables o botones para filtrar por actividad en esta página más adelante
+        // Por ahora, obtiene todos.
+    });
+
+    // Estas funciones de tu script.js original no son directamente relevantes
+    // para obtener datos para 'resultados.html', pero se mantienen para completitud si se necesitan en otro lugar.
+    function toggleSeccion(id) {
+        const contenedor = document.getElementById(id);
+        contenedor.classList.toggle('visible');
+        contenedor.classList.toggle('oculto');
+    }
+ </script>
+
+
+ <div class="barra-informativa">
+    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
+    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
+    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+  </div>
 </body>
 </html>
