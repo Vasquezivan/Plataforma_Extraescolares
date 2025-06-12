@@ -132,7 +132,8 @@
                 </table>
             </div>
         </div>
-    </main> <div id="overlay" class="overlay"></div>
+    </main> 
+    <div id="overlay" class="overlay"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -149,8 +150,8 @@
             vistaTarjetas.style.display = 'none';
             vistaListaAlumnos.style.display = 'block';
             activityTitle.textContent = "Gestión de " + nombreActividad;
-            students = [];
-            renderTable();
+            students = []; // Reiniciar la lista de estudiantes al cambiar de actividad
+            renderTable(); // Renderizar la tabla vacía inicialmente
         }
 
         function mostrarVistaTarjetas() {
@@ -202,27 +203,72 @@
                 const worksheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
+                // Mapear los datos del Excel a un formato que el PHP espera
+                // Asegurarse de que los valores sean cadenas y limpiar espacios
                 students = jsonData.map((row, index) => ({
-                    id: index + 1,
-                    numeroControl: row['Numero de Control'] || row['numero de control'],
-                    nombre: row['Nombre Completo'] || row['nombre completo'],
-                    carrera: row['Carrera'] || row['carrera'],
-                    semestre: row['Semestre'] || row['semestre'],
-                    correo: row['Correo Electronico'] || row['correo electronico'],
-                    actividad: currentActivity,
-                    status: 'Pendiente'
+                    // El 'id' es solo para uso temporal en el frontend si fuera necesario.
+                    // El backend generará su propio ID para la base de datos.
+                    id: index + 1, 
+                    numeroControl: String(row['Numero de Control'] || row['numero de control'] || '').trim(),
+                    nombre: String(row['Nombre Completo'] || row['nombre completo'] || '').trim(),
+                    carrera: String(row['Carrera'] || row['carrera'] || '').trim(),
+                    semestre: String(row['Semestre'] || row['semestre'] || '').trim(),
+                    correo: String(row['Correo Electronico'] || row['correo electronico'] || '').trim(),
+                    actividad: currentActivity // Se usa la actividad seleccionada en la tarjeta
                 }));
 
-                renderTable();
-                alert(`${students.length} alumnos han sido cargados exitosamente.`);
+                // --- INICIO DE LA LÓGICA PARA ENVIAR DATOS AL SERVIDOR ---
+                if (students.length > 0) {
+                    fetch('api.php', { // <--- RUTA DEL SCRIPT PHP: Asegúrate de que esta ruta sea correcta
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
+                        },
+                        body: JSON.stringify(students) // Convierte el array de alumnos a una cadena JSON
+                    })
+                    .then(response => {
+                        // Verifica si la respuesta HTTP fue exitosa (código 2xx)
+                        if (!response.ok) { 
+                            // Si no es exitosa, intenta leer el error del texto de la respuesta
+                            return response.text().then(text => { 
+                                throw new Error('Error HTTP ' + response.status + ': ' + text);
+                            });
+                        }
+                        // Si es exitosa, intenta parsear la respuesta como JSON
+                        return response.json(); 
+                    })
+                    .then(data => {
+                        if (data.exito) { // Usamos 'exito' porque así lo nombramos en PHP
+                            alert(data.mensaje); // Muestra el mensaje de éxito del servidor
+                            renderTable(); // Vuelve a renderizar la tabla con los datos cargados desde el Excel
+                            // Opcional: Si quisieras que los datos se recargaran desde la BD para confirmar
+                            // podrías hacer otra llamada fetch aquí para obtenerlos.
+                        } else {
+                            // Muestra el mensaje de error del servidor
+                            alert('Error al guardar datos en la base de datos: ' + (data.mensaje || 'Error desconocido.'));
+                            if (data.errores) {
+                                console.error("Errores detallados al guardar:", data.errores);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        // Maneja errores de red o errores lanzados en el bloque .then()
+                        console.error('Error al enviar datos o al procesar la respuesta del servidor:', error);
+                        alert('Error de conexión o problema en el servidor al intentar guardar los datos. Por favor, revisa la consola del navegador (F12) para más detalles.');
+                    });
+                } else {
+                    alert('No se encontraron datos de alumnos válidos en el archivo Excel.');
+                }
+                // --- FIN DE LA LÓGICA DE ENVÍO ---
             };
             reader.readAsArrayBuffer(file);
         }
 
         function filterTable() {
-             const filter = document.getElementById("searchInput").value.toUpperCase();
-             const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
-             for (let row of rows) {
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
+            for (let row of rows) {
+                // Saltar la fila de "No hay alumnos cargados" si está presente
                 if(row.classList.contains('empty-row')) continue;
                 const text = row.textContent || row.innerText;
                 row.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
