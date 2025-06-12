@@ -13,9 +13,13 @@ $conexion = new mysqli($servidor, $usuario, $password, $basededatos);
 
 // Verificar conexión
 if ($conexion->connect_error) {
-    // Si hay un error de conexión, devolvemos un JSON con el mensaje de error
     echo json_encode(["exito" => false, "mensaje" => "Error de conexión a la base de datos: " . $conexion->connect_error]);
-    exit(); // Detenemos la ejecución del script
+    exit();
+} else {
+    // TEMPORAL: Esto te dirá si la conexión es exitosa
+    // Elimínalo después de depurar
+    // echo json_encode(["exito" => true, "mensaje" => "Conexión exitosa."]);
+    // exit();
 }
 
 // 2. Obtener los datos enviados desde el JavaScript (el array de alumnos)

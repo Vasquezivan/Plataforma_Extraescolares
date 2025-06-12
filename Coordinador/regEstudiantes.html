@@ -189,6 +189,7 @@
         }
 
         function cargarDatosExcel() {
+            console.log("Función cargarDatosExcel() se está ejecutando."); // Agregado para depuración
             const file = document.getElementById('excelFile').files[0];
             if (!file) {
                 alert('Por favor, seleccione un archivo Excel.');
@@ -219,7 +220,8 @@
 
                 // --- INICIO DE LA LÓGICA PARA ENVIAR DATOS AL SERVIDOR ---
                 if (students.length > 0) {
-                    fetch('api.php', { // <--- RUTA DEL SCRIPT PHP: Asegúrate de que esta ruta sea correcta
+                    // *** CAMBIO CRÍTICO AQUÍ: Ruta relativa a api.php ***
+                    fetch('../php/api.php', { // RUTA CORREGIDA. Asume que api.php está en ../php/
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
