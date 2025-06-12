@@ -1,28 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>navbar Dos</title>
+  <title>Listado de Estudiantes - ITVE</title>
+  
+  <!-- Librerías CSS -->
   <link rel="stylesheet" href="assets/css/verEstudiantes.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <style>
+    /* Estilos para el contenedor principal */
+    .tabla-container {
+      margin: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Estilos para el encabezado con título y buscador */
+    .tabla-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    /* Contenedor del buscador alineado a la derecha */
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+    
+    /* Campo de búsqueda */
+    .buscador {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      width: 250px;
+      height: 36px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    
+    .buscador:focus {
+      border-color: #1a3461;
+      outline: none;
+    }
+    
+    /* Botón de búsqueda */
+    .btn-buscar {
+      padding: 8px 12px;
+      background: #1a3461;
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    
+    .btn-buscar:hover {
+      background: #0d1a33;
+    }
+    
+    /* Botón de recarga */
+    .btn-recargar {
+      margin-left: 8px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 8px;
+      height: 36px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    
+    .btn-recargar:hover {
+      background: #5a6268;
+    }
+    
+    /* Estilos para la tabla */
+    #dataTable {
+      width: 100% !important;
+      margin-top: 15px;
+    }
+    
+    /* Estilos para los botones de acción */
+    .btn-editar, .btn-eliminar {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em;
+      padding: 5px 8px;
+      margin: 0 2px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .btn-editar { 
+      color: #ffc107; 
+    }
+    .btn-editar:hover { 
+      background: rgba(255, 193, 7, 0.1); 
+    }
+    
+    .btn-eliminar { 
+      color: #dc3545; 
+    }
+    .btn-eliminar:hover { 
+      background: rgba(220, 53, 69, 0.1); 
+    }
+  </style>
 </head>
 <body>
 
- 
-
   <div class="barra-blanca">
-    <img src="assets/img/Educacion.png" alt="Logo 1" />
-    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
-    <img src="assets/img/pleca-ITVE.png" alt="Logo 3" />
+    <img src="assets/img/Educacion.png" alt="Logo Educación" />
+    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo TecNM" />
+    <img src="assets/img/pleca-ITVE.png" alt="Logo ITVE" />
   </div>
 
-
-
   <div class="barra-secundaria">
-      <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
-  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
-</a>
+    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+      <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+    </a>
     <ul>
       <li><a href="index.html">Inicio</a></li>
       <li><a href="#">Registrar Estudiantes</a></li>
@@ -33,60 +148,128 @@
     </ul>
   </div>
 
- <!--      -->
-<div class="tabla-container">
-  <h2>Usuarios Registrados</h2>
-  <div class="tabla-header">
-    <input type="text" placeholder="Buscar..." class="buscador">
+  <div class="tabla-container">
+    <div class="tabla-header">
+      <h2>Usuarios Registrados</h2>
+      <div class="search-container">
+        <input type="text" id="buscador-nombre" placeholder="Buscar por nombre..." class="buscador">
+        <button id="btn-buscar-nombre" class="btn-buscar" title="Buscar">
+          <i class="fas fa-search"></i>
+        </button>
+        <button id="btn-recargar" class="btn-recargar" title="Recargar tabla">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+    
+    <table id="dataTable" class="display nowrap">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>No. Control</th>
+          <th>Carrera</th>
+          <th>Semestre</th>
+          <th>Extraescolar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Los datos se cargarán dinámicamente mediante AJAX -->
+      </tbody>
+    </table>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Id ↑</th>
-        <th>Nombre <span class="flecha">↑</span></th>
-        <th>No. Control ↑</th>
-        <th>Carrera ↑</th>
-        <th>Semestre ↑</th>
-        <th>Extraescolar↑</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1</td><td><a href="#">Adan Cristobal Cruz Espinoza</a></td><td>1770035</td><td>INER</td><td>9</td><td>Danza</td>
-      </tr>
-      <tr>
-        <td>2</td><td><a href="#">Ana Laura</a></td><td>1770035</td><td>IGE</td><td>5</td><td>Atletismo</td>
-      </tr>
-      <tr>
-        <td>3</td><td><a href="#">Estela lopez</a></td><td>1770035</td><td>IND</td><td>9</td><td>Danza</td>
-      </tr>
-      <tr>
-        <td>4</td><td><a href="#">Alison GC</a></td><td>1770035</td><td>INER</td><td>9</td><td>Futbol</td>
-      </tr>
-      <tr>
-        <td>5</td><td><a href="#">Sarita Lopez</a></td><td>1770035</td><td>IGE</td><td>9</td><td>Futbol</td>
-      </tr>
-      <tr>
-        <td>6</td><td><a href="#">Alex Gonley</a></td><td>1770035</td><td>INER</td><td>9</td><td>Danza</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  <div class="barra-informativa">
+    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA</p>
+    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
+    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+  </div>
 
- 
+  <!-- Librerías JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- Script personalizado -->
+  <script>
+  $(document).ready(function() {
+      // Configuración de DataTables
+      var tabla = $('#dataTable').DataTable({
+          "ajax": {
+              "url": "php/obtener_estudiantes.php",
+              "dataSrc": "data",
+              "error": function(xhr, error, thrown) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error al cargar datos',
+                      text: 'No se pudieron obtener los registros. Por favor intente más tarde.'
+                  });
+                  console.error("Error en la carga de datos:", xhr.responseText);
+              }
+          },
+          "columns": [
+              { "data": "id"},
+              { "data": "nombre" },
+              { "data": "no_control"},
+              { "data": "carrera" },
+              { "data": "semestre" },
+              { "data": "extraescolar" },
+              {
+                  "data": null,
+                  "className": "dt-center",
+                  "orderable": false,
+                  "render": function(data, type, row) {
+                      return `
+                          <button class='btn-editar' data-id='${row.id}' title='Editar registro'>
+                              <i class='fas fa-edit'></i>
+                          </button>
+                          <button class='btn-eliminar' data-id='${row.id}' title='Eliminar registro'>
+                              <i class='fas fa-trash'></i>
+                          </button>
+                      `;
+                  }
+              }
+          ],
+          "language": {
+              "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json"
+          },
+          "responsive": true,
+          "dom": '<"top"f>rt<"bottom"lip><"clear">'
+      });
 
+      // Búsqueda al hacer clic en el botón
+      $('#btn-buscar-nombre').on('click', function() {
+          tabla.search($('#buscador-nombre').val()).draw();
+      });
 
+      // Búsqueda al presionar Enter
+      $('#buscador-nombre').on('keypress', function(e) {
+          if (e.which === 13) {
+              tabla.search(this.value).draw();
+          }
+      });
 
+      // Recargar la tabla
+      $('#btn-recargar').on('click', function() {
+          tabla.ajax.reload(null, false);
+          $('#buscador-nombre').val('');
+      });
 
+      // Manejo de eventos para los botones de acción
+      $('#dataTable').on('click', '.btn-editar', function() {
+          var id = $(this).data('id');
+          // Aquí iría el código para editar
+          console.log('Editar registro con ID:', id);
+      });
 
-<div class="barra-informativa">
-  <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
-  <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
-   <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN,  cp. 70117, EL ESPINAL, OAXACA</p>
-  
-</div>
+      $('#dataTable').on('click', '.btn-eliminar', function() {
+          var id = $(this).data('id');
+          // Aquí iría el código para eliminar
+          console.log('Eliminar registro con ID:', id);
+      });
+  });
+  </script>
 
 </body>
 </html>
