@@ -1,725 +1,621 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Lista Danza</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
-  <!-- Asumiendo que /Coordinador/assets/css/estiloconstancia.css contiene estilos importantes -->
-  <link rel="stylesheet" href="assets/css/estiloconstancia.css" />
-  <style>
-    /* Colores y estilos actualizados para usar solo tonos de azul y blanco */
-    :root {
-      --color-azul-principal: #1a3461; /* Color azul oscuro principal para barras y encabezado */
-      --color-azul-claro-hover: #12284b; /* Un azul un poco más claro para efectos hover */
-      --color-fondo-claro: #f8f9fa; /* Color de fondo general de la página */
-      --color-texto-claro: #ffffff; /* Color de texto para elementos sobre fondos oscuros */
-      --color-texto-oscuro: #333; /* Color de texto general para contenido claro */
-    }
+    <meta charset="UTF-8" />
+    <title>Lista Danza - Profesional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-azul-principal: #1a3461;
+            --color-azul-claro-hover: #12284b;
+            --color-fondo-claro: #f8f9fa;
+            --color-texto-claro: #ffffff;
+            --color-texto-oscuro: #333;
+            --color-borde-suave: #e0e0e0;
+            --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transicion-fluida: all 0.3s ease;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif; /* Usando Inter como fuente predeterminada */
-      background-color: var(--color-fondo-claro);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-fondo-claro);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    .barra-guinda { /* Renombrado conceptualmente, ahora es azul */
-      background-color: var(--color-azul-principal);
-      height: 10px; /* Altura de la barra */
-      width: 100%;
-    }
+        header {
+            background-color: var(--color-azul-principal);
+            color: var(--color-texto-claro);
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-    header {
-      background-color: var(--color-azul-principal); /* Fondo azul oscuro del encabezado */
-      color: var(--color-texto-claro); /* Texto blanco para el encabezado */
-      padding: 10px 20px;
-      display: flex;
-      flex-direction: column; /* Apilar logos y texto verticalmente */
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+        .logos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+            max-width: 960px;
+            margin-bottom: 15px;
+        }
 
-    .logos {
-      display: flex;
-      flex-wrap: wrap; /* Permitir que los logos se envuelvan en pantallas pequeñas */
-      justify-content: center;
-      align-items: center;
-      gap: 120px; /* Espacio AÚN MAYOR entre logos */
-      margin-bottom: 10px;
-    }
+        .logos img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
 
-    .logos img {
-      height: 50px; /* Altura uniforme para los logos */
-      width: auto;
-      object-fit: contain; /* Asegurar que la imagen se ajuste sin distorsionarse */
-      border-radius: 4px; /* Pequeños bordes redondeados para los logos */
-    }
+        header h2 {
+            font-size: 1.1em;
+            margin: 0;
+            color: var(--color-texto-claro);
+            font-weight: 500;
+        }
+        
+        .container {
+            flex-grow: 1;
+            padding: 20px;
+            max-width: 960px;
+            margin: 30px auto;
+            background-color: var(--color-texto-claro);
+            border-radius: 8px;
+            box-shadow: var(--sombra-profesional);
+        }
 
-    header h2 {
-      font-size: 1.1em; /* Ajustar tamaño de fuente para el título del encabezado */
-      margin: 0;
-      color: var(--color-texto-claro);
-    }
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 10px 15px;
+            background-color: var(--color-azul-principal);
+            color: var(--color-texto-claro);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
 
-    .container {
-      flex-grow: 1; /* Permite que el contenedor principal ocupe el espacio restante */
-      padding: 20px;
-      max-width: 960px;
-      margin: 20px auto;
-      background-color: var(--color-texto-claro);
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
+        .table-controls .title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+        }
 
-    .title-bar {
-      background-color: var(--color-azul-principal); /* Barra de título de la tabla ahora azul */
-      color: var(--color-texto-claro);
-      padding: 10px 15px;
-      font-size: 1.2em;
-      font-weight: bold;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-      margin-bottom: 0; /* Eliminar margen para que se una a la tabla */
-      text-align: center;
-    }
+        .search-wrapper {
+            position: relative;
+        }
+        
+        .search-wrapper .fa-search {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0; /* Eliminar margen para que se una a la barra de título */
-      border: 1px solid #ddd;
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      overflow: hidden; /* Asegura que los bordes redondeados se apliquen a la tabla */
-    }
+        #searchInput {
+            padding: 8px 12px 8px 35px;
+            border-radius: 5px;
+            border: 1px solid var(--color-borde-suave);
+            font-size: 0.9em;
+            transition: var(--transicion-fluida);
+        }
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 52, 97, 0.3);
+        }
 
-    th, td {
-      padding: 12px 15px;
-      border: 1px solid #e0e0e0;
-      text-align: left;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--color-borde-suave);
+            border-top: none;
+        }
 
-    thead th {
-      background-color: #f2f2f2;
-      color: var(--color-texto-oscuro);
-      font-weight: bold;
-    }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--color-borde-suave);
+            text-align: left;
+        }
+        
+        thead th {
+            background-color: #f2f2f2;
+            color: var(--color-texto-oscuro);
+            font-weight: 700;
+        }
 
-    tbody tr:nth-child(odd) {
-      background-color: #f9f9f9;
-    }
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
 
-    tbody tr:hover {
-      background-color: #f0f0f0;
-    }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+            transition: background-color 0.2s ease;
+        }
 
-    td i {
-      cursor: pointer;
-      margin: 0 5px;
-      color: #007bff; /* Color para los íconos de acción (azul estándar) */
-    }
+        .actions-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .actions-container i {
+            cursor: pointer;
+            margin: 0 4px;
+            color: #6c757d;
+            font-size: 1.1em;
+            transition: var(--transicion-fluida);
+        }
+        .actions-container i:hover {
+            color: var(--color-azul-principal);
+            transform: scale(1.2);
+        }
 
-    td i:hover {
-      color: #0056b3;
-    }
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .status-pending { background-color: #ffc107; }
+        .status-completed { background-color: #6c757d; }
 
-    .btn-generar-constancia {
-      background-color: #28a745; /* Botón Evaluar verde (se mantiene el verde por ser de acción positiva) */
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: background-color 0.3s ease;
-      display: inline-flex; /* Permitir ícono y texto en la misma línea */
-      align-items: center;
-      gap: 5px; /* Espacio entre el ícono y el texto */
-    }
+        .btn-generar-constancia {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: var(--transicion-fluida);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-generar-constancia:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
 
-    .btn-generar-constancia:hover {
-      background-color: #218838;
-    }
+        .btn-generar-constancia:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-    /* Estilos para el formulario modal (constancia) */
-    .formulario-constancia {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: var(--color-texto-claro);
-      padding: 20px 20px 40px 20px;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* Sombra más pronunciada */
-      z-index: 1001;
-      border-radius: 10px; /* Bordes más redondeados */
-      max-height: 90vh;
-      overflow-y: auto;
-      max-width: 600px;
-      width: 90%;
-    }
-    .formulario-constancia h2 {
-      font-size: 1.8em; /* Título más grande para el formulario */
-      margin-bottom: 20px;
-      text-align: center;
-      color: var(--color-azul-principal); /* Título del formulario ahora azul */
-    }
-    .formulario-constancia label {
-      display: block;
-      margin-top: 15px; /* Más espacio entre etiquetas */
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: var(--color-texto-oscuro);
-    }
-    .formulario-constancia input,
-    .formulario-constancia textarea {
-      width: calc(100% - 16px); /* Ajustar ancho para padding */
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ced4da; /* Borde más suave */
-      border-radius: 6px; /* Bordes redondeados para inputs */
-      font-size: 1em;
-    }
-    .formulario-constancia fieldset {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      background-color: #fefefe;
-    }
-    .formulario-constancia legend {
-      font-weight: bold;
-      color: var(--color-azul-principal); /* Leyenda del fieldset ahora azul */
-      padding: 0 10px;
-      font-size: 1.1em;
-    }
-    .formulario-constancia .criteriosContainer div {
-      margin-bottom: 10px;
-    }
-    .formulario-constancia .criteriosContainer label input[type="radio"] {
-      width: auto; /* Permitir que los radios tengan su tamaño natural */
-      margin-right: 5px;
-      padding: 0;
-    }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .overlay.visible {
+            display: block;
+            opacity: 1;
+        }
 
-    .formulario-constancia button {
-      margin-top: 20px;
-      padding: 12px;
-      background-color: var(--color-azul-principal); /* Botones del formulario ahora azul */
-      color: var(--color-texto-claro);
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1.1em;
-      transition: background-color 0.3s ease;
-    }
-    .formulario-constancia button:hover {
-      background-color: var(--color-azul-claro-hover);
-    }
-    .formulario-constancia button:last-of-type { /* Botón Cerrar */
-      background-color: #6c757d; /* Gris para el botón cerrar (se mantiene así) */
-      margin-top: 10px;
-    }
-    .formulario-constancia button:last-of-type:hover {
-      background-color: #5a6268;
-    }
-
-    /* Estilos para el nuevo modal de confirmación */
-    #confirmacionModal {
-      display: none; /* Oculto por defecto */
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: var(--color-texto-claro);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      z-index: 1002; /* Más alto que el overlay y el formulario principal */
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-    }
-
-    #confirmacionModal p {
-      font-size: 1.2em;
-      margin-bottom: 25px;
-      color: var(--color-texto-oscuro);
-    }
-
-    #confirmacionModal .modal-buttons {
-      display: flex;
-      justify-content: space-around;
-      gap: 15px;
-    }
-
-    #confirmacionModal .modal-buttons button {
-      flex: 1; /* Distribuye el espacio uniformemente */
-      padding: 12px 20px;
-      font-size: 1em;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 0; /* Anula el margin-top general de los botones */
-    }
-
-    #confirmacionModal .modal-buttons button.confirm-yes {
-      background-color: #28a745; /* Verde para 'Sí' */
-      color: white;
-    }
-
-    #confirmacionModal .modal-buttons button.confirm-yes:hover {
-      background-color: #218838;
-    }
-
-    #confirmacionModal .modal-buttons button.confirm-no {
-      background-color: #dc3545; /* Rojo para 'No' */
-      color: white;
-    }
-
-    #confirmacionModal .modal-buttons button.confirm-no:hover {
-      background-color: #c82333;
-    }
+        .formulario-constancia {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: var(--color-texto-claro);
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+            z-index: 1001;
+            border-radius: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
+            max-width: 600px;
+            width: 90%;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+        
+        .formulario-constancia.visible {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* Estilos del contenido del formulario (los tuyos originales) */
+        .formulario-constancia { padding: 20px 20px 40px 20px; }
+        .formulario-constancia h2 { font-size: 1.8em; margin-bottom: 20px; text-align: center; color: var(--color-azul-principal); }
+        .formulario-constancia label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: var(--color-texto-oscuro); }
+        .formulario-constancia input, .formulario-constancia textarea { width: calc(100% - 22px); padding: 10px; margin-top: 5px; border: 1px solid #ced4da; border-radius: 6px; font-size: 1em; }
+        .formulario-constancia fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 20px; margin-bottom: 20px; background-color: #fefefe; }
+        .formulario-constancia legend { font-weight: bold; color: var(--color-azul-principal); padding: 0 10px; font-size: 1.1em; }
+        .formulario-constancia button { margin-top: 20px; padding: 12px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1em; transition: background-color 0.3s ease; }
+        .formulario-constancia button:hover { background-color: var(--color-azul-claro-hover); }
+        .formulario-constancia button.btn-cerrar { background-color: #6c757d; margin-top: 10px; }
+        .formulario-constancia button.btn-cerrar:hover { background-color: #5a6268; }
 
 
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.6); /* Overlay más oscuro */
-      z-index: 1000;
-    }
+        #confirmacionModal { max-width: 400px; text-align: center; }
+        #confirmacionModal p { font-size: 1.2em; margin-bottom: 25px; color: var(--color-texto-oscuro); }
+        .modal-buttons { display: flex; justify-content: space-around; gap: 15px; }
+        .modal-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border-radius: 6px; border: none; cursor: pointer; transition: background-color 0.3s ease; color: white; margin-top: 0; }
+        .modal-buttons .confirm-yes { background-color: #28a745; }
+        .modal-buttons .confirm-yes:hover { background-color: #218838; }
+        .modal-buttons .confirm-no { background-color: #dc3545; }
+        .modal-buttons .confirm-no:hover { background-color: #c82333; }
 
-    footer {
-      background-color: var(--color-azul-principal); /* Footer ahora azul */
-      color: var(--color-texto-claro);
-      text-align: center;
-      padding: 15px;
-      margin-top: auto; /* Empuja el footer al final de la página */
-      font-size: 0.9em;
-      width: 100%;
-      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    }
 
-    /* Media Queries para Responsividad */
-    @media (max-width: 768px) {
-      .logos {
-        flex-direction: column; /* Apilar logos en pantallas pequeñas */
-        gap: 10px;
-      }
-      header h2 {
-        font-size: 1em;
-      }
-      .container {
-        margin: 10px auto;
-        padding: 15px;
-      }
-      th, td {
-        padding: 8px 10px;
-        font-size: 0.9em;
-      }
-      .btn-generar-constancia {
-        padding: 6px 10px;
-        font-size: 0.8em;
-      }
-      .formulario-constancia {
-        width: 95%;
-        padding: 15px 15px 30px 15px;
-      }
-      .formulario-constancia h2 {
-        font-size: 1.4em;
-      }
-      .formulario-constancia input,
-      .formulario-constancia textarea,
-      .formulario-constancia button {
-        font-size: 0.95em;
-        padding: 8px;
-      }
-      #confirmacionModal {
-        padding: 20px;
-      }
-      #confirmacionModal p {
-        font-size: 1em;
-      }
-    }
+        #toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translate(-50%, 100px);
+            padding: 15px 25px;
+            background-color: var(--color-azul-principal);
+            color: var(--color-texto-claro);
+            border-radius: 6px;
+            box-shadow: var(--sombra-profesional);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        #toast-notification.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+        #toast-notification .fa-circle-check {
+            color: #28a745;
+        }
 
-    @media (max-width: 480px) {
-      .logos img {
-        height: 40px;
-      }
-      header h2 {
-        font-size: 0.8em;
-      }
-      .title-bar {
-        font-size: 1em;
-      }
-      th, td {
-        padding: 6px 8px;
-        font-size: 0.8em;
-      }
-      .btn-generar-constancia {
-        font-size: 0.75em;
-        padding: 5px 8px;
-        gap: 3px;
-      }
-      .formulario-constancia {
-        padding: 10px 10px 20px 10px;
-      }
-      .formulario-constancia h2 {
-        font-size: 1.2em;
-      }
-    }
-  </style>
+        footer {
+            background-color: var(--color-azul-principal);
+            color: var(--color-texto-claro);
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            font-size: 0.9em;
+            width: 100%;
+        }
+        
+    </style>
 </head>
 <body>
-  <div class="barra-guinda"></div>
-  <header>
-    <div class="logos">
-      <!-- Los logos se han enlazado directamente a la imagen que subiste, si tienes logos individuales, reemplaza los src -->
-      <img src="assets/img/sept.png" alt="SEP" onerror="this.onerror=null;this.src='https://placehold.co/100x50/CCCCCC/000000?text=Logo SEP';" />
-      <img src="assets/img/gobt.png" alt="Gobierno de México" onerror="this.onerror=null;this.src='https://placehold.co/100x50/1a3461/ffffff?text=Gobierno MX';" />
-      <img src="assets/img/tecnmt.png" alt="TecNM" onerror="this.onerror=null;this.src='https://placehold.co/100x50/CCCCCC/000000?text=Logo TecNM';" />
-      <img src="assets/img/itvet.png" alt="IT Valle de Etla" onerror="this.onerror=null;this.src='https://placehold.co/100x50/CCCCCC/000000?text=Logo ITVE';" />
+    <header>
+        <div class="logos">
+            <img src="assets/img/sept.png" alt="SEP" />
+            <img src="assets/img/gobt.png" alt="Gobierno de México" />
+            <img src="assets/img/tecnmt.png" alt="TecNM" />
+            <img src="assets/img/itvet.png" alt="IT Valle de Etla" />
+        </div>
+        <h2>
+            Gobierno de México<br />
+            Secretaría de Educación Pública | TecNM | IT Valle de Etla
+        </h2>
+    </header>
+
+    <div class="container">
+        <div class="table-controls">
+            <h3 class="title">Lista Danza</h3>
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Nombres y Apellidos</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-alumnos">
+                <tr>
+                    <td>1</td>
+                    <td>Adán Cristóbal Cruz Espinoza</td>
+                    <td><span class="status-badge status-pending">Pendiente</span></td>
+                    <td>
+                        <div class="actions-container">
+                            <i class="fa-solid fa-eye" title="Ver"></i>
+                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
+                            <i class="fa-solid fa-trash" title="Eliminar"></i>
+                            <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(this)">
+                                <i class="fa-solid fa-clipboard-check"></i> Evaluar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                 <tr>
+                    <td>2</td>
+                    <td>Mariana Sofía Reyes Castillo</td>
+                    <td><span class="status-badge status-completed">Evaluado</span></td>
+                    <td>
+                        <div class="actions-container">
+                            <i class="fa-solid fa-eye" title="Ver"></i>
+                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
+                            <i class="fa-solid fa-trash" title="Eliminar"></i>
+                            <button class="btn-generar-constancia" disabled>
+                                <i class="fa-solid fa-check"></i> Evaluado
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <h2>
-      Gobierno de México<br />
-      Secretaría de Educación Pública | TecNM | IT Valle de Etla
-    </h2>
-  </header>
-  <div class="barra-guinda"></div>
 
-  <div class="container">
-    <div class="title-bar">Lista Danza</div>
-    <table>
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Nombres y Apellidos</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tabla-alumnos">
-        <tr>
-          <td>1</td>
-          <td>Adán Cristóbal Cruz Espinoza</td>
-          <td>
-            <i class="fa-solid fa-eye" title="Ver"></i>
-            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
-            <i class="fa-solid fa-trash" title="Eliminar"></i>
-            <button
-              class="btn-generar-constancia"
-              onclick="mostrarFormularioEvaluacion(1)"
-            >
-              <i class="fa-solid fa-clipboard-check"></i> Evaluar
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div id="formularioEvaluacion" class="formulario-constancia">
-    <h2>Evaluación de Actividades Complementarias</h2>
-    <label for="nombreEstudianteEval">Nombre del Estudiante:</label>
-    <input type="text" id="nombreEstudianteEval" readonly />
-
-    <label for="actividadComplementaria">Actividad Complementaria:</label>
-    <input type="text" id="actividadComplementaria" />
-
-    <label for="periodo">Periodo de Realización:</label>
-    <input type="text" id="periodo" />
-
-    <fieldset>
-      <legend>Criterios de Evaluación</legend>
-      <div id="criteriosContainer"></div>
-    </fieldset>
-
-    <label for="observaciones">Observaciones:</label>
-    <textarea id="observaciones"></textarea>
-
-    <label for="valorNumericoEval">Valor Numérico:</label>
-    <input type="number" id="valorNumericoEval" readonly />
-
-    <label for="nivelDesempenoEval">Nivel de Desempeño:</label>
-    <input type="text" id="nivelDesempenoEval" readonly />
-
-    <hr />
-    <h3>Validación Final (Segunda Hoja)</h3>
-    <label for="nombreResponsable">Nombre del Profesor Responsable:</label>
-    <input type="text" id="nombreResponsable" />
-
-    <label for="nombreJefeExtra"
-      >Nombre del Jefe(a) de Actividades Extraescolares:</label
-    >
-    <input type="text" id="nombreJefeExtra" />
-
-    <label for="fechaExpedicion">Fecha de Expedición:</label>
-    <input type="date" id="fechaExpedicion" />
-
-    <button onclick="finalizarEvaluacion()">Finalizar Evaluación</button>
-    <button onclick="cerrarFormularioEvaluacion()">Cerrar</button>
-  </div>
-
-  <!-- Nuevo Modal de Confirmación -->
-  <div id="confirmacionModal">
-    <p>¿Desea generar la constancia con los datos de la evaluación?</p>
-    <div class="modal-buttons">
-      <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar constancia</button>
-      <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
+    <div id="formularioEvaluacion" class="formulario-constancia">
+        <h2>Evaluación de Actividades Complementarias</h2>
+        <label for="nombreEstudianteEval">Nombre del Estudiante:</label>
+        <input type="text" id="nombreEstudianteEval" readonly />
+        <label for="actividadComplementaria">Actividad Complementaria:</label>
+        <input type="text" id="actividadComplementaria" />
+        <label for="periodo">Periodo de Realización:</label>
+        <input type="text" id="periodo" />
+        <fieldset>
+            <legend>Criterios de Evaluación</legend>
+            <div id="criteriosContainer"></div>
+        </fieldset>
+        <label for="observaciones">Observaciones:</label>
+        <textarea id="observaciones"></textarea>
+        <label for="valorNumericoEval">Valor Numérico:</label>
+        <input type="number" id="valorNumericoEval" readonly />
+        <label for="nivelDesempenoEval">Nivel de Desempeño:</label>
+        <input type="text" id="nivelDesempenoEval" readonly />
+        <hr />
+        <h3>Validación Final (Segunda Hoja)</h3>
+        <label for="nombreResponsable">Nombre del Profesor Responsable:</label>
+        <input type="text" id="nombreResponsable" />
+        <label for="nombreJefeExtra">Nombre del Jefe(a) de Actividades Extraescolares:</label>
+        <input type="text" id="nombreJefeExtra" />
+        <label for="fechaExpedicion">Fecha de Expedición:</label>
+        <input type="date" id="fechaExpedicion" />
+        <button onclick="finalizarEvaluacion()">Finalizar Evaluación</button>
+        <button class="btn-cerrar" onclick="cerrarFormularioEvaluacion()">Cerrar</button>
     </div>
-  </div>
 
-  <div id="overlay" class="overlay"></div>
+    <div id="confirmacionModal" class="formulario-constancia">
+        <p>¿Desea generar la constancia con los datos de la evaluación?</p>
+        <div class="modal-buttons">
+            <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar constancia</button>
+            <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
+        </div>
+    </div>
 
-  <footer>
-    &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
-  </footer>
+    <div id="overlay" class="overlay"></div>
+    
+    <div id="toast-notification">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message"></span>
+    </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    // Array de criterios de evaluación
-    const criterios = [
-      "Cumple en tiempo y forma con las actividades encomendadas alcanzando los objetivo.",
-      "Trabaja en equipo y se adapta a nuevas situaciones.",
-      "Muestra liderazgo en las actividades encomendadas.",
-      "Organiza su tiempo y trabaja de manera proactiva.",
-      "Interpreta la realidad y se sensibiliza aportando soluciones a la problemática.",
-      "Realiza sugerencias innovadoras para beneficio o mejora del programa.",
-      "Tiene iniciativa para ayudar y muestra espíritu de servicio.",
-    ];
+    <footer>
+        &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
+    </footer>
 
-    /**
-     * Muestra el formulario de evaluación para un estudiante específico.
-     * @param {number} filaIndex - El índice de la fila del estudiante en la tabla (empezando desde 1).
-     */
-    function mostrarFormularioEvaluacion(filaIndex) {
-      // Obtener la fila de la tabla correspondiente al estudiante
-      const fila = document.getElementById("tabla-alumnos").rows[filaIndex - 1];
-      // Obtener el nombre del estudiante de la segunda celda de la fila
-      const nombre = fila.cells[1].textContent;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // --- FUNCIONALIDAD MEJORADA Y RESTAURADA ---
 
-      // Mostrar el formulario y el overlay
-      document.getElementById("formularioEvaluacion").style.display = "block";
-      document.getElementById("overlay").style.display = "block";
+        const overlay = document.getElementById('overlay');
+        const formularioEvaluacion = document.getElementById('formularioEvaluacion');
+        const confirmacionModal = document.getElementById('confirmacionModal');
 
-      // Rellenar el nombre del estudiante y limpiar otros campos del formulario
-      document.getElementById("nombreEstudianteEval").value = nombre;
-      document.getElementById("actividadComplementaria").value = "";
-      document.getElementById("periodo").value = "";
-      document.getElementById("observaciones").value = "";
-      document.getElementById("valorNumericoEval").value = "";
-      document.getElementById("nivelDesempenoEval").value = "";
-      document.getElementById("nombreResponsable").value = "";
-      document.getElementById("nombreJefeExtra").value = "";
-      document.getElementById("fechaExpedicion").value = "";
+        const criterios = [
+            "Cumple en tiempo y forma con las actividades encomendadas alcanzando los objetivo.",
+            "Trabaja en equipo y se adapta a nuevas situaciones.",
+            "Muestra liderazgo en las actividades encomendadas.",
+            "Organiza su tiempo y trabaja de manera proactiva.",
+            "Interpreta la realidad y se sensibiliza aportando soluciones a la problemática.",
+            "Realiza sugerencias innovadoras para beneficio o mejora del programa.",
+            "Tiene iniciativa para ayudar y muestra espíritu de servicio.",
+        ];
 
-      // Generar dinámicamente los radio buttons para cada criterio de evaluación
-      const container = document.getElementById("criteriosContainer");
-      container.innerHTML = ""; // Limpiar el contenedor antes de añadir nuevos criterios
-      criterios.forEach((texto, i) => {
-        const div = document.createElement("div");
-        div.innerHTML = `<label>${i + 1}. ${texto}</label><br>
-          ${[
-            "Insuficiente",
-            "Suficiente",
-            "Bueno",
-            "Notable",
-            "Excelente",
-          ]
-            .map(
-              (nivel, idx) =>
-                `<label><input type='radio' name='criterio${i}' value='${idx}'> ${nivel}</label>`
-            )
-            .join(" ")}<br><br>`;
-        container.appendChild(div);
-      });
-    }
-
-    /**
-     * Cierra el formulario de evaluación y oculta el overlay.
-     */
-    function cerrarFormularioEvaluacion() {
-      document.getElementById("formularioEvaluacion").style.display = "none";
-      document.getElementById("overlay").style.display = "none";
-    }
-
-    /**
-     * Calcula el promedio de los valores seleccionados en los criterios de evaluación
-     * y determina el nivel de desempeño. Actualiza los campos correspondientes.
-     */
-    function calcularPromedioYDesempeno() {
-      let total = 0;
-      let count = 0;
-      // Iterar sobre cada criterio para obtener el valor seleccionado
-      for (let i = 0; i < criterios.length; i++) {
-        const radios = document.getElementsByName(`criterio${i}`);
-        for (const radio of radios) {
-          if (radio.checked) {
-            total += parseInt(radio.value); // Sumar el valor del radio seleccionado
-            count++; // Incrementar el contador de criterios evaluados
-            break; // Salir del bucle una vez que se encuentra el radio seleccionado para este criterio
-          }
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const tableBody = document.getElementById("tabla-alumnos");
+            const rows = tableBody.getElementsByTagName("tr");
+            for (let i = 0; i < rows.length; i++) {
+                let nameCell = rows[i].getElementsByTagName("td")[1];
+                if (nameCell) {
+                    const txtValue = nameCell.textContent || nameCell.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
         }
-      }
-      // Calcular el promedio, evitando la división por cero
-      const promedio = count ? total / count : 0;
-      let nivel = "";
-      // Determinar el nivel de desempeño basado en el promedio
-      if (promedio >= 3.5) nivel = "Excelente";
-      else if (promedio >= 2.5) nivel = "Notable";
-      else if (promedio >= 1.5) nivel = "Bueno";
-      else if (promedio >= 1.0) nivel = "Suficiente";
-      else nivel = "Insuficiente";
 
-      // Actualizar los campos de valor numérico y nivel de desempeño
-      document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
-      document.getElementById("nivelDesempenoEval").value = nivel;
-    }
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
 
-    // Escuchar cambios en los radio buttons de los criterios para recalcular el promedio y desempeño
-    document.addEventListener("change", (e) => {
-      if (e.target.name && e.target.name.startsWith("criterio")) {
-        calcularPromedioYDesempeno();
-      }
-    });
+        function mostrarFormularioEvaluacion(button) {
+            const row = button.closest('tr');
+            const nombre = row.cells[1].textContent;
 
-    /**
-     * Muestra el modal de confirmación antes de finalizar la evaluación o generar la constancia.
-     */
-    function finalizarEvaluacion() {
-      document.getElementById("confirmacionModal").style.display = "block";
-      document.getElementById("overlay").style.display = "block"; // Asegura que el overlay esté visible
-    }
+            overlay.classList.add('visible');
+            formularioEvaluacion.classList.add('visible');
+            
+            document.getElementById("nombreEstudianteEval").value = nombre;
+            document.getElementById("actividadComplementaria").value = "";
+            document.getElementById("periodo").value = "";
+            document.getElementById("observaciones").value = "";
+            document.getElementById("valorNumericoEval").value = "";
+            document.getElementById("nivelDesempenoEval").value = "";
+            document.getElementById("nombreResponsable").value = "";
+            document.getElementById("nombreJefeExtra").value = "";
+            document.getElementById("fechaExpedicion").value = "";
 
-    /**
-     * Confirma la generación de la constancia y cierra ambos modales.
-     */
-    function confirmarGenerarConstancia() {
-      generarConstanciaPDF();
-      document.getElementById("confirmacionModal").style.display = "none";
-      cerrarFormularioEvaluacion(); // Cierra el formulario principal
-    }
+            const container = document.getElementById("criteriosContainer");
+            container.innerHTML = "";
+            criterios.forEach((texto, i) => {
+                const div = document.createElement("div");
+                div.innerHTML = `<label>${i + 1}. ${texto}</label><br>
+                  ${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"]
+                    .map((nivel, idx) => `<label style="font-weight:normal;display:inline-block;margin-right:10px;"><input type='radio' name='criterio${i}' value='${idx}'> ${nivel}</label>`)
+                    .join(" ")}<br><br>`;
+                container.appendChild(div);
+            });
+        }
 
-    /**
-     * Cancela la generación de la constancia y cierra ambos modales.
-     */
-    function cancelarGenerarConstancia() {
-      document.getElementById("confirmacionModal").style.display = "none";
-      cerrarFormularioEvaluacion(); // Cierra el formulario principal
-    }
+        function cerrarFormularioEvaluacion() {
+            overlay.classList.remove('visible');
+            formularioEvaluacion.classList.remove('visible');
+        }
+        
+        function calcularPromedioYDesempeno() {
+            let total = 0;
+            let count = 0;
+            for (let i = 0; i < criterios.length; i++) {
+                const radios = document.getElementsByName(`criterio${i}`);
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        total += parseInt(radio.value);
+                        count++;
+                        break;
+                    }
+                }
+            }
+            const promedio = count ? total / count : 0;
+            let nivel = "";
+            if (promedio >= 3.5) nivel = "Excelente";
+            else if (promedio >= 2.5) nivel = "Notable";
+            else if (promedio >= 1.5) nivel = "Bueno";
+            else if (promedio >= 1.0) nivel = "Suficiente";
+            else nivel = "Insuficiente";
 
-    /**
-     * Genera un documento PDF con los datos de la evaluación usando jsPDF,
-     * adaptando el formato al documento de Word proporcionado.
-     */
-    function generarConstanciaPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF(); // Por defecto, A4 en mm
+            document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
+            document.getElementById("nivelDesempenoEval").value = nivel;
+        }
 
-      // Recoger los datos del formulario
-      const nombreEstudiante = document.getElementById("nombreEstudianteEval").value;
-      const actividadComplementaria = document.getElementById("actividadComplementaria").value;
-      const periodoRealizacion = document.getElementById("periodo").value;
-      const valorNumerico = document.getElementById("valorNumericoEval").value;
-      const nivelDesempeno = document.getElementById("nivelDesempenoEval").value;
-      const nombreProfesorResponsable = document.getElementById("nombreResponsable").value;
-      const nombreJefeExtraescolares = document.getElementById("nombreJefeExtra").value;
-      const fechaExpedicionStr = document.getElementById("fechaExpedicion").value;
+        document.addEventListener("change", (e) => {
+            if (e.target.name && e.target.name.startsWith("criterio")) {
+                calcularPromedioYDesempeno();
+            }
+        });
 
-      // Parsear la fecha de expedición para obtener día, mes y año
-      const fecha = new Date(fechaExpedicionStr + 'T12:00:00'); // Añadir T12:00:00 para evitar problemas de zona horaria
-      const dia = fecha.getDate();
-      const mes = fecha.toLocaleString('es-ES', { month: 'long' });
-      const anio = fecha.getFullYear();
+        function finalizarEvaluacion() {
+            formularioEvaluacion.classList.remove('visible');
+            confirmacionModal.classList.add('visible');
+        }
 
+        function confirmarGenerarConstancia() {
+            generarConstanciaPDF();
+            overlay.classList.remove('visible');
+            confirmacionModal.classList.remove('visible');
+            showToast('Constancia generada con éxito.');
+        }
 
-      // --- Configuración inicial de fuentes ---
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(0, 0, 0); // Texto negro por defecto
+        function cancelarGenerarConstancia() {
+            overlay.classList.remove('visible');
+            confirmacionModal.classList.remove('visible');
+            formularioEvaluacion.classList.add('visible'); // Vuelve al formulario anterior
+        }
+        
+        function generarConstanciaPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-      // --- Cabecera de la constancia (similar a la imagen del documento Word) ---
-      // Hoja membretada oficial (alineado a la derecha)
-      doc.setFontSize(10);
-      doc.text("“Hoja membretada oficial”", 190, 20, null, null, 'right');
+            const nombreEstudiante = document.getElementById("nombreEstudianteEval").value;
+            const actividadComplementaria = document.getElementById("actividadComplementaria").value;
+            const periodoRealizacion = document.getElementById("periodo").value;
+            const valorNumerico = document.getElementById("valorNumericoEval").value;
+            const nivelDesempeno = document.getElementById("nivelDesempenoEval").value;
+            const nombreProfesorResponsable = document.getElementById("nombreResponsable").value;
+            const nombreJefeExtraescolares = document.getElementById("nombreJefeExtra").value;
+            const fechaExpedicionStr = document.getElementById("fechaExpedicion").value;
+            
+            const fecha = new Date(fechaExpedicionStr + 'T12:00:00');
+            const dia = fecha.getDate();
+            const mes = fecha.toLocaleString('es-ES', { month: 'long' });
+            const anio = fecha.getFullYear();
 
-      // Título principal
-      doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text("CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA", 105, 40, null, null, 'center');
-      doc.setFont('helvetica', 'normal');
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.text("“Hoja membretada oficial”", 190, 20, null, null, 'right');
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text("CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA", 105, 40, null, null, 'center');
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.text("C. _____________________", 20, 60);
+            doc.text("JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES", 20, 65);
+            doc.text("PRESENTE", 20, 70);
+            
+            let yOffset = 85;
+            const textoPrincipal1 = `El que suscribe ${nombreProfesorResponsable || '_______________________'}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${nombreEstudiante || '________________________________'}, con número de control _____________ de la carrera de ______________________, ha cumplido su actividad ${actividadComplementaria || '______________________'} con el nivel de desempeño ${nivelDesempeno || '__________________'}`;
+            const textoPrincipal2 = ` y un valor numérico de ${valorNumerico || '____'} durante el periodo escolar ${periodoRealizacion || '___________________'} con un valor curricular de ______ créditos.`;
+            const textoCompleto = textoPrincipal1 + textoPrincipal2;
+            const splitTextoCompleto = doc.splitTextToSize(textoCompleto, 170);
+            doc.text(splitTextoCompleto, 20, yOffset);
+            yOffset += (splitTextoCompleto.length * 6) + 15;
+            
+            // Asumiendo que la fecha de expedición es la actual de México
+            const hoy = new Date();
+            const diaHoy = hoy.getDate();
+            const mesHoy = hoy.toLocaleString('es-ES', { month: 'long' });
+            const anioHoy = hoy.getFullYear();
 
-      // Destinatario
-      doc.setFontSize(11);
-      doc.text("C. _____________________", 20, 60);
-      doc.text("JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES", 20, 65);
-      doc.text("PRESENTE", 20, 70);
+            doc.text(`Se extiende la presente en Heroica Ciudad de Ejutla de Crespo a los ${diaHoy} días del mes de ${mesHoy} de ${anioHoy}.`, 20, yOffset, {align: 'justify', maxWidth: 170});
+            yOffset += 20;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.text("ATENTAMENTE", 105, yOffset, null, null, 'center');
+            yOffset += 25;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text("________________________________", 25, yOffset, {align: 'center'});
+            doc.text(nombreProfesorResponsable, 25, yOffset + 5, {align: 'center'});
+            doc.text("Nombre y firma del (de la) profesor(a) responsable", 25, yOffset + 10, {align: 'center'});
+            
+            doc.text("________________________________", 165, yOffset, {align: 'center'});
+            doc.text(nombreJefeExtraescolares, 165, yOffset + 5, {align: 'center'});
+            doc.text("JEFE(A) DEL DEPTO. DE ACTIVIDADES EXTRAESCOLARES", 165, yOffset + 10, {align: 'center'});
+            
+            yOffset += 30;
+            doc.text("c.c.p. Jefe (a) de Departamento Correspondiente", 20, yOffset);
+            doc.text("c.c.p. Expediente", 20, yOffset + 5);
 
-      // --- Cuerpo de la constancia ---
-      let yOffset = 85; // Posición inicial para el cuerpo del texto
+            doc.save(`Constancia_${nombreEstudiante.replace(/\s/g, "_")}.pdf`);
+        }
 
-      // Construir el párrafo principal con los datos del formulario y placeholders
-      const textoPrincipal1 = `El que suscribe ${nombreProfesorResponsable || '_______________________'}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${nombreEstudiante || '________________________________'}, con número de control _____________ de la carrera de ______________________, ha cumplido su actividad ${actividadComplementaria || '______________________'} con el nivel de desempeño ${nivelDesempeno || '__________________'}`;
-      const textoPrincipal2 = ` y un valor numérico de ${valorNumerico || '____'} durante el periodo escolar ${periodoRealizacion || '___________________'} con un valor curricular de ______ créditos.`;
-
-      // Combinar y dividir el texto para que se ajuste al ancho
-      const textoCompleto = textoPrincipal1 + textoPrincipal2;
-      const splitTextoCompleto = doc.splitTextToSize(textoCompleto, 170); // Ancho máximo de 170mm
-
-      doc.text(splitTextoCompleto, 20, yOffset);
-      yOffset += (splitTextoCompleto.length * 6) + 15; // Ajustar yOffset por el número de líneas, un poco más de espacio
-
-      // Fecha de expedición
-      doc.text(`Se extiende la presente en la ____________ a los ${dia} días del mes de ${mes} de ${anio}.`, 20, yOffset);
-      yOffset += 20; // Espacio para "ATENTAMENTE"
-
-      // --- Firmas y sellos ---
-      doc.setFont('helvetica', 'bold');
-      doc.text("ATENTAMENTE", 105, yOffset, null, null, 'center');
-      yOffset += 25; // Espacio para la línea de firma
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-
-      // Línea y nombre del profesor responsable
-      doc.text("________________________________", 35, yOffset);
-      doc.text(`Nombre y firma del (de la) profesor(a) responsable`, 35, yOffset + 5);
-
-      // Línea y nombre del Jefe(a) de Actividades Extraescolares
-      doc.text("________________________________", 135, yOffset);
-      doc.text(`Jefe(a) del Depto. de Actividades Extraescolares`, 135, yOffset + 5);
-
-      yOffset += 20; // Espacio para el CCP
-
-      // Copia a departamento correspondiente
-      doc.text("c.c.p. Jefe (a) de Departamento Correspondiente", 20, yOffset);
-
-      // Simulación de "SELLO" (puedes ajustar las posiciones si necesitas un sello gráfico real)
-      doc.setFontSize(8);
-      doc.text("SELLO", 70, yOffset - 30); // Posición aproximada para el sello del profesor
-      doc.text("SELLO", 170, yOffset - 30); // Posición aproximada para el sello del jefe
-
-      // Vo. Bo.
-      doc.setFontSize(10);
-      doc.text("Vo. Bo.", 145, yOffset - 40); // Posición aproximada para Vo. Bo.
-
-      // Guardar el documento PDF
-      doc.save(`Constancia_${nombreEstudiante.replace(/\s/g, "_")}.pdf`);
-    }
-  </script>
+    </script>
 </body>
 </html>
