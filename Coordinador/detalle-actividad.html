@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Actividad</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .actividad-imagen {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .actividad-titulo {
+      color: #002147;
+      margin-bottom: 20px;
+    }
+    .actividad-info {
+      margin-bottom: 15px;
+    }
+    .actividad-info strong {
+      color: #002147;
+    }
+    .btn-volver {
+      background-color: #002147;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="actividad-detalle">
+      <h2 class="text-center">Cargando actividad...</h2>
+    </div>
+    <button class="btn btn-volver" onclick="window.history.back()">Volver a actividades</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const idActividad = urlParams.get('id_actividad');
+      
+      if (!idActividad) {
+        document.getElementById('actividad-detalle').innerHTML = `
+          <div class="alert alert-danger">
+            No se ha especificado una actividad para mostrar.
+          </div>
+        `;
+        return;
+      }
+
+      fetch(`php/api_actividad_detalle.php?id_actividad=${idActividad}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Actividad no encontrada');
+          return response.json();
+        })
+        .then(actividad => {
+          const detalleDiv = document.getElementById('actividad-detalle');
+          detalleDiv.innerHTML = `
+            <img src="${actividad.imagen_url}" alt="${actividad.nombre_actividad}" class="actividad-imagen">
+            <h1 class="actividad-titulo">${actividad.nombre_actividad}</h1>
+            <div class="actividad-info">
+              <strong>Categoría:</strong> ${actividad.nombre_categoria}
+            </div>
+            <div class="actividad-info">
+              <strong>Horario:</strong> ${actividad.horario || 'No especificado'}
+            </div>
+            <div class="actividad-info">
+              <strong>Responsable:</strong> ${actividad.responsable || 'No especificado'}
+            </div>
+            <div class="actividad-info">
+              <strong>Requisitos:</strong> ${actividad.requisitos || 'No especificado'}
+            </div>
+            <div class="actividad-descripcion">
+              <h3>Descripción</h3>
+              <p>${actividad.descripcion || 'Descripción no disponible'}</p>
+            </div>
+          `;
+        })
+        .catch(error => {
+          document.getElementById('actividad-detalle').innerHTML = `
+            <div class="alert alert-danger">
+              Error al cargar la actividad: ${error.message}
+            </div>
+          `;
+        });
+    });
+  </script>
+</body>
+</html>
