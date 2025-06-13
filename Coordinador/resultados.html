@@ -6,35 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Resultados</title>
   <link rel="stylesheet" href="assets/css/resultados.css" />
-</head>
-<body>
-
- 
-
- <div class="barra-blanca">
-    <img src="assets/img/Educacion.png" alt="Logo 1" />
-    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
-    <img src="assets/img/pleca-ITVE.png" alt="Logo 3" />
-  </div>
-
-
-  <div class="barra-secundaria">
-    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
-  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
-</a>
-  <ul>
-    <li><a href="Pagina principal.html">Inicio</a></li>
-      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
-      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
-      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
-      <li><a href="informe.html">Informe de Actividad</a></li>
-      <li><a href="resultados.html">Resultados de Actividades</a></li>
-    </ul>
-  </div>
-
-
-
-    <style>
+  <style>
     @media print {
       .vista-pantalla {
         display: block !important;
@@ -45,86 +17,66 @@
     }
 
     .barra-blanca img {
-  max-height: 48px;
-  height: 48px;
-  width: auto;
-}
-.encabezado .logo img {
-  width: 70px !important;
-  max-width: 70px !important;
-  height: auto !important;
-}
+      max-height: 48px;
+      height: 48px;
+      width: auto;
+    }
+    .encabezado .logo img {
+      width: 70px !important;
+      max-width: 70px !important;
+      height: auto !important;
+    }
+    
+    /* Estilos adicionales para la tabla */
+    .tabla-estilo {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .tabla-estilo th, .tabla-estilo td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .tabla-estilo th {
+      background-color: #f2f2f2;
+    }
   </style>
 </head>
 <body>
-    <div style="height: 30px;"></div> 
-  <!-- Vista normal -->
-  <div class="vista-pantalla pantalla-solo">
-    <h1>DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h1>
-    <h2>En este apartado podrás visualizar la parte</h2>
-    <h2>los resultados de las actividades extraescolares en general</h2>
-    <h2>y de las actividades culturales en particular.</h2>
-    <h2>ademas de que podras imprimir este documento</h2>
 
-    <button onclick="window.print()">Imprimir</button>
-
-    <div style="display: flex; align-items: center; justify-content: center; gap: 180px; margin-bottom: 18px;">
-      <img src="assets/img/ITVE.png" alt="Logo Izquierdo" style="height: 170px;">
-      <table class="tabla-estilo" style="margin: 0;">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Nombre</th>
-            <th>No. Control</th>
-            <th>Carrera</th>
-            <th>Sem</th>
-            <th>Resultado</th>
-            <th>Firma</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-cuerpo">
-          <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>7</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>9</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>11</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>12</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>13</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>14</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td>15</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        </tbody>
-      </table>
-      <img src="assets/img/ITVE.png" alt="Logo Derecho" style="height: 170px;">
-    </div>
+<div class="barra-blanca">
+    <img src="assets/img/Educacion.png" alt="Logo 1" />
+    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo 2" />
+    <img src="assets/img/pleca-ITVE.png" alt="Logo 3" />
   </div>
 
-  <!-- Formato para impresión -->
-  <div class="contenido-principal">
-    <table class="encabezado">
-      <tr>
-        <td class="logo" rowspan="2"><img src="/assets/img/sgc.jpg" alt="Logo SGC" style="opacity: 0.5; width: 100px;"></td>
-        <td class="titulo">Formato de Resultados de Actividades Culturales y/o Deportivas.</td>
-        <td class="derecha">Código: TecNM-VI-PO-003-03</td>
-      </tr>
-      <tr>
-        <td class="subtitulo">Referencia a la Norma ISO 9001:2015 &nbsp; 8.1, 8.2.1, 8.2.2</td>
-        <td class="derecha">Revisión: 0 <br>Página 1 de 2</td>
-      </tr>
-    </table>
+  <div class="barra-secundaria">
+    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+      <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+    </a>
+    <ul>
+      <li><a href="Pagina principal.html">Inicio</a></li>
+      <li><a href="regEstudiantes.html">Registrar Estudiantes</a></li>
+      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
+      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
+      <li><a href="informe.html">Informe de Actividad</a></li>
+      <li><a href="resultados.html">Resultados de Actividades</a></li>
+    </ul>
+  </div>
 
-    <h2 style="text-align: center; margin-bottom: 12px;">DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h2>
-    <h2 style="text-align: center; margin-bottom: 12px;">OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA</h2>
-    <h2 style="text-align: center; margin-bottom: 12px;">ACTIVIDAD CULTURAL</h2>
+<div style="height: 30px;"></div> 
 
-    <div style="height: 40px;"></div> <!-- Espacio extra antes de la tabla -->
+<!-- Vista normal -->
+<div class="vista-pantalla pantalla-solo">
+  <h1>DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h1>
+  <h2>En este apartado podrás visualizar los resultados de las actividades extraescolares</h2>
+  
+  <button onclick="window.print()">Imprimir</button>
 
-    <table class="tabla-estilo">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 180px; margin-bottom: 18px;">
+    <img src="assets/img/ITVE.png" alt="Logo Izquierdo" style="height: 170px;">
+    <table class="tabla-estilo" style="margin: 0;">
       <thead>
         <tr>
           <th>No.</th>
@@ -136,71 +88,143 @@
           <th>Firma</th>
         </tr>
       </thead>
-      <tbody id="tabla-impresion">
-        <!-- 20 filas por defecto -->
-        <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>7</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>9</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>10</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>11</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>12</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>13</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>14</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td>15</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-       
+      <tbody id="tabla-cuerpo">
+        <!-- Las filas se llenarán con JavaScript -->
       </tbody>
     </table>
+    <img src="assets/img/ITVE.png" alt="Logo Derecho" style="height: 170px;">
+  </div>
+</div>
 
-    <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 70px; width: 100vw; background: #fff; z-index: 100; padding-bottom: 1px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
-      <div class="footer-content" style="max-width: 900px; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 40px; padding-top: 18px;">
-        <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
-          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
-          <span style="font-size: 0.98em;">Promotor Cultural o Deportivo <p></p></span>
-        </div>
-        <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
-          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
-          <span style="font-size: 0.98em;">Jefe(a) de Oficinas de Promoción <p></p><p></p></span>
-        </div>
-        <div class="firma" style="text-align: center; width: 33%;">
-          <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
-          <span style="font-size: 0.98em;">Alejandro Loma Bolaños <br>Jefe de Departamentos de Oficinas Extraescolares</span>
-        </div>
+<!-- Formato para impresión -->
+<div class="contenido-principal">
+  <table class="encabezado">
+    <tr>
+      <td class="logo" rowspan="2"><img src="/assets/img/sgc.jpg" alt="Logo SGC" style="opacity: 0.5; width: 100px;"></td>
+      <td class="titulo">Formato de Resultados de Actividades Culturales y/o Deportivas.</td>
+      <td class="derecha">Código: TecNM-VI-PO-003-03</td>
+    </tr>
+    <tr>
+      <td class="subtitulo">Referencia a la Norma ISO 9001:2015 &nbsp; 8.1, 8.2.1, 8.2.2</td>
+      <td class="derecha">Revisión: 0 <br>Página 1 de 2</td>
+    </tr>
+  </table>
+
+  <h2 style="text-align: center; margin-bottom: 12px;">DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES</h2>
+  <h2 style="text-align: center; margin-bottom: 12px;">OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA</h2>
+  <h2 style="text-align: center; margin-bottom: 12px;">ACTIVIDAD CULTURAL</h2>
+
+  <div style="height: 40px;"></div>
+
+  <table class="tabla-estilo">
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Nombre</th>
+        <th>No. Control</th>
+        <th>Carrera</th>
+        <th>Sem</th>
+        <th>Resultado</th>
+        <th>Firma</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-impresion">
+      <!-- Las filas se llenarán con JavaScript -->
+    </tbody>
+  </table>
+
+  <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 70px; width: 100vw; background: #fff; z-index: 100; padding-bottom: 1px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
+    <div class="footer-content" style="max-width: 900px; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 40px; padding-top: 18px;">
+      <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
+        <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+        <span style="font-size: 0.98em;">Promotor Cultural o Deportivo <p></p></span>
+      </div>
+      <div class="firma" style="text-align: center; width: 33%; position: relative; top: -20px;">
+        <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+        <span style="font-size: 0.98em;">Jefe(a) de Oficinas de Promoción <p></p><p></p></span>
+      </div>
+      <div class="firma" style="text-align: center; width: 33%;">
+        <div style="height: 60px; border-bottom: 1.5px solid #222; margin-bottom: 6px;"></div>
+        <span style="font-size: 0.98em;">Alejandro Loma Bolaños <br>Jefe de Departamentos de Oficinas Extraescolares</span>
       </div>
     </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<div class="barra-informativa">
+  <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
+  <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
+  <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+</div>
 
-
-
- <div class="barra-informativa">
-    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA </p>
-    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
-    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
-  </div>
-
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          toggleSeccion(id);
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Función para llenar ambas tablas
+  function llenarTablas() {
+    fetch('php/obtener_alumnos.php') // Archivo PHP que obtiene los datos
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Datos recibidos:', data); // Para depuración
+        
+        // Llenar la tabla de vista pantalla
+        const tablaCuerpo = document.getElementById('tabla-cuerpo');
+        // Llenar la tabla de impresión
+        const tablaImpresion = document.getElementById('tabla-impresion');
+        
+        // Limpiar las tablas primero
+        tablaCuerpo.innerHTML = '';
+        tablaImpresion.innerHTML = '';
+        
+        // Llenar con los datos de los alumnos
+        data.forEach((alumno, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${alumno.nombre || ''}</td>
+            <td>${alumno.numero_control || ''}</td>
+            <td>${alumno.carrera || ''}</td>
+            <td>${alumno.semestre || ''}</td>
+            <td></td>
+            <td></td>
+          `;
+          
+          tablaCuerpo.appendChild(row.cloneNode(true));
+          tablaImpresion.appendChild(row.cloneNode(true));
         });
+        
+        // Completar con filas vacías si hay menos de 15 alumnos
+        for (let i = data.length; i < 15; i++) {
+          const emptyRow = document.createElement('tr');
+          emptyRow.innerHTML = `
+            <td>${i + 1}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          `;
+          
+          tablaCuerpo.appendChild(emptyRow.cloneNode(true));
+          tablaImpresion.appendChild(emptyRow.cloneNode(true));
+        }
+      })
+      .catch(error => {
+        console.error('Error al obtener datos:', error);
+        // Mostrar mensaje de error al usuario
+        alert('Error al cargar los datos de los alumnos. Por favor, intente más tarde.');
       });
-    });
+  }
+  
+  // Llamar a la función al cargar la página
+  llenarTablas();
+});
+</script>
 
-    function toggleSeccion(id) {
-      const contenedor = document.getElementById(id);
-      contenedor.classList.toggle('visible');
-      contenedor.classList.toggle('oculto');
-    }
-  </script>
 </body>
 </html>
