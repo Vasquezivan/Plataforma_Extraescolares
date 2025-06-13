@@ -385,9 +385,8 @@ document.addEventListener("DOMContentLoaded", function() {
             `;
         });
 });
-
 function irADetalleActividad(id) {
-    window.location.href = `detalle-actividad.html?id_actividad=${id}`;
+    window.open(`regEstudiantes.html?id_actividad=${id}`, '_blank');
 }
 async function cargarActividades() {
     const contenedor = document.getElementById('categorias-container');
@@ -423,6 +422,8 @@ async function cargarActividades() {
 }
 
 document.addEventListener('DOMContentLoaded', cargarActividades);
+
+
   </script>
   
 </body>
