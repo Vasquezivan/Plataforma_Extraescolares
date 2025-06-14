@@ -31,7 +31,7 @@ try {
     // Crear instancia de inscripción
     $inscripcion = new Inscripcion();
     
-    // Obtener alumnos inscritos en la actividad usando el método existente en la clase Inscripcion
+    // Obtener alumnos inscritos en la actividad - Cambiamos la función a obtenerAlumnosPorActividad que es la que existe en la clase Inscripcion
     $alumnosInscritos = $inscripcion->obtenerAlumnosPorActividad($id_actividad);
     
     // Devolver los resultados como JSON

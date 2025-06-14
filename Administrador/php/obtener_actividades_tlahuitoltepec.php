@@ -1,5 +1,4 @@
 <?php
-// filepath: Administrador/obtener_actividades.php
 require_once "Actividad.php";
 require_once "Database.php";
 header('Content-Type: application/json');
