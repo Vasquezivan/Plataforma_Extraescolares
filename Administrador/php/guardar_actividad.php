@@ -11,12 +11,12 @@ $id_asesor = 1; // Cambia según tu lógica
 
 $imagen_url = '';
 if (isset($_FILES['imagen'])) {
-    $carpeta = "uploads/";
+    $carpeta = "../uploads/";
     if (!file_exists($carpeta)) mkdir($carpeta, 0777, true);
     $nombreArchivo = uniqid() . "_" . basename($_FILES["imagen"]["name"]);
     $ruta = $carpeta . $nombreArchivo;
     if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $ruta)) {
-        $imagen_url = $ruta;
+        $imagen_url = 'uploads/' . $nombreArchivo; // <-- SOLO ESTO
     }
 }
 
