@@ -16,7 +16,9 @@ class Database {
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $exception) {
-            die("Error de conexión: " . $exception->getMessage());
+            // En lugar de terminar la ejecución, registrar el error y devolver null
+            error_log("Error de conexión a la base de datos: " . $exception->getMessage());
+            return null;
         }
         return $this->conn;
     }
