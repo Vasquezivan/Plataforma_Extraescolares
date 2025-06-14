@@ -174,7 +174,6 @@ function mostrarGestionUsuarios() {
               <thead>
                 <tr style="background-color: #1B396A; color: white;">
                   <th>Nombre</th>
-                  <th>Unidad Académica</th>
                   <th>Contacto</th>
                   <th>Contraseña</th>
                   <th>Rol</th>
@@ -203,6 +202,16 @@ function mostrarGestionUsuarios() {
 
 // Función para mostrar información de una unidad académica
 function mostrarInformacionUnidad(unidad) {
+  // Si es la unidad de Unión Hidalgo, obtenemos los datos de la base de datos
+  if (unidad === "CIDERS unión Hidalgo") {
+    cargarDatosUnionHidalgo();
+    return;
+  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
+    cargarDatosDemetrioVallejo();
+    return;
+  }
+  
+  // Para las demás unidades, seguimos usando los datos estáticos
   const datosUnidad = datosUnidades[unidad];
   if (!datosUnidad) {
     console.error("No se encontraron datos para la unidad:", unidad);
@@ -211,9 +220,7 @@ function mostrarInformacionUnidad(unidad) {
 
   // Determinar el archivo HTML correcto según la unidad
   let archivoHTML = '';
-  if (unidad === "CIDERS unión Hidalgo") {
-    archivoHTML = "U_CentrodeInvestigacion.html";
-  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
+  if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
     archivoHTML = "U_Demetrio.html";
   } else if (unidad === "Unidad académica Tlahuitoltepec") {
     archivoHTML = "U_SantaMaria.html";
@@ -245,7 +252,7 @@ function mostrarInformacionUnidad(unidad) {
       </div>
 
       <div class="contenedor-busqueda">
-        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input">
+        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
         <div class="contador-alumnos" id="contadorAlumnos">
           <span class="numero">${datosUnidad.alumnos[datosUnidad.actividades[0]].length}</span> alumnos inscritos
         </div>
@@ -260,7 +267,6 @@ function mostrarInformacionUnidad(unidad) {
               <th>No. de Control</th>
               <th>Semestre</th>
               <th>Carrera</th>
-              <th>Unidad Académica</th>
             </tr>
           </thead>
           <tbody id="cuerpoTablaAlumnos">
@@ -271,7 +277,6 @@ function mostrarInformacionUnidad(unidad) {
                 <td>${alumno.control}</td>
                 <td>${alumno.semestre}</td>
                 <td>${alumno.carrera}</td>
-                <td>${unidad}</td>
               </tr>`
             ).join('')}
           </tbody>
@@ -280,95 +285,491 @@ function mostrarInformacionUnidad(unidad) {
     </div>
   `;
   
-  // Configurar eventos para botones de actividades y campo de búsqueda
+  // Configurar eventos para botones de actividades
   configurarEventosUnidad(unidad);
 }
 
-// Función para configurar eventos en la vista de unidad académica
-function configurarEventosUnidad(unidad) {
-  // Configurar botones de actividades
-  document.querySelectorAll('.barra-actividades .boton-actividad').forEach(boton => {
-    boton.addEventListener('click', function() {
-      // Desactivar todos los botones
-      document.querySelectorAll('.barra-actividades .boton-actividad').forEach(b => {
-        b.classList.remove('activo');
-      });
-      
-      // Activar el botón clickeado
-      this.classList.add('activo');
-      
-      // Obtener la actividad desde el atributo data
-      const actividad = this.getAttribute('data-actividad');
-      
-      // Actualizar la vista con la actividad seleccionada
-      mostrarAlumnosActividad(actividad, unidad);
-    });
-  });
+// Función para cargar los datos de la unidad de Unión Hidalgo desde la base de datos
+function cargarDatosUnionHidalgo() {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Mostrar indicador de carga
+  mainContent.innerHTML = `
+    <div class="cargando" style="text-align: center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
+      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de CIDERS unión Hidalgo...</p>
+    </div>
+  `;
 
-  // Configurar campo de búsqueda
-  const busquedaInput = document.getElementById('busquedaAlumnos');
-  if (busquedaInput) {
-    busquedaInput.addEventListener('keyup', function() {
-      filtrarTablaAlumnos(unidad);
+  // Primero obtenemos las actividades disponibles para esta unidad
+  fetch('./php/obtener_actividades_union.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener actividades');
+      }
+      return response.json();
+    })
+    .then(actividades => {
+      if (!actividades || actividades.length === 0) {
+        mostrarMensajeNoActividades();
+        return;
+      }
+      
+      // Ya tenemos las actividades, ahora construimos la interfaz
+      construirInterfazUnionHidalgo(actividades);
+      
+      // Seleccionamos la primera actividad por defecto
+      if (actividades.length > 0) {
+        cargarAlumnosActividad(actividades[0].id_actividad, actividades[0].nombre_actividad);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar actividades:', error);
+      mostrarErrorCarga();
     });
-  }
 }
 
-// Función para mostrar los alumnos de una actividad específica
-function mostrarAlumnosActividad(actividad, unidad) {
-  const datosUnidad = datosUnidades[unidad];
-  if (!datosUnidad || !datosUnidad.alumnos[actividad]) {
-    console.error("No se encontraron datos para la actividad:", actividad, "en la unidad:", unidad);
-    return;
-  }
+// Función para mostrar mensaje cuando no hay actividades
+function mostrarMensajeNoActividades() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - CIDERS unión Hidalgo</h2>
+    </div>
+    
+    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
+      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
+      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
+      </a>
+    </div>
+  `;
+}
 
+// Función para mostrar mensaje de error
+function mostrarErrorCarga() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - CIDERS unión Hidalgo</h2>
+    </div>
+    
+    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
+      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
+      <button onclick="cargarDatosUnionHidalgo()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
+        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
+      </button>
+    </div>
+  `;
+}
+
+// Función para construir la interfaz con las actividades obtenidas
+function construirInterfazUnionHidalgo(actividades) {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Construimos los botones de actividades
+  const botonesActividades = actividades.map((actividad, index) => 
+    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
+  ).join('');
+  
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - CIDERS unión Hidalgo</h2>
+    </div>
+
+    <div class="barra-actividades">
+      ${botonesActividades}
+    </div>
+
+    <div class="seccion-alumnos">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
+        
+        <!-- Botón Vista Previa más pequeño y a la derecha -->
+        <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
+        </a>
+      </div>
+
+      <div class="contenedor-busqueda">
+        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
+        <div class="contador-alumnos" id="contadorAlumnos">
+          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
+        </div>
+      </div>
+
+      <div class="contenedor-tabla">
+        <table class="tabla-alumnos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>No. de Control</th>
+              <th>Semestre</th>
+              <th>Carrera</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaAlumnos">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                <p style="margin-top: 10px;">Cargando alumnos...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  // Configurar eventos para los botones de actividades
+  configurarEventosUnionHidalgo(actividades);
+}
+
+// Función para cargar los alumnos de una actividad específica
+function cargarAlumnosActividad(idActividad, nombreActividad) {
   // Actualizar título
   const tituloActividad = document.getElementById('tituloActividad');
   if (tituloActividad) {
-    tituloActividad.textContent = `Alumnos inscritos a ${actividad}`;
+    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
   }
-
-  // Actualizar tabla de alumnos
+  
+  // Mostrar spinner mientras se cargan los alumnos
   const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
-  if (cuerpoTabla) {
-    cuerpoTabla.innerHTML = datosUnidad.alumnos[actividad].map((alumno, index) => 
-      `<tr class="alumno-${actividad.toLowerCase()}">
-        <td>${index + 1}</td>
-        <td>${alumno.nombre}</td>
-        <td>${alumno.control}</td>
-        <td>${alumno.semestre}</td>
-        <td>${alumno.carrera}</td>
-        <td>${unidad}</td>
-      </tr>`
-    ).join('');
-  }
-
-  // Actualizar contador
   const contadorAlumnos = document.getElementById('contadorAlumnos');
+  
+  if (cuerpoTabla) {
+    cuerpoTabla.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando alumnos...</p>
+        </td>
+      </tr>
+    `;
+  }
+  
   if (contadorAlumnos) {
-    contadorAlumnos.innerHTML = `<span class="numero">${datosUnidad.alumnos[actividad].length}</span> alumnos inscritos`;
+    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
   }
-
-  // Limpiar campo de búsqueda
-  const busquedaInput = document.getElementById('busquedaAlumnos');
-  if (busquedaInput) {
-    busquedaInput.value = '';
-  }
+  
+  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
+  fetch(`./php/obtener_alumnos_inscritos_union.php?id_actividad=${idActividad}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener alumnos');
+      }
+      return response.json();
+    })
+    .then(alumnos => {
+      if (cuerpoTabla) {
+        if (!alumnos || alumnos.length === 0) {
+          cuerpoTabla.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+          }
+          
+          return;
+        }
+        
+        // Llenar la tabla con los alumnos
+        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
+          <tr class="alumno-${nombreActividad.toLowerCase()}">
+            <td>${index + 1}</td>
+            <td>${alumno.nombre}</td>
+            <td>${alumno.numero_control}</td>
+            <td>${alumno.semestre}</td>
+            <td>${alumno.carrera}</td>
+          </tr>
+        `).join('');
+        
+        // Actualizar contador
+        if (contadorAlumnos) {
+          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar alumnos:', error);
+      if (cuerpoTabla) {
+        cuerpoTabla.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error al cargar los estudiantes. Por favor, intente nuevamente.
+            </td>
+          </tr>
+        `;
+      }
+      
+      if (contadorAlumnos) {
+        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+      }
+    });
 }
 
-// Función para filtrar la tabla de alumnos
-function filtrarTablaAlumnos(unidad) {
+// Función para cargar los datos de la Unidad Demetrio Vallejo desde la base de datos
+function cargarDatosDemetrioVallejo() {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Mostrar indicador de carga
+  mainContent.innerHTML = `
+    <div class="cargando" style="text-align: center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
+      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de Unidad Demetrio Vallejo en el Espinal...</p>
+    </div>
+  `;
+
+  // Obtenemos las actividades disponibles para esta unidad
+  fetch('./php/obtener_actividades_demetrio.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener actividades');
+      }
+      return response.json();
+    })
+    .then(actividades => {
+      if (!actividades || actividades.length === 0) {
+        mostrarMensajeNoActividadesDemetrio();
+        return;
+      }
+      
+      // Ya tenemos las actividades, ahora construimos la interfaz
+      construirInterfazDemetrioVallejo(actividades);
+      
+      // Seleccionamos la primera actividad por defecto
+      if (actividades.length > 0) {
+        cargarAlumnosActividadDemetrio(actividades[0].id_actividad, actividades[0].nombre_actividad);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar actividades de Demetrio Vallejo:', error);
+      mostrarErrorCargaDemetrio();
+    });
+}
+
+// Función para mostrar mensaje cuando no hay actividades en Demetrio Vallejo
+function mostrarMensajeNoActividadesDemetrio() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
+    </div>
+    
+    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
+      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
+      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
+      </a>
+    </div>
+  `;
+}
+
+// Función para mostrar mensaje de error en carga de Demetrio Vallejo
+function mostrarErrorCargaDemetrio() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
+    </div>
+    
+    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
+      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
+      <button onclick="cargarDatosDemetrioVallejo()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
+        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
+      </button>
+    </div>
+  `;
+}
+
+// Función para construir la interfaz con las actividades obtenidas para Demetrio Vallejo
+function construirInterfazDemetrioVallejo(actividades) {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Construimos los botones de actividades
+  const botonesActividades = actividades.map((actividad, index) => 
+    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
+  ).join('');
+  
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
+    </div>
+
+    <div class="barra-actividades">
+      ${botonesActividades}
+    </div>
+
+    <div class="seccion-alumnos">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
+        
+        <!-- Botón Vista Previa más pequeño y a la derecha -->
+        <a href="./U_Demetrio.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
+        </a>
+      </div>
+
+      <div class="contenedor-busqueda">
+        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
+        <div class="contador-alumnos" id="contadorAlumnos">
+          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
+        </div>
+      </div>
+
+      <div class="contenedor-tabla">
+        <table class="tabla-alumnos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>No. de Control</th>
+              <th>Semestre</th>
+              <th>Carrera</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaAlumnos">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                <p style="margin-top: 10px;">Cargando alumnos...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  // Configurar eventos para los botones de actividades
+  configurarEventosUnionHidalgo(actividades);
+}
+
+// Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
+function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
+  // Actualizar título
+  const tituloActividad = document.getElementById('tituloActividad');
+  if (tituloActividad) {
+    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
+  }
+  
+  // Mostrar spinner mientras se cargan los alumnos
+  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
+  const contadorAlumnos = document.getElementById('contadorAlumnos');
+  
+  if (cuerpoTabla) {
+    cuerpoTabla.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando alumnos...</p>
+        </td>
+      </tr>
+    `;
+  }
+  
+  if (contadorAlumnos) {
+    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
+  }
+  
+  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
+  fetch(`./php/obtener_alumnos_inscritos_demetrio.php?id_actividad=${idActividad}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener alumnos');
+      }
+      return response.json();
+    })
+    .then(alumnos => {
+      if (cuerpoTabla) {
+        if (!alumnos || alumnos.length === 0) {
+          cuerpoTabla.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+          }
+          
+          return;
+        }
+        
+        // Llenar la tabla con los alumnos
+        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
+          <tr class="alumno-${nombreActividad.toLowerCase()}">
+            <td>${index + 1}</td>
+            <td>${alumno.nombre}</td>
+            <td>${alumno.numero_control}</td>
+            <td>${alumno.semestre}</td>
+            <td>${alumno.carrera}</td>
+          </tr>
+        `).join('');
+        
+        // Actualizar contador
+        if (contadorAlumnos) {
+          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar alumnos:', error);
+      if (cuerpoTabla) {
+        cuerpoTabla.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error al cargar los estudiantes. Por favor, intente nuevamente.
+            </td>
+          </tr>
+        `;
+      }
+      
+      if (contadorAlumnos) {
+        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+      }
+    });
+}
+
+// Función unificada para filtrar tablas de alumnos - REEMPLAZA TODAS LAS FUNCIONES DE FILTRADO
+function filtrarTabla() {
   const input = document.getElementById('busquedaAlumnos');
+  if (!input) return; // Protección por si el elemento no existe
+  
   const filtro = input.value.toLowerCase();
   const filas = document.querySelectorAll('#cuerpoTablaAlumnos tr');
   let alumnosVisibles = 0;
-
+  
   filas.forEach(fila => {
     const celdas = fila.querySelectorAll('td');
     let coincide = false;
 
     for (let i = 0; i < celdas.length; i++) {
-      if (celdas[i].textContent.toLowerCase().includes(filtro)) {
+      if (celdas[i] && celdas[i].textContent.toLowerCase().includes(filtro)) {
         coincide = true;
         break;
       }
@@ -396,7 +797,7 @@ function filtrarUsuarios() {
     let coincide = false;
 
     for (let i = 0; i < celdas.length; i++) {
-      if (celdas[i].textContent.toLowerCase().includes(filtro)) {
+      if (celdas[i] && celdas[i].textContent.toLowerCase().includes(filtro)) {
         coincide = true;
         break;
       }
@@ -444,7 +845,6 @@ function cargarUsuariosDesdeBaseDeDatos() {
               // Asegurar que el contenido de la fila está en el orden correcto de las columnas
               fila.innerHTML = `
                 <td>${usuario.nombre || 'Sin nombre'}</td>
-                <td>${usuario.unidad_academica || 'No especificado'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
                 <td>${usuario.contraseña || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
@@ -673,7 +1073,6 @@ function guardarNuevoUsuario() {
         
         nuevoUsuario.innerHTML = `
           <td>${nombre}</td>
-          <td>${unidad}</td>
           <td>${contacto}</td>
           <td>••••••••</td>
           <td>${rol}</td>
@@ -726,10 +1125,9 @@ function guardarNuevoUsuario() {
 function editarUsuario(filaUsuario) {
   // Obtener los datos de cada celda en el orden correcto según la nueva estructura de la tabla
   const nombre = filaUsuario.cells[0].textContent;
-  const unidad = filaUsuario.cells[1].textContent;
-  const contacto = filaUsuario.cells[2].textContent;
-  const password = filaUsuario.cells[3].textContent;
-  const rol = filaUsuario.cells[4].textContent;
+  const contacto = filaUsuario.cells[1].textContent;
+  const password = filaUsuario.cells[2].textContent;
+  const rol = filaUsuario.cells[3].textContent;
   
   const modalHTML = `
     <div id="modalEditarUsuario" class="modal" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 999;">
@@ -934,7 +1332,7 @@ function guardarCambiosUsuario(filaUsuario) {
       const modal = document.getElementById('modalEditarUsuario');
       modal.parentNode.removeChild(modal);
       
-      actualizarFilaUsuario(filaUsuario, nuevoNombre, nuevaUnidad, nuevoContacto, nuevaPassword, nuevoRol);
+      actualizarFilaUsuario(filaUsuario, nuevoNombre, nuevaUnidad, nuevoContacto, nuevoPassword, nuevoRol);
       
       // Mostrar mensaje de éxito
       Swal.fire({
@@ -950,10 +1348,9 @@ function guardarCambiosUsuario(filaUsuario) {
 // Función para actualizar la fila de un usuario en la tabla
 function actualizarFilaUsuario(fila, nombre, unidad, contacto, password, rol) {
   fila.children[0].textContent = nombre;
-  fila.children[1].textContent = unidad;
-  fila.children[2].textContent = contacto;
-  fila.children[3].textContent = password;
-  fila.children[4].textContent = rol;
+  fila.children[1].textContent = contacto;
+  fila.children[2].textContent = password;
+  fila.children[3].textContent = rol;
 }
 
 // Función para eliminar usuario
@@ -1216,102 +1613,188 @@ function actualizarListaUnidades() {
     contenedor.insertBefore(div, botonAgregar);
   });
 }
-// FUNCIONES PARA ACTIVIDADES (tus funciones existentes)
 
-function cerrarModal() {
-  document.getElementById('modalActividades').style.display = 'none';
-}
-
-function seleccionarActividad(nombreActividad, unidad) {
-  const datosUnidad = datosUnidades[unidad];
-  if (!datosUnidad || !datosUnidad.alumnos[nombreActividad]) {
-    console.error("No se encontraron datos para la actividad:", nombreActividad, "en la unidad:", unidad);
-    return;
-  }
-
-  // Actualizar el título de la actividad seleccionada
-  const tituloActividad = document.getElementById('tituloActividad');
-  tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
-
-  // Actualizar la tabla de alumnos
-  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
-  cuerpoTabla.innerHTML = datosUnidad.alumnos[nombreActividad].map((alumno, index) => 
-    `<tr>
-      <td>${index + 1}</td>
-      <td>${alumno.nombre}</td>
-      <td>${alumno.control}</td>
-      <td>${alumno.semestre}</td>
-      <td>${alumno.carrera}</td>
-      <td>${unidad}</td>
-    </tr>`
-  ).join('');
-
-  // Actualizar el contador de alumnos
-  const contadorAlumnos = document.getElementById('contadorAlumnos');
-  contadorAlumnos.innerHTML = `<span class="numero">${datosUnidad.alumnos[nombreActividad].length}</span> alumnos inscritos`;
-}
-
-function filtrarTabla() {
-  const input = document.getElementById('busquedaAlumnos');
-  const filtro = input.value.toLowerCase();
-  const actividadActual = document.querySelector('.boton-actividad.activo').textContent.toLowerCase();
-  const filas = document.querySelectorAll(`#cuerpoTablaAlumnos .alumno-${actividadActual}`);
-
-  filas.forEach(fila => {
-    const celdas = fila.querySelectorAll('td');
-    const textoFila = Array.from(celdas).map(celda => celda.textContent.toLowerCase()).join(' ');
-
-    if (textoFila.includes(filtro)) {
-      fila.classList.remove('ocultar');
-    } else {
-      fila.classList.add('ocultar');
-    }
+// Función para configurar los eventos de los botones de actividades por unidad
+function configurarEventosUnidad(unidad) {
+  // Configurar eventos para los botones de actividades
+  document.querySelectorAll('.barra-actividades .boton-actividad').forEach(boton => {
+    boton.addEventListener('click', function() {
+      // Desactivar todos los botones
+      document.querySelectorAll('.barra-actividades .boton-actividad').forEach(b => {
+        b.classList.remove('activo');
+      });
+      
+      // Activar el botón clickeado
+      this.classList.add('activo');
+      
+      // Obtener el nombre de la actividad desde el botón
+      const nombreActividad = this.getAttribute('data-actividad');
+      if (nombreActividad) {
+        // Para unidades con datos estáticos
+        const datosUnidad = datosUnidades[unidad];
+        if (datosUnidad && datosUnidad.alumnos[nombreActividad]) {
+          // Actualizar título
+          document.getElementById('tituloActividad').textContent = `Alumnos inscritos a ${nombreActividad}`;
+          
+          // Actualizar tabla
+          const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
+          cuerpoTabla.innerHTML = datosUnidad.alumnos[nombreActividad].map((alumno, index) => 
+            `<tr class="alumno-${nombreActividad.toLowerCase()}">
+              <td>${index + 1}</td>
+              <td>${alumno.nombre}</td>
+              <td>${alumno.control}</td>
+              <td>${alumno.semestre}</td>
+              <td>${alumno.carrera}</td>
+            </tr>`
+          ).join('');
+          
+          // Actualizar contador
+          const contadorAlumnos = document.getElementById('contadorAlumnos');
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">${datosUnidad.alumnos[nombreActividad].length}</span> alumnos inscritos`;
+          }
+        }
+      }
+    });
   });
-
-  // Actualizar el contador de alumnos visibles
-  const alumnosVisibles = document.querySelectorAll(`#cuerpoTablaAlumnos .alumno-${actividadActual}:not(.ocultar)`);
-  const contadorAlumnos = document.getElementById('contadorAlumnos');
-  contadorAlumnos.innerHTML = `<span class="numero">${alumnosVisibles.length}</span> alumnos inscritos`;
 }
 
-function mostrarInformacionUnidad(unidad) {
-  const datosUnidad = datosUnidades[unidad];
-  if (!datosUnidad) {
-    console.error("No se encontraron datos para la unidad:", unidad);
-    return;
+// Función para configurar los eventos para la unión Hidalgo (datos dinámicos)
+function configurarEventosUnionHidalgo(actividades) {
+  // Configurar eventos para los botones de actividades
+  document.querySelectorAll('.barra-actividades .boton-actividad').forEach(boton => {
+    boton.addEventListener('click', function() {
+      // Desactivar todos los botones
+      document.querySelectorAll('.barra-actividades .boton-actividad').forEach(b => {
+        b.classList.remove('activo');
+      });
+      
+      // Activar el botón clickeado
+      this.classList.add('activo');
+      
+      // Obtener el ID y nombre de la actividad desde el botón
+      const idActividad = this.getAttribute('data-id');
+      const nombreActividad = this.getAttribute('data-nombre');
+      
+      if (idActividad && nombreActividad) {
+        // Cargar los alumnos de esta actividad
+        cargarAlumnosActividad(idActividad, nombreActividad);
+      }
+    });
+  });
+  
+  // Configurar campo de búsqueda
+  const busquedaInput = document.getElementById('busquedaAlumnos');
+  if (busquedaInput) {
+    busquedaInput.addEventListener('keyup', filtrarTabla);
   }
+}
 
-  // Determinar el archivo HTML correcto según la unidad
-  let archivoHTML = '';
-  if (unidad === "CIDERS unión Hidalgo") {
-    archivoHTML = "U_CentrodeInvestigacion.html";
-  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
-    archivoHTML = "U_Demetrio.html";
-  } else if (unidad === "Unidad académica Tlahuitoltepec") {
-    archivoHTML = "U_SantaMaria.html";
-  } else if (unidad === "Valle de Etla") {
-    archivoHTML = "U_ValleEtla.html";
-  }
+// Función para cargar los datos de la Unidad Demetrio Vallejo desde la base de datos
+function cargarDatosDemetrioVallejo() {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Mostrar indicador de carga
+  mainContent.innerHTML = `
+    <div class="cargando" style="text-align: center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
+      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de Unidad Demetrio Vallejo en el Espinal...</p>
+    </div>
+  `;
 
+  // Obtenemos las actividades disponibles para esta unidad
+  fetch('./php/obtener_actividades_demetrio.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener actividades');
+      }
+      return response.json();
+    })
+    .then(actividades => {
+      if (!actividades || actividades.length === 0) {
+        mostrarMensajeNoActividadesDemetrio();
+        return;
+      }
+      
+      // Ya tenemos las actividades, ahora construimos la interfaz
+      construirInterfazDemetrioVallejo(actividades);
+      
+      // Seleccionamos la primera actividad por defecto
+      if (actividades.length > 0) {
+        cargarAlumnosActividadDemetrio(actividades[0].id_actividad, actividades[0].nombre_actividad);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar actividades de Demetrio Vallejo:', error);
+      mostrarErrorCargaDemetrio();
+    });
+}
+
+// Función para mostrar mensaje cuando no hay actividades en Demetrio Vallejo
+function mostrarMensajeNoActividadesDemetrio() {
   const mainContent = document.querySelector('.main-content');
   mainContent.innerHTML = `
     <div class="encabezado-modal">
       <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
-      <h2 class="titulo-modal">Actividades Extraescolares - ${unidad}</h2>
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
+    </div>
+    
+    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
+      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
+      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
+      </a>
+    </div>
+  `;
+}
+
+// Función para mostrar mensaje de error en carga de Demetrio Vallejo
+function mostrarErrorCargaDemetrio() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
+    </div>
+    
+    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
+      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
+      <button onclick="cargarDatosDemetrioVallejo()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
+        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
+      </button>
+    </div>
+  `;
+}
+
+// Función para construir la interfaz con las actividades obtenidas para Demetrio Vallejo
+function construirInterfazDemetrioVallejo(actividades) {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Construimos los botones de actividades
+  const botonesActividades = actividades.map((actividad, index) => 
+    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
+  ).join('');
+  
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad Demetrio Vallejo en el Espinal</h2>
     </div>
 
     <div class="barra-actividades">
-      ${datosUnidad.actividades.map((actividad, index) => 
-        `<button class="boton-actividad${index === 0 ? ' activo' : ''}" onclick="seleccionarActividad('${actividad}', '${unidad}')">${actividad}</button>`
-      ).join('')}
+      ${botonesActividades}
     </div>
 
     <div class="seccion-alumnos">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${datosUnidad.actividades[0]}</h3>
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
         
         <!-- Botón Vista Previa más pequeño y a la derecha -->
-        <a href="./${archivoHTML}" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+        <a href="./U_Demetrio.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
           <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
         </a>
       </div>
@@ -1319,7 +1802,7 @@ function mostrarInformacionUnidad(unidad) {
       <div class="contenedor-busqueda">
         <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
         <div class="contador-alumnos" id="contadorAlumnos">
-          <span class="numero">${datosUnidad.alumnos[datosUnidad.actividades[0]].length}</span> alumnos inscritos
+          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
         </div>
       </div>
 
@@ -1332,92 +1815,343 @@ function mostrarInformacionUnidad(unidad) {
               <th>No. de Control</th>
               <th>Semestre</th>
               <th>Carrera</th>
-              <th>Unidad Académica</th>
             </tr>
           </thead>
           <tbody id="cuerpoTablaAlumnos">
-            ${datosUnidad.alumnos[datosUnidad.actividades[0]].map((alumno, index) => 
-              `<tr class="alumno-${datosUnidad.actividades[0].toLowerCase()}">
-                <td>${index + 1}</td>
-                <td>${alumno.nombre}</td>
-                <td>${alumno.control}</td>
-                <td>${alumno.semestre}</td>
-                <td>${alumno.carrera}</td>
-                <td>${unidad}</td>
-              </tr>`
-            ).join('')}
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                <p style="margin-top: 10px;">Cargando alumnos...</p>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   `;
   
-  // Agregamos listener para los botones de actividades
-  setTimeout(() => {
-    document.querySelectorAll('.barra-actividades .boton-actividad').forEach((boton, index) => {
-      boton.addEventListener('click', function() {
-        // Quitar clase activo de todos los botones
-        document.querySelectorAll('.barra-actividades .boton-actividad').forEach(b => {
-          b.classList.remove('activo');
-        });
-        
-        // Añadir clase activo al botón clickeado
-        this.classList.add('activo');
-        
-        // Obtener el nombre de la actividad del texto del botón
-        const nombreActividad = this.textContent;
-        
-        // Seleccionar la actividad
-        seleccionarActividad(nombreActividad, unidad);
-      });
-    });
-    
-    // Activar el primer botón por defecto
-    if (document.querySelectorAll('.barra-actividades .boton-actividad').length > 0) {
-      seleccionarActividad(datosUnidad.actividades[0], unidad);
-    }
-  }, 100);
+  // Configurar eventos para los botones de actividades
+  configurarEventosUnionHidalgo(actividades);
 }
 
-// FILTRO PARA USUARIOS
-function filtrarUsuarios() {
-  const input = document.getElementById('busquedaUsuarios');
-  const filtro = input.value.toLowerCase();
-  const filas = document.querySelectorAll('#tablaUsuarios tr');
-
-  let totalFilas = filas.length;
-  let filasVisibles = 0;
-
-  filas.forEach(fila => {
-    const celdas = fila.getElementsByTagName('td');
-    let coincide = false;
-
-    for (let i = 0; i < celdas.length; i++) {
-      if (celdas[i] && celdas[i].textContent.toLowerCase().includes(filtro)) {
-        coincide = true;
-        break;
-      }
-    }
-
-    if (coincide) {
-      fila.style.display = '';
-      filasVisibles++;
-    } else {
-      fila.style.display = 'none';
-    }
-  });
-}
-
-function cerrarModalUsuario() {
-  const modal = document.getElementById('modalAgregarUsuario');
-  if (modal) {
-    modal.style.display = 'none'; // Ocultar el modal
-    modal.parentNode.removeChild(modal); // Eliminar el modal del DOM
+// Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
+function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
+  // Actualizar título
+  const tituloActividad = document.getElementById('tituloActividad');
+  if (tituloActividad) {
+    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
   }
-  document.body.style.backgroundColor = ''; // Restaurar el fondo de la página
+  
+  // Mostrar spinner mientras se cargan los alumnos
+  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
+  const contadorAlumnos = document.getElementById('contadorAlumnos');
+  
+  if (cuerpoTabla) {
+    cuerpoTabla.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando alumnos...</p>
+        </td>
+      </tr>
+    `;
+  }
+  
+  if (contadorAlumnos) {
+    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
+  }
+  
+  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
+  fetch(`./php/obtener_alumnos_inscritos_demetrio.php?id_actividad=${idActividad}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener alumnos');
+      }
+      return response.json();
+    })
+    .then(alumnos => {
+      if (cuerpoTabla) {
+        if (!alumnos || alumnos.length === 0) {
+          cuerpoTabla.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+          }
+          
+          return;
+        }
+        
+        // Llenar la tabla con los alumnos
+        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
+          <tr class="alumno-${nombreActividad.toLowerCase()}">
+            <td>${index + 1}</td>
+            <td>${alumno.nombre}</td>
+            <td>${alumno.numero_control}</td>
+            <td>${alumno.semestre}</td>
+            <td>${alumno.carrera}</td>
+          </tr>
+        `).join('');
+        
+        // Actualizar contador
+        if (contadorAlumnos) {
+          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar alumnos:', error);
+      if (cuerpoTabla) {
+        cuerpoTabla.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error al cargar los estudiantes. Por favor, intente nuevamente.
+            </td>
+          </tr>
+        `;
+      }
+      
+      if (contadorAlumnos) {
+        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+      }
+    });
 }
 
-// Configurar el botón de cerrar
-const btnCerrarModal = document.getElementById('btnCerrarModal');
-btnCerrarModal.addEventListener('click', cerrarModalUsuario);
+// Función para mostrar la página de gestión de actividades
+function mostrarGestionActividades() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="gestion-actividades" style="margin-top: 20px;">
+      <h1 class="titulo-recuadro" style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 24px; text-align: center;">G E S T I Ó N &nbsp; D E &nbsp; A C T I V I D A D E S</h1>
+      <p class="mb-4" style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 16px; text-align: center; margin-top: 10px;">Administra las actividades extraescolares de cada unidad académica. Agrega, edita o elimina actividades, y asigna alumnos a las mismas de manera sencilla y rápida.</p>
 
+      <div class="card shadow mb-4" style="margin: 0 auto; max-width: 90%;">
+        <div class="card-header py-3" style="background-color: #1B396A; color: white; padding: 10px; border-radius: 5px;">
+          <h6 class="m-0 font-weight-bold text-primary" style="font-family: 'Segoe UI', sans-serif; font-size: 18px; color: white;">Actividades por Unidad</h6>
+        </div>
+        <div class="card-body" style="padding: 15px; background-color: white;">
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table table-bordered" id="dataTableCoordinador" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
+              <thead>
+                <tr style="background-color: #1B396A; color: white;">
+                  <th>Unidad</th>
+                  <th>Actividad</th>
+                  <th>Inscritos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaActividadesCoordinador">
+                <!-- Las actividades se cargarán desde la base de datos -->
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                    <p style="margin-top: 10px;">Cargando actividades...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow mb-4" style="margin: 0 auto; max-width: 90%;">
+        <div class="card-header py-3" style="background-color: #1B396A; color: white; padding: 10px; border-radius: 5px;">
+          <h6 class="m-0 font-weight-bold text-primary" style="font-family: 'Segoe UI', sans-serif; font-size: 18px; color: white;">Gestión de Usuarios</h6>
+        </div>
+        <div class="card-body" style="padding: 15px; background-color: white;">
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table table-bordered" id="dataTableUsuariosCoordinador" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
+              <thead>
+                <tr style="background-color: #1B396A; color: white;">
+                  <th>Nombre</th>
+                  <th>Contacto</th>
+                  <th>Contraseña</th>
+                  <th>Rol</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaUsuariosCoordinador">
+                <!-- Los usuarios se cargarán desde la base de datos -->
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                    <p style="margin-top: 10px;">Cargando usuarios...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Cargar actividades y usuarios
+  cargarActividadesDesdeBaseDeDatosCoordinador();
+  cargarUsuariosDesdeBaseDeDatosCoordinador();
+}
+
+// Función para cargar actividades en el panel del coordinador
+function cargarActividadesDesdeBaseDeDatosCoordinador() {
+  const tablaActividades = document.getElementById('tablaActividadesCoordinador');
+  if (tablaActividades) {
+    tablaActividades.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando actividades...</p>
+        </td>
+      </tr>
+    `;
+    
+    fetch('../php/obtener_actividades_coordinador.php')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(result => {
+        if (result.success) {
+          // Limpiar la tabla
+          tablaActividades.innerHTML = '';
+          
+          // Verificar si hay actividades
+          if (result.data && result.data.length > 0) {
+            // Agregar cada actividad a la tabla
+            result.data.forEach(actividad => {
+              const fila = document.createElement('tr');
+              
+              fila.innerHTML = `
+                <td>${actividad.unidad || 'Sin unidad'}</td>
+                <td>${actividad.nombre_actividad || 'Sin actividad'}</td>
+                <td>${actividad.inscritos || 0}</td>
+                <td>
+                  <button class="btn-editar-actividad" style="background-color: #1B396A; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-edit" style="margin-right: 5px;"></i>Editar
+                  </button>
+                  <button class="btn-eliminar-actividad" style="background-color: #d33; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                    <i class="fas fa-trash" style="margin-right: 5px;"></i>Eliminar
+                  </button>
+                </td>
+              `;
+              tablaActividades.appendChild(fila);
+            });
+          } else {
+            tablaActividades.innerHTML = `
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 20px;">
+                  No hay actividades registradas.
+                </td>
+              </tr>
+            `;
+          }
+        } else {
+          console.error('Error al obtener actividades:', result.message);
+          tablaActividades.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 20px; color: #d33;">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                Error al cargar actividades. Por favor, intente nuevamente.
+              </td>
+            </tr>
+          `;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        tablaActividades.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error de conexión. Por favor, verifique su conexión a internet o al servidor. (${error.message})
+            </td>
+          </tr>
+        `;
+      });
+  }
+}
+
+// Función para cargar usuarios en el panel del coordinador
+function cargarUsuariosDesdeBaseDeDatosCoordinador() {
+  const tablaUsuarios = document.getElementById('tablaUsuariosCoordinador');
+  if (tablaUsuarios) {
+    tablaUsuarios.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando usuarios...</p>
+        </td>
+      </tr>
+    `;
+    
+    fetch('../php/obtener_usuarios.php')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(result => {
+        if (result.success) {
+          // Limpiar la tabla
+          tablaUsuarios.innerHTML = '';
+          
+          // Verificar si hay usuarios
+          if (result.data && result.data.length > 0) {
+            // Agregar cada usuario a la tabla
+            result.data.forEach(usuario => {
+              const fila = document.createElement('tr');
+              
+              fila.innerHTML = `
+                <td>${usuario.nombre || 'Sin nombre'}</td>
+                <td>${usuario.contacto || 'No especificado'}</td>
+                <td>${usuario.contraseña || 'No especificada'}</td>
+                <td>${usuario.rol || 'No especificado'}</td>
+                <td>
+                  <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
+                  <i class="fas fa-trash" style="cursor: pointer; color: #d33; font-size: 18px;"></i>
+                </td>
+              `;
+              tablaUsuarios.appendChild(fila);
+            });
+          } else {
+            tablaUsuarios.innerHTML = `
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 20px;">
+                  No hay usuarios registrados.
+                </td>
+              </tr>
+            `;
+          }
+        } else {
+          console.error('Error al obtener usuarios:', result.message);
+          tablaUsuarios.innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+                Error al cargar usuarios. Por favor, intente nuevamente.
+              </td>
+            </tr>
+          `;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        tablaUsuarios.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error de conexión. Por favor, verifique su conexión a internet o al servidor. (${error.message})
+            </td>
+          </tr>
+        `;
+      });
+  }
+}
