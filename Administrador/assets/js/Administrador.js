@@ -209,6 +209,12 @@ function mostrarInformacionUnidad(unidad) {
   } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
     cargarDatosDemetrioVallejo();
     return;
+  } else if (unidad === "Unidad académica Tlahuitoltepec") {
+    cargarDatosTlahuitoltepec();
+    return;
+  } else if (unidad === "Valle de Etla") {
+    cargarDatosValleEtla();
+    return;
   }
   
   // Para las demás unidades, seguimos usando los datos estáticos
@@ -695,6 +701,239 @@ function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
   
   // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
   fetch(`./php/obtener_alumnos_inscritos_demetrio.php?id_actividad=${idActividad}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener alumnos');
+      }
+      return response.json();
+    })
+    .then(alumnos => {
+      if (cuerpoTabla) {
+        if (!alumnos || alumnos.length === 0) {
+          cuerpoTabla.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+          }
+          
+          return;
+        }
+        
+        // Llenar la tabla con los alumnos
+        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
+          <tr class="alumno-${nombreActividad.toLowerCase()}">
+            <td>${index + 1}</td>
+            <td>${alumno.nombre}</td>
+            <td>${alumno.numero_control}</td>
+            <td>${alumno.semestre}</td>
+            <td>${alumno.carrera}</td>
+          </tr>
+        `).join('');
+        
+        // Actualizar contador
+        if (contadorAlumnos) {
+          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar alumnos:', error);
+      if (cuerpoTabla) {
+        cuerpoTabla.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error al cargar los estudiantes. Por favor, intente nuevamente.
+            </td>
+          </tr>
+        `;
+      }
+      
+      if (contadorAlumnos) {
+        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+      }
+    });
+}
+
+// Función para cargar los datos de la unidad académica Tlahuitoltepec desde la base de datos
+function cargarDatosTlahuitoltepec() {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Mostrar indicador de carga
+  mainContent.innerHTML = `
+    <div class="cargando" style="text-align: center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
+      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de Unidad académica Tlahuitoltepec...</p>
+    </div>
+  `;
+
+  // Obtenemos las actividades disponibles para esta unidad
+  fetch('./php/obtener_actividades_tlahuitoltepec.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener actividades');
+      }
+      return response.json();
+    })
+    .then(actividades => {
+      if (!actividades || actividades.length === 0) {
+        mostrarMensajeNoActividadesTlahuitoltepec();
+        return;
+      }
+      
+      // Ya tenemos las actividades, ahora construimos la interfaz
+      construirInterfazTlahuitoltepec(actividades);
+      
+      // Seleccionamos la primera actividad por defecto
+      if (actividades.length > 0) {
+        cargarAlumnosActividadTlahuitoltepec(actividades[0].id_actividad, actividades[0].nombre_actividad);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar actividades de Tlahuitoltepec:', error);
+      mostrarErrorCargaTlahuitoltepec();
+    });
+}
+
+// Función para mostrar mensaje cuando no hay actividades en Tlahuitoltepec
+function mostrarMensajeNoActividadesTlahuitoltepec() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad académica Tlahuitoltepec</h2>
+    </div>
+    
+    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
+      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
+      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
+      </a>
+    </div>
+  `;
+}
+
+// Función para mostrar mensaje de error en carga de Tlahuitoltepec
+function mostrarErrorCargaTlahuitoltepec() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad académica Tlahuitoltepec</h2>
+    </div>
+    
+    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
+      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
+      <button onclick="cargarDatosTlahuitoltepec()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
+        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
+      </button>
+    </div>
+  `;
+}
+
+// Función para construir la interfaz con las actividades obtenidas para Tlahuitoltepec
+function construirInterfazTlahuitoltepec(actividades) {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Construimos los botones de actividades
+  const botonesActividades = actividades.map((actividad, index) => 
+    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
+  ).join('');
+  
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Unidad académica Tlahuitoltepec</h2>
+    </div>
+
+    <div class="barra-actividades">
+      ${botonesActividades}
+    </div>
+
+    <div class="seccion-alumnos">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
+        
+        <!-- Botón Vista Previa más pequeño y a la derecha -->
+        <a href="./U_SantaMaria.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
+        </a>
+      </div>
+
+      <div class="contenedor-busqueda">
+        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
+        <div class="contador-alumnos" id="contadorAlumnos">
+          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
+        </div>
+      </div>
+
+      <div class="contenedor-tabla">
+        <table class="tabla-alumnos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>No. de Control</th>
+              <th>Semestre</th>
+              <th>Carrera</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaAlumnos">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                <p style="margin-top: 10px;">Cargando alumnos...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  // Configurar eventos para los botones de actividades
+  configurarEventosUnionHidalgo(actividades);
+}
+
+// Función para cargar los alumnos de una actividad específica en Tlahuitoltepec
+function cargarAlumnosActividadTlahuitoltepec(idActividad, nombreActividad) {
+  // Actualizar título
+  const tituloActividad = document.getElementById('tituloActividad');
+  if (tituloActividad) {
+    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
+  }
+  
+  // Mostrar spinner mientras se cargan los alumnos
+  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
+  const contadorAlumnos = document.getElementById('contadorAlumnos');
+  
+  if (cuerpoTabla) {
+    cuerpoTabla.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando alumnos...</p>
+        </td>
+      </tr>
+    `;
+  }
+  
+  if (contadorAlumnos) {
+    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
+  }
+  
+  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
+  fetch(`./php/obtener_alumnos_inscritos_tlahuitoltepec.php?id_actividad=${idActividad}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Error al obtener alumnos');
@@ -1863,6 +2102,239 @@ function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
   
   // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
   fetch(`./php/obtener_alumnos_inscritos_demetrio.php?id_actividad=${idActividad}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener alumnos');
+      }
+      return response.json();
+    })
+    .then(alumnos => {
+      if (cuerpoTabla) {
+        if (!alumnos || alumnos.length === 0) {
+          cuerpoTabla.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          
+          if (contadorAlumnos) {
+            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+          }
+          
+          return;
+        }
+        
+        // Llenar la tabla con los alumnos
+        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
+          <tr class="alumno-${nombreActividad.toLowerCase()}">
+            <td>${index + 1}</td>
+            <td>${alumno.nombre}</td>
+            <td>${alumno.numero_control}</td>
+            <td>${alumno.semestre}</td>
+            <td>${alumno.carrera}</td>
+          </tr>
+        `).join('');
+        
+        // Actualizar contador
+        if (contadorAlumnos) {
+          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar alumnos:', error);
+      if (cuerpoTabla) {
+        cuerpoTabla.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
+              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
+              Error al cargar los estudiantes. Por favor, intente nuevamente.
+            </td>
+          </tr>
+        `;
+      }
+      
+      if (contadorAlumnos) {
+        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
+      }
+    });
+}
+
+// Función para cargar los datos de Valle de Etla desde la base de datos
+function cargarDatosValleEtla() {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Mostrar indicador de carga
+  mainContent.innerHTML = `
+    <div class="cargando" style="text-align: center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
+      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de Valle de Etla...</p>
+    </div>
+  `;
+
+  // Primero obtenemos las actividades disponibles para esta unidad
+  fetch('./php/obtener_actividades_valle.php')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener actividades');
+      }
+      return response.json();
+    })
+    .then(actividades => {
+      if (!actividades || actividades.length === 0) {
+        mostrarMensajeNoActividadesValle();
+        return;
+      }
+      
+      // Ya tenemos las actividades, ahora construimos la interfaz
+      construirInterfazValleEtla(actividades);
+      
+      // Seleccionamos la primera actividad por defecto
+      if (actividades.length > 0) {
+        cargarAlumnosActividadValle(actividades[0].id_actividad, actividades[0].nombre_actividad);
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar actividades:', error);
+      mostrarErrorCargaValle();
+    });
+}
+
+// Función para mostrar mensaje cuando no hay actividades en Valle de Etla
+function mostrarMensajeNoActividadesValle() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
+    </div>
+    
+    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
+      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
+      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
+      </a>
+    </div>
+  `;
+}
+
+// Función para mostrar mensaje de error en carga de Valle de Etla
+function mostrarErrorCargaValle() {
+  const mainContent = document.querySelector('.main-content');
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
+    </div>
+    
+    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
+      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
+      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
+      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
+      <button onclick="cargarDatosValleEtla()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
+        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
+      </button>
+    </div>
+  `;
+}
+
+// Función para construir la interfaz con las actividades obtenidas para Valle de Etla
+function construirInterfazValleEtla(actividades) {
+  const mainContent = document.querySelector('.main-content');
+  
+  // Construimos los botones de actividades
+  const botonesActividades = actividades.map((actividad, index) => 
+    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
+  ).join('');
+  
+  mainContent.innerHTML = `
+    <div class="encabezado-modal">
+      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
+      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
+    </div>
+
+    <div class="barra-actividades">
+      ${botonesActividades}
+    </div>
+
+    <div class="seccion-alumnos">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
+        
+        <!-- Botón Vista Previa más pequeño y a la derecha -->
+        <a href="./U_ValleEtla.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
+          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
+        </a>
+      </div>
+
+      <div class="contenedor-busqueda">
+        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
+        <div class="contador-alumnos" id="contadorAlumnos">
+          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
+        </div>
+      </div>
+
+      <div class="contenedor-tabla">
+        <table class="tabla-alumnos">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>No. de Control</th>
+              <th>Semestre</th>
+              <th>Carrera</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoTablaAlumnos">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+                <p style="margin-top: 10px;">Cargando alumnos...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  
+  // Configurar eventos para los botones de actividades
+  configurarEventosUnionHidalgo(actividades);
+}
+
+// Función para cargar los alumnos de una actividad específica en Valle de Etla
+function cargarAlumnosActividadValle(idActividad, nombreActividad) {
+  // Actualizar título
+  const tituloActividad = document.getElementById('tituloActividad');
+  if (tituloActividad) {
+    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
+  }
+  
+  // Mostrar spinner mientras se cargan los alumnos
+  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
+  const contadorAlumnos = document.getElementById('contadorAlumnos');
+  
+  if (cuerpoTabla) {
+    cuerpoTabla.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 20px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
+          <p style="margin-top: 10px;">Cargando alumnos...</p>
+        </td>
+      </tr>
+    `;
+  }
+  
+  if (contadorAlumnos) {
+    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
+  }
+  
+  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
+  fetch(`./php/obtener_alumnos_inscritos_valle.php?id_actividad=${idActividad}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Error al obtener alumnos');
