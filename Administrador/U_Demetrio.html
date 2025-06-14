@@ -629,6 +629,23 @@
       const categoriaDiv = contenedorActividadesActual.closest('.contenedor-categoria').querySelector('.categoria');
       const id_categoria = categoriaDiv.dataset.id_categoria;
 
+      // Validación de campos vacíos
+      if (!nombre || !descripcion || !id_categoria) {
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: "btn btn-success",
+          },
+          buttonsStyling: false
+        });
+        swalWithBootstrapButtons.fire({
+          title: "¡Campos incompletos!",
+          text: "Debes llenar todos los campos para agregar la actividad.",
+          icon: "warning",
+          confirmButtonText: "Entendido"
+        });
+        return;
+      }
+
       const formData = new FormData();
       formData.append('nombre', nombre);
       formData.append('descripcion', descripcion);
