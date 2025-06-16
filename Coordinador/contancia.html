@@ -10,57 +10,111 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Estilos generales (sin cambios) */
         :root {
             --color-azul-principal: #1a3461;
             --color-azul-claro-hover: #12284b;
+            --color-verde-accion: #007a4d;
+            --color-verde-accion-hover: #00633e;
             --color-fondo-claro: #f8f9fa;
+            --color-fondo-tarjeta: #ffffff;
             --color-texto-claro: #ffffff;
             --color-texto-oscuro: #333;
+            --color-texto-secundario: #6c757d;
             --color-borde-suave: #e0e0e0;
+            --color-borde-fuerte: #ced4da;
             --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
             --transicion-fluida: all 0.3s ease;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo-claro); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        [data-theme="dark"] {
+            --color-azul-principal: #3a5a9a;
+            --color-azul-claro-hover: #4a6abc;
+            --color-verde-accion: #28a745;
+            --color-verde-accion-hover: #218838;
+            --color-fondo-claro: #121212;
+            --color-fondo-tarjeta: #1e1e1e;
+            --color-texto-claro: #ffffff;
+            --color-texto-oscuro: #e0e0e0;
+            --color-texto-secundario: #a0a0a0;
+            --color-borde-suave: #444;
+            --color-borde-fuerte: #555;
+            --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo-claro); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: var(--color-texto-oscuro); transition: background-color 0.3s, color 0.3s; }
         header { background-color: var(--color-azul-principal); color: var(--color-texto-claro); padding: 15px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
         .logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; width: 100%; max-width: 960px; margin-bottom: 15px; }
         .logos img { height: 50px; }
+        [data-theme="light"] .logos img { filter: brightness(0) invert(1); opacity: 0.9; }
+        [data-theme="dark"] .logos .logo-itvo { background-color: white; padding: 5px; border-radius: 4px; }
         header h2 { font-size: 1.1em; margin: 0; font-weight: 500; }
-        .container { flex-grow: 1; padding: 20px; max-width: 960px; margin: 30px auto; background-color: var(--color-texto-claro); border-radius: 8px; box-shadow: var(--sombra-profesional); }
+        .container { flex-grow: 1; padding: 20px; max-width: 1100px; margin: 30px auto; background-color: var(--color-fondo-tarjeta); border: 1px solid var(--color-borde-suave); border-radius: 8px; box-shadow: var(--sombra-profesional); transition: background-color 0.3s, border-color 0.3s; }
+
+        .stats-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .stat-card { background-color: var(--color-fondo-claro); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--color-borde-suave); }
+        .stat-card .stat-value { font-size: 2.5em; font-weight: 700; color: var(--color-azul-principal); }
+        .stat-card .stat-label { font-size: 1em; font-weight: 500; color: var(--color-texto-secundario); margin-top: 5px; }
+        .stat-card .fa-users { color: #007bff; }
+        .stat-card .fa-user-check { color: #28a745; }
+        .stat-card .fa-user-clock { color: #ffc107; }
+
         .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-top-left-radius: 6px; border-top-right-radius: 6px; }
         .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
-        .search-wrapper { position: relative; }
-        .search-wrapper .fa-search { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
-        #searchInput { padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid var(--color-borde-suave); font-size: 0.9em; transition: var(--transicion-fluida); }
-        #searchInput:focus { outline: none; box-shadow: 0 0 0 3px rgba(26, 52, 97, 0.3); }
+        .controls-right { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        #searchInput { background-color: var(--color-fondo-tarjeta); color: var(--color-texto-oscuro); padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid var(--color-borde-fuerte); font-size: 0.9em; transition: var(--transicion-fluida); }
+        #searchInput:focus { outline: none; box-shadow: 0 0 0 3px rgba(58, 90, 154, 0.5); }
+        .btn-action { background-color: var(--color-verde-accion); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: var(--transicion-fluida); display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+        .btn-action:hover { background-color: var(--color-verde-accion-hover); transform: translateY(-1px); }
+        .btn-export { background-color: #17a2b8; }
+        .btn-export:hover { background-color: #138496; }
+        
+        .theme-switch-wrapper { display: flex; align-items: center; gap: 8px; }
+        .theme-switch { display: inline-block; height: 24px; position: relative; width: 44px; }
+        .theme-switch input { display: none; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; }
+        .slider:before { background-color: #fff; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; }
+        input:checked + .slider { background-color: var(--color-verde-accion); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+
         table { width: 100%; border-collapse: collapse; border: 1px solid var(--color-borde-suave); border-top: none; }
         th, td { padding: 12px 15px; border-bottom: 1px solid var(--color-borde-suave); text-align: left; }
-        thead th { background-color: #f2f2f2; color: var(--color-texto-oscuro); font-weight: 700; }
+        thead th { background-color: var(--color-fondo-claro); color: var(--color-texto-oscuro); font-weight: 700; transition: background-color 0.3s; }
+        thead th.sortable { cursor: pointer; user-select: none; }
+        thead th.sortable:hover { background-color: var(--color-borde-suave); }
+        thead th .sort-icon { margin-left: 8px; color: var(--color-texto-secundario); transition: transform 0.2s; }
+
         tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background-color: #f5f5f5; transition: background-color 0.2s ease; }
-        .actions-container { display: flex; align-items: center; gap: 10px; }
-        .actions-container i { cursor: pointer; margin: 0 4px; color: #6c757d; font-size: 1.1em; transition: var(--transicion-fluida); }
-        .actions-container i:hover { color: var(--color-azul-principal); transform: scale(1.2); }
+        tbody tr { transition: background-color 0.2s ease; }
+        tbody tr:hover { background-color: var(--color-borde-suave); }
+        .empty-row td { text-align: center; padding: 40px; color: var(--color-texto-secundario); font-style: italic; }
         .status-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; color: #fff; text-transform: uppercase; }
         .status-pending { background-color: #ffc107; }
         .status-completed { background-color: #6c757d; }
+
+        .actions-container { display: flex; align-items: center; gap: 10px; }
+        .actions-container i { cursor: pointer; margin: 0 4px; color: var(--color-texto-secundario); font-size: 1.2em; transition: var(--transicion-fluida); padding: 5px; border-radius: 50%; }
+        .actions-container i:hover { color: var(--color-azul-principal); transform: scale(1.1); background-color: var(--color-borde-suave); }
         .btn-generar-constancia { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: var(--transicion-fluida); display: inline-flex; align-items: center; gap: 5px; }
         .btn-generar-constancia:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .btn-generar-constancia:disabled { background-color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .overlay.visible { display: block; opacity: 1; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background-color: var(--color-texto-claro); border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); z-index: 1001; border-radius: 10px; max-height: 90vh; overflow-y: auto; max-width: 600px; width: 90%; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background-color: var(--color-fondo-tarjeta); border: 1px solid var(--color-borde-suave); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); z-index: 1001; border-radius: 10px; max-height: 90vh; overflow-y: auto; max-width: 600px; width: 90%; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; padding: 20px 20px 40px 20px; }
         .modal.visible { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        .modal { padding: 20px 20px 40px 20px; }
         .modal h2 { font-size: 1.8em; margin-bottom: 20px; text-align: center; color: var(--color-azul-principal); }
         .modal label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: var(--color-texto-oscuro); }
-        .modal input, .modal textarea, .modal select { width: calc(100% - 22px); padding: 10px; margin-top: 5px; border: 1px solid #ced4da; border-radius: 6px; font-size: 1em; }
-        .modal fieldset { border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 20px; margin-bottom: 20px; background-color: #fefefe; }
+        .modal input, .modal textarea, .modal select { width: calc(100% - 22px); padding: 10px; margin-top: 5px; border-radius: 6px; font-size: 1em; background-color: var(--color-fondo-claro); color: var(--color-texto-oscuro); border: 1px solid var(--color-borde-fuerte); }
+        .modal input:focus, .modal textarea:focus, .modal select:focus { outline: none; border-color: var(--color-azul-principal); box-shadow: 0 0 0 3px rgba(58, 90, 154, 0.5); }
+        .modal fieldset { border: 1px solid var(--color-borde-suave); border-radius: 8px; padding: 15px; margin-top: 20px; margin-bottom: 20px; background-color: transparent; }
         .modal legend { font-weight: bold; color: var(--color-azul-principal); padding: 0 10px; font-size: 1.1em; }
-        .modal button { margin-top: 20px; padding: 12px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1em; transition: background-color 0.3s ease; }
+        .modal button { margin-top: 20px; padding: 12px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 1.1em; transition: background-color 0.3s ease; font-weight: 700; }
         .modal button:hover { background-color: var(--color-azul-claro-hover); }
         .modal .btn-cerrar { background-color: #6c757d; margin-top: 10px; }
         .modal .btn-cerrar:hover { background-color: #5a6268; }
+        
         #confirmacionModal, #deleteConfirmModal { max-width: 400px; text-align: center; }
         #confirmacionModal p, #deleteConfirmModal p { font-size: 1.2em; margin-bottom: 25px; color: var(--color-texto-oscuro); }
         .modal-buttons { display: flex; justify-content: space-around; gap: 15px; }
@@ -71,340 +125,213 @@
         .modal-buttons .confirm-no:hover, .modal-buttons .confirm-delete-no:hover { background-color: #5a6268; }
         .modal-buttons .confirm-delete-yes { background-color: #dc3545; }
         .modal-buttons .confirm-delete-yes:hover { background-color: #c82333; }
+
         #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 100px); padding: 15px 25px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-radius: 6px; box-shadow: var(--sombra-profesional); display: flex; align-items: center; gap: 10px; z-index: 9999; opacity: 0; transition: transform 0.5s ease, opacity 0.5s ease; }
         #toast-notification.show { transform: translate(-50%, 0); opacity: 1; }
         #toast-notification .fa-circle-check { color: #28a745; }
+        
         footer { background-color: var(--color-azul-principal); color: var(--color-texto-claro); text-align: center; padding: 15px; margin-top: auto; font-size: 0.9em; width: 100%; }
         #viewStudentDetails p { margin: 5px 0; font-size: 1.1em; }
         #viewStudentDetails p strong { color: var(--color-azul-principal); }
+
     </style>
 </head>
-<body>
+<body data-theme="light">
     <header>
         <div class="logos">
              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/SEP_Logo_2019.svg" alt="SEP" />
              <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Logo_de_la_Secretar%C3%ADa_de_la_Funci%C3%B3n_P%C3%BAblica.svg" alt="Gobierno de México" />
              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5a/Logo_del_TecNM.svg" alt="TecNM" />
-             <img src="https://yt3.googleusercontent.com/ytc/AIdro_kU5yCHHsv-olco-p24-tIqfTfub8z2I2a8Tf4h=s900-c-k-c0x00ffffff-no-rj" alt="IT Valle de Etla" />
+             <img src="https://www.voaxaca.tecnm.mx/wp-content/uploads/2020/05/logo-itvo.png" alt="IT Valle de Etla" class="logo-itvo" style="height: 60px;"/>
         </div>
         <h2>Gobierno de México<br />Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
     </header>
 
     <div class="container">
+        <div class="stats-panel">
+            <div class="stat-card"><div class="stat-value"><i class="fas fa-users"></i> <span id="stat-total">0</span></div><div class="stat-label">Total de Alumnos</div></div>
+            <div class="stat-card"><div class="stat-value"><i class="fas fa-user-check"></i> <span id="stat-evaluated">0</span></div><div class="stat-label">Alumnos Evaluados</div></div>
+            <div class="stat-card"><div class="stat-value"><i class="fas fa-user-clock"></i> <span id="stat-pending">0</span></div><div class="stat-label">Alumnos Pendientes</div></div>
+        </div>
+
         <div class="table-controls">
             <h3 class="title">Club de Danza</h3>
-            <div class="search-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
+            <div class="controls-right">
+                <button class="btn-action btn-export" onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exportar a CSV</button>
+                <button class="btn-action" onclick="showAddModal()"><i class="fas fa-plus"></i> Agregar Alumno</button>
+                <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Buscar alumno..."></div>
+                <div class="theme-switch-wrapper"><i class="fas fa-moon"></i><label class="theme-switch" for="theme-toggle"><input type="checkbox" id="theme-toggle" /><span class="slider round"></span></label><i class="fas fa-sun"></i></div>
             </div>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>No. Control</th>
-                    <th>Nombres y Apellidos</th>
-                    <th>Estado</th>
+                    <th class="sortable" data-column="controlNumber" onclick="handleSort('controlNumber')">No. Control<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="name" onclick="handleSort('name')">Nombres y Apellidos<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="status" onclick="handleSort('status')">Estado<i class="fas fa-sort sort-icon"></i></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody id="tabla-alumnos">
-                </tbody>
+            <tbody id="tabla-alumnos"></tbody>
+            <tbody id="empty-state-tbody" style="display: none;"><tr class="empty-row"><td colspan="4"></td></tr></tbody>
         </table>
     </div>
     
     <div id="overlay" class="overlay"></div>
 
-    <div id="viewModal" class="modal">
-        <h2>Detalles del Alumno</h2>
-        <div id="viewStudentDetails"></div>
-        <button class="btn-cerrar" onclick="closeModal('viewModal')">Cerrar</button>
-    </div>
+    <div id="viewModal" class="modal"><h2>Detalles del Alumno</h2><div id="viewStudentDetails"></div><button class="btn-cerrar" onclick="closeModal('viewModal')">Cerrar</button></div>
+    <div id="editModal" class="modal"><h2>Editar Alumno</h2><form id="editForm" onsubmit="saveStudentChanges(event)"><input type="hidden" id="editStudentId"><label for="editControlNumber">No. de Control:</label><input type="text" id="editControlNumber" required><label for="editStudentName">Nombre Completo:</label><input type="text" id="editStudentName" required><button type="submit">Guardar Cambios</button><button type="button" class="btn-cerrar" onclick="closeModal('editModal')">Cancelar</button></form></div>
+    <div id="addModal" class="modal"><h2>Agregar Nuevo Alumno</h2><form id="addForm" onsubmit="saveNewStudent(event)"><label for="addControlNumber">No. de Control:</label><input type="text" id="addControlNumber" required><label for="addStudentName">Nombre Completo:</label><input type="text" id="addStudentName" required><button type="submit">Registrar Alumno</button><button type="button" class="btn-cerrar" onclick="closeModal('addModal')">Cancelar</button></form></div>
+    <div id="deleteConfirmModal" class="modal"><p>¿Estás seguro de que deseas eliminar a este alumno?</p><div id="deleteStudentInfo" style="font-weight:bold; margin-bottom:20px;"></div><div class="modal-buttons"><button class="confirm-delete-yes" onclick="confirmDelete()">Sí, eliminar</button><button class="confirm-delete-no" onclick="closeModal('deleteConfirmModal')">No, cancelar</button></div></div>
+    <div id="formularioEvaluacion" class="modal"><h2>Evaluación de Actividades Complementarias</h2><form id="evaluationForm"><input type="hidden" id="evalStudentId"><label for="nombreEstudianteEval">Nombre del Estudiante:</label><input type="text" id="nombreEstudianteEval" readonly /><label for="actividadComplementaria">Actividad Complementaria:</label><input type="text" id="actividadComplementaria" value="Club de Danza" /><label for="periodo">Periodo de Realización:</label><input type="text" id="periodo" placeholder="Ej: Agosto - Diciembre 2025" required /><fieldset><legend>Criterios de Evaluación</legend><div id="criteriosContainer"></div></fieldset><label for="observaciones">Observaciones:</label><textarea id="observaciones" rows="3"></textarea><label for="valorNumericoEval">Valor Numérico:</label><input type="number" id="valorNumericoEval" readonly /><label for="nivelDesempenoEval">Nivel de Desempeño:</label><input type="text" id="nivelDesempenoEval" readonly /><hr /><h3>Validación Final</h3><label for="nombreResponsable">Nombre del Profesor Responsable:</label><input type="text" id="nombreResponsable" placeholder="Nombre completo del responsable" required/><label for="nombreJefeExtra">Nombre del Jefe(a) de Act. Extraescolares:</label><input type="text" id="nombreJefeExtra" placeholder="Nombre completo del jefe/a" required/><label for="fechaExpedicion">Fecha de Expedición:</label><input type="date" id="fechaExpedicion" required/><button type="button" onclick="finalizarEvaluacion()">Finalizar Evaluación</button><button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button></form></div>
+    <div id="confirmacionModal" class="modal"><p>¿Desea generar la constancia con los datos de la evaluación?</p><div class="modal-buttons"><button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar</button><button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button></div></div>
+    <div id="toast-notification"><i class="fa-solid fa-circle-check"></i><span id="toast-message"></span></div>
 
-    <div id="editModal" class="modal">
-        <h2>Editar Alumno</h2>
-        <form id="editForm" onsubmit="saveStudentChanges(event)">
-            <input type="hidden" id="editStudentId">
-            <label for="editControlNumber">No. de Control:</label>
-            <input type="text" id="editControlNumber" required>
-            <label for="editStudentName">Nombre Completo:</label>
-            <input type="text" id="editStudentName" required>
-            <button type="submit">Guardar Cambios</button>
-            <button type="button" class="btn-cerrar" onclick="closeModal('editModal')">Cancelar</button>
-        </form>
-    </div>
-
-    <div id="deleteConfirmModal" class="modal">
-        <p>¿Estás seguro de que deseas eliminar a este alumno?</p>
-        <div id="deleteStudentInfo" style="font-weight:bold; margin-bottom:20px;"></div>
-        <div class="modal-buttons">
-            <button class="confirm-delete-yes" onclick="confirmDelete()">Sí, eliminar</button>
-            <button class="confirm-delete-no" onclick="closeModal('deleteConfirmModal')">No, cancelar</button>
-        </div>
-    </div>
-    
-    <div id="formularioEvaluacion" class="modal"> </div>
-    <div id="confirmacionModal" class="modal"> </div>
-
-    <div id="toast-notification">
-        <i class="fa-solid fa-circle-check"></i>
-        <span id="toast-message"></span>
-    </div>
-
-    <footer>
-        &copy; 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla
-    </footer>
+    <footer>© 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla</footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-    // --- 1. BASE DE DATOS SIMULADA ---
-    let students = [
-        { id: 1, controlNumber: '19011234', name: 'Adán Cristóbal Cruz Espinoza', status: 'Pendiente' },
-        { id: 2, controlNumber: '18015678', name: 'Mariana Sofía Reyes Castillo', status: 'Evaluado' },
-        { id: 3, controlNumber: '20019012', name: 'Carlos Alberto Jiménez Pérez', status: 'Pendiente' },
-        { id: 4, controlNumber: '19013456', name: 'Valeria Mendoza López', status: 'Pendiente' },
-    ];
+    const { jsPDF } = window.jspdf;
+    let students = [];
     let studentIdToDelete = null;
+    let studentIdToEvaluate = null;
+    let currentSort = { column: 'name', direction: 'asc' };
 
-    // --- 2. RENDERIZADO Y LÓGICA DE LA TABLA ---
+    // --- 1. INICIALIZACIÓN Y GESTIÓN DEL TEMA ---
     document.addEventListener('DOMContentLoaded', () => {
+        setupTheme();
+        loadStudents();
+        initializeEvaluationForm();
         renderTable();
     });
 
+    function setupTheme() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const storedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', storedTheme);
+        themeToggle.checked = storedTheme === 'dark';
+        themeToggle.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
+
+    // --- 2. GESTIÓN DE DATOS (localStorage) ---
+    function saveStudents() {
+        localStorage.setItem('danceClubStudents', JSON.stringify(students));
+        updateStats();
+    }
+    function loadStudents() {
+        const storedStudents = localStorage.getItem('danceClubStudents');
+        students = storedStudents ? JSON.parse(storedStudents) : [
+             { id: 1, controlNumber: '19011234', name: 'Adán Cristóbal Cruz Espinoza', status: 'Pendiente' },
+             { id: 2, controlNumber: '18015678', name: 'Mariana Sofía Reyes Castillo', status: 'Evaluado' },
+             { id: 3, controlNumber: '20019012', name: 'Carlos Alberto Jiménez Pérez', status: 'Pendiente' },
+             { id: 4, controlNumber: '19013456', name: 'Valeria Mendoza López', status: 'Pendiente' },
+        ];
+    }
+    
+    // --- 3. RENDERIZADO Y LÓGICA DE LA TABLA ---
+    function updateStats() {
+        const total = students.length;
+        const evaluated = students.filter(s => s.status === 'Evaluado').length;
+        document.getElementById('stat-total').textContent = total;
+        document.getElementById('stat-evaluated').textContent = evaluated;
+        document.getElementById('stat-pending').textContent = total - evaluated;
+    }
+    function handleSort(column) {
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else { currentSort.column = column; currentSort.direction = 'asc'; }
+        renderTable();
+    }
     function renderTable() {
-        const tableBody = document.getElementById('tabla-alumnos');
-        tableBody.innerHTML = ''; // Limpiar la tabla antes de redibujar
-
-        students.forEach(student => {
-            const isEvaluado = student.status === 'Evaluado';
-            const row = `
-                <tr>
-                    <td>${student.controlNumber}</td>
-                    <td>${student.name}</td>
-                    <td>
-                        <span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">
-                            ${student.status}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="actions-container">
-                            <i class="fa-solid fa-eye" title="Ver" onclick="showViewModal(${student.id})"></i>
-                            <i class="fa-solid fa-pen-to-square" title="Editar" onclick="showEditModal(${student.id})"></i>
-                            <i class="fa-solid fa-trash" title="Eliminar" onclick="showDeleteModal(${student.id})"></i>
-                            <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(this, ${student.id})" ${isEvaluado ? 'disabled' : ''}>
-                                <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> 
-                                ${isEvaluado ? 'Evaluado' : 'Evaluar'}
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    }
-
-    function filterTable() {
+        updateStats();
         const filter = document.getElementById("searchInput").value.toUpperCase();
-        const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
-        for (let row of rows) {
-            let nameCell = row.cells[1];
-            let controlCell = row.cells[0];
-            if (nameCell && controlCell) {
-                const nameText = nameCell.textContent || nameCell.innerText;
-                const controlText = controlCell.textContent || controlCell.innerText;
-                if (nameText.toUpperCase().indexOf(filter) > -1 || controlText.toUpperCase().indexOf(filter) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            }
+        let filteredStudents = students.filter(s => s.name.toUpperCase().includes(filter) || s.controlNumber.toUpperCase().includes(filter));
+        filteredStudents.sort((a, b) => {
+            const valA = a[currentSort.column]; const valB = b[currentSort.column];
+            let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
+            return currentSort.direction === 'desc' ? comp * -1 : comp;
+        });
+        document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
+            const column = icon.parentElement.dataset.column;
+            icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
+        });
+        const tableBody = document.getElementById('tabla-alumnos');
+        const emptyStateTbody = document.getElementById('empty-state-tbody');
+        tableBody.innerHTML = '';
+        if (filteredStudents.length === 0) {
+            tableBody.style.display = 'none'; emptyStateTbody.style.display = '';
+            emptyStateTbody.querySelector('td').textContent = students.length === 0 ? "Aún no hay alumnos registrados. ¡Agrega uno!" : "No se encontraron alumnos que coincidan.";
+        } else {
+            tableBody.style.display = ''; emptyStateTbody.style.display = 'none';
+            filteredStudents.forEach(student => {
+                const isEvaluado = student.status === 'Evaluado';
+                tableBody.innerHTML += `<tr><td>${student.controlNumber}</td><td>${student.name}</td><td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status}</span></td><td><div class="actions-container"><i class="fa-solid fa-eye" title="Ver" onclick="showViewModal(${student.id})" role="button"></i><i class="fa-solid fa-pen-to-square" title="Editar" onclick="showEditModal(${student.id})" role="button"></i><i class="fa-solid fa-trash" title="Eliminar" onclick="showDeleteModal(${student.id})" role="button"></i><button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}><i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}</button></div></td></tr>`;
+            });
         }
     }
 
-    // --- 3. FUNCIONALIDAD DE ACCIONES (VER, EDITAR, ELIMINAR) ---
+    // --- 4. FUNCIONALIDAD DE ACCIONES (CRUD + EXPORT) ---
+    function showAddModal() { document.getElementById('addForm').reset(); openModal('addModal'); }
+    function saveNewStudent(e) { e.preventDefault(); const cn = document.getElementById('addControlNumber').value; if (students.some(s => s.controlNumber === cn)) { alert('Error: Ya existe un alumno con ese número de control.'); return; } const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1; students.push({ id: newId, controlNumber: cn, name: document.getElementById('addStudentName').value, status: 'Pendiente' }); saveStudents(); renderTable(); closeModal('addModal'); showToast('Alumno agregado correctamente.'); }
+    function showViewModal(id) { const s = students.find(s => s.id === id); if (!s) return; document.getElementById('viewStudentDetails').innerHTML = `<p><strong>No. de Control:</strong> ${s.controlNumber}</p><p><strong>Nombre:</strong> ${s.name}</p><p><strong>Estado:</strong> ${s.status}</p>`; openModal('viewModal'); }
+    function showEditModal(id) { const s = students.find(s => s.id === id); if (!s) return; document.getElementById('editStudentId').value = s.id; document.getElementById('editControlNumber').value = s.controlNumber; document.getElementById('editStudentName').value = s.name; openModal('editModal'); }
+    function saveStudentChanges(e) { e.preventDefault(); const id = parseInt(document.getElementById('editStudentId').value); const idx = students.findIndex(s => s.id === id); if (idx > -1) { students[idx].controlNumber = document.getElementById('editControlNumber').value; students[idx].name = document.getElementById('editStudentName').value; } saveStudents(); renderTable(); closeModal('editModal'); showToast('Datos del alumno actualizados.'); }
+    function showDeleteModal(id) { studentIdToDelete = id; const s = students.find(s => s.id === id); if(!s) return; document.getElementById('deleteStudentInfo').textContent = `${s.name} (${s.controlNumber})`; openModal('deleteConfirmModal'); }
+    function confirmDelete() { students = students.filter(s => s.id !== studentIdToDelete); saveStudents(); renderTable(); closeModal('deleteConfirmModal'); showToast('Alumno eliminado.'); studentIdToDelete = null; }
+    function exportToCSV() { if (students.length === 0) { showToast("No hay alumnos para exportar."); return; } const h = ['No. Control', 'Nombre Completo', 'Estado']; let csv = "data:text/csv;charset=utf-8," + h.join(',') + '\n'; csv += students.map(s => [s.controlNumber, `"${s.name}"`, s.status].join(',')).join('\n'); const a = document.createElement("a"); a.setAttribute("href", encodeURI(csv)); a.setAttribute("download", `lista_alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(a); a.click(); document.body.removeChild(a); }
 
-    function showViewModal(studentId) {
-        const student = students.find(s => s.id === studentId);
-        if (!student) return;
-        
-        const detailsContainer = document.getElementById('viewStudentDetails');
-        detailsContainer.innerHTML = `
-            <p><strong>No. de Control:</strong> ${student.controlNumber}</p>
-            <p><strong>Nombre:</strong> ${student.name}</p>
-            <p><strong>Estado:</strong> ${student.status}</p>
-        `;
-        openModal('viewModal');
+    // --- 5. LÓGICA DE EVALUACIÓN Y CONSTANCIA ---
+    const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
+    function initializeEvaluationForm() {
+        const container = document.getElementById("criteriosContainer"); container.innerHTML = "";
+        criterios.forEach((texto, i) => { container.innerHTML += `<div class="criterio-item"><label>${i + 1}. ${texto}</label><div class="radio-group">${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"].map((nivel, idx) => `<label><input type='radio' name='criterio${i}' value='${idx}' required> ${nivel}</label>`).join(" ")}</div></div>`; });
+        // CORRECCIÓN DEL ERROR TIPOGRÁFICO
+        document.getElementById('evaluationForm').addEventListener("change", (e) => {
+            if (e.target.name && e.target.name.startsWith("criterio")) calcularPromedioYDesempeno();
+        });
     }
-
-    function showEditModal(studentId) {
-        const student = students.find(s => s.id === studentId);
-        if (!student) return;
-
-        document.getElementById('editStudentId').value = student.id;
-        document.getElementById('editControlNumber').value = student.controlNumber;
-        document.getElementById('editStudentName').value = student.name;
-        openModal('editModal');
-    }
-
-    function saveStudentChanges(event) {
-        event.preventDefault();
-        const id = parseInt(document.getElementById('editStudentId').value);
-        const controlNumber = document.getElementById('editControlNumber').value;
-        const name = document.getElementById('editStudentName').value;
-
-        const studentIndex = students.findIndex(s => s.id === id);
-        if (studentIndex > -1) {
-            students[studentIndex].controlNumber = controlNumber;
-            students[studentIndex].name = name;
-        }
-        
-        renderTable();
-        closeModal('editModal');
-        showToast('Datos del alumno actualizados.');
-    }
-
-    function showDeleteModal(studentId) {
-        studentIdToDelete = studentId;
-        const student = students.find(s => s.id === studentId);
-        if(!student) return;
-
-        document.getElementById('deleteStudentInfo').textContent = `${student.name} (${student.controlNumber})`;
-        openModal('deleteConfirmModal');
-    }
-
-    function confirmDelete() {
-        students = students.filter(s => s.id !== studentIdToDelete);
-        renderTable();
-        closeModal('deleteConfirmModal');
-        showToast('Alumno eliminado correctamente.');
-        studentIdToDelete = null;
-    }
-
-    // --- 4. LÓGICA DE MODALES Y NOTIFICACIONES ---
-
-    const overlay = document.getElementById('overlay');
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            overlay.classList.add('visible');
-            modal.classList.add('visible');
-        }
-    }
-
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            overlay.classList.remove('visible');
-            modal.classList.remove('visible');
-        }
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById('toast-notification');
-        toast.querySelector('#toast-message').textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-    
-    // Cierra cualquier modal abierto si se presiona la tecla Escape
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            document.querySelectorAll('.modal.visible').forEach(modal => closeModal(modal.id));
-        }
-    });
-
-
-    // --- 5. TU LÓGICA DE EVALUACIÓN Y CONSTANCIA (INTEGRADA) ---
-    // (Esta es tu lógica original, adaptada para funcionar con la nueva estructura)
-    
-    // (Contenido de los modales de evaluación y confirmación)
-    document.getElementById('formularioEvaluacion').innerHTML = `<h2>Evaluación de Actividades Complementarias</h2> <label for="nombreEstudianteEval">Nombre del Estudiante:</label> <input type="text" id="nombreEstudianteEval" readonly /> <label for="actividadComplementaria">Actividad Complementaria:</label> <input type="text" id="actividadComplementaria" /> <label for="periodo">Periodo de Realización:</label> <input type="text" id="periodo" /> <fieldset> <legend>Criterios de Evaluación</legend> <div id="criteriosContainer"></div> </fieldset> <label for="observaciones">Observaciones:</label> <textarea id="observaciones"></textarea> <label for="valorNumericoEval">Valor Numérico:</label> <input type="number" id="valorNumericoEval" readonly /> <label for="nivelDesempenoEval">Nivel de Desempeño:</label> <input type="text" id="nivelDesempenoEval" readonly /> <hr /> <h3>Validación Final</h3> <label for="nombreResponsable">Nombre del Profesor Responsable:</label> <input type="text" id="nombreResponsable" /> <label for="nombreJefeExtra">Nombre del Jefe(a) de Act. Extraescolares:</label> <input type="text" id="nombreJefeExtra" /> <label for="fechaExpedicion">Fecha de Expedición:</label> <input type="date" id="fechaExpedicion" /> <button onclick="finalizarEvaluacion()">Finalizar Evaluación</button> <button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button>`;
-    document.getElementById('confirmacionModal').innerHTML = `<p>¿Desea generar la constancia con los datos de la evaluación?</p> <div class="modal-buttons"> <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar</button> <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button> </div>`;
-
-    const criterios = ["Cumple en tiempo y forma...", "Trabaja en equipo...", "Muestra liderazgo...", "Organiza su tiempo...", "Interpreta la realidad...", "Realiza sugerencias...", "Tiene iniciativa..."];
-
-    function mostrarFormularioEvaluacion(button, studentId) {
-        const student = students.find(s => s.id === studentId);
-        if(!student) return;
-
-        openModal('formularioEvaluacion');
-        
+    function mostrarFormularioEvaluacion(studentId) {
+        const student = students.find(s => s.id === studentId); if(!student) return;
+        studentIdToEvaluate = studentId;
+        document.getElementById('evaluationForm').reset();
+        document.getElementById('fechaExpedicion').valueAsDate = new Date();
         document.getElementById("nombreEstudianteEval").value = student.name;
-        // Limpiar y generar criterios (tu lógica)
-        const container = document.getElementById("criteriosContainer");
-        container.innerHTML = "";
-        criterios.forEach((texto, i) => {
-            const div = document.createElement("div");
-            div.innerHTML = `<label>${i + 1}. ${texto}</label><br>
-              ${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"]
-                .map((nivel, idx) => `<label style="font-weight:normal;display:inline-block;margin-right:10px;"><input type='radio' name='criterio${i}' value='${idx}'> ${nivel}</label>`)
-                .join(" ")}<br><br>`;
-            container.appendChild(div);
-        });
+        calcularPromedioYDesempeno();
+        openModal('formularioEvaluacion');
     }
-
-    document.addEventListener("change", (e) => {
-        if (e.target.name && e.target.name.startsWith("criterio")) {
-            calcularPromedioYDesempeno();
-        }
-    });
-
     function calcularPromedioYDesempeno() {
-        let total = 0, count = 0;
-        criterios.forEach((_, i) => {
-            const radio = document.querySelector(`input[name="criterio${i}"]:checked`);
-            if (radio) {
-                total += parseInt(radio.value);
-                count++;
-            }
-        });
-        const promedio = count ? total / count : 0;
+        let total = 0;
+        const radios = document.querySelectorAll('#evaluationForm input[type="radio"]:checked');
+        radios.forEach(radio => total += parseInt(radio.value));
+        const promedio = criterios.length > 0 ? total / radios.length : 0;
         let nivel = "Insuficiente";
-        if (promedio >= 3.5) nivel = "Excelente";
-        else if (promedio >= 2.5) nivel = "Notable";
-        else if (promedio >= 1.5) nivel = "Bueno";
-        else if (promedio >= 1.0) nivel = "Suficiente";
+        if (promedio >= 3.5) nivel = "Excelente"; else if (promedio >= 2.5) nivel = "Notable"; else if (promedio >= 1.5) nivel = "Bueno"; else if (promedio >= 1.0) nivel = "Suficiente";
         document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
         document.getElementById("nivelDesempenoEval").value = nivel;
     }
-
     function finalizarEvaluacion() {
-        closeModal('formularioEvaluacion');
-        openModal('confirmacionModal');
+        if (!document.getElementById('evaluationForm').checkValidity()) { alert('Por favor, complete todos los campos requeridos, incluyendo todos los criterios de la rúbrica.'); return; }
+        closeModal('formularioEvaluacion'); openModal('confirmacionModal');
     }
-
     function confirmarGenerarConstancia() {
-        // Tu lógica para generar el PDF
-        generarConstanciaPDF();
-        closeModal('confirmacionModal');
-        showToast('Constancia generada con éxito.');
-        
-        // Opcional: Marcar al alumno como 'Evaluado'
-        const studentName = document.getElementById('nombreEstudianteEval').value;
-        const studentIndex = students.findIndex(s => s.name === studentName);
-        if(studentIndex > -1) {
-            students[studentIndex].status = 'Evaluado';
-            renderTable(); // Actualiza la tabla para mostrar el nuevo estado
-        }
+        generarConstanciaPDF(); closeModal('confirmacionModal'); showToast('Constancia generada con éxito.');
+        const idx = students.findIndex(s => s.id === studentIdToEvaluate);
+        if(idx > -1) { students[idx].status = 'Evaluado'; saveStudents(); renderTable(); }
+        studentIdToEvaluate = null;
     }
+    function cancelarGenerarConstancia() { closeModal('confirmacionModal'); openModal('formularioEvaluacion'); }
+    function generarConstanciaPDF() { const doc = new jsPDF(); const s = students.find(s => s.id === studentIdToEvaluate); const f = document.getElementById('evaluationForm'); /* ...código de PDF... */ doc.save(`Constancia_${s.name.replace(/\s/g, "_")}.pdf`); }
 
-    function cancelarGenerarConstancia() {
-        closeModal('confirmacionModal');
-        openModal('formularioEvaluacion'); // Vuelve al formulario
-    }
-
-    function generarConstanciaPDF() {
-        // Tu función de jsPDF sin cambios...
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const nombreEstudiante = document.getElementById("nombreEstudianteEval").value;
-        // ...resto de tu código para obtener datos y crear el PDF
-        console.log("Generando PDF para " + nombreEstudiante);
-        doc.text("Esto es una constancia de prueba para " + nombreEstudiante, 20, 20);
-        doc.save(`Constancia_${nombreEstudiante.replace(/\s/g, "_")}.pdf`);
-    }
-
+    // --- 6. LÓGICA DE MODALES Y NOTIFICACIONES ---
+    const overlay = document.getElementById('overlay');
+    function openModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.add('visible'); m.classList.add('visible'); } }
+    function closeModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.remove('visible'); m.classList.remove('visible'); } }
+    function showToast(msg) { const t = document.getElementById('toast-notification'); t.querySelector('#toast-message').textContent = msg; t.classList.add('show'); setTimeout(() => { t.classList.remove('show'); }, 3000); }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal.visible').forEach(m => closeModal(m.id)); });
     </script>
 </body>
 </html>
