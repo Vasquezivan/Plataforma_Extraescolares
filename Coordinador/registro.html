@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Danza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Agregar SweetAlert para modales bonitos -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; margin: 0; }
+        header { background-color: #1a3461; color: #fff; padding: 15px 20px; text-align: center; }
+        .container { max-width: 900px; margin: 30px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);}
+        .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: #1a3461; color: #fff; border-top-left-radius: 6px; border-top-right-radius: 6px; }
+        .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
+        #btn-regresar { background: none; border: 2px solid white; color: white; font-size: 0.8em; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        #btn-regresar:hover { background: white; color: #1a3461; }
+        .search-wrapper { position: relative; }
+        .search-wrapper .fa-search { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        #searchInput { padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid #e0e0e0; font-size: 0.9em; }
+        .upload-bar { display: flex; justify-content: center; align-items: center; margin: 20px 0; gap: 10px; }
+        .upload-bar button { background-color: #28a745; color:white; border:none; padding:10px 15px; border-radius:4px; cursor:pointer; font-size:1em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #e0e0e0; text-align: left; }
+        thead th { background-color: #f2f2f2; }
+        .empty-row td { text-align: center; color: #6c757d; padding: 40px; font-style: italic; }
+        footer { text-align: center; padding: 20px; background-color: #333; color: white; margin-top: 20px; }
+        
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-buttons button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-confirm {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Gestión de Danza</h2>
+    </header>
+    <main>
+        <div class="container">
+            <div class="table-controls">
+                <button id="btn-regresar" onclick="window.location.href='Pagina Principal.html'"><i class="fa-solid fa-arrow-left"></i> Inicio</button>
+                <h3 class="title">Alumnos inscritos en Danza</h3>
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
+                </div>
+            </div>
+            <div class="upload-bar">
+                <input type="file" id="excelFile" accept=".xlsx, .xls">
+                <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
+                <button onclick="showSaveModal()" id="btnGuardarBD" style="display:none; background-color: #007bff;">Guardar en Base de Datos</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No. Control</th>
+                        <th>Nombre Completo</th>
+                        <th>Carrera</th>
+                        <th>Semestre</th>
+                        <th>Actividad</th>
+                        <th>Correo Electrónico</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-alumnos"></tbody>
+            </table>
+        </div>
+    </main>
+    
+    <!-- Modal para confirmar guardado -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirmar Guardado</h3>
+            <p>¿Estás seguro que deseas guardar <span id="studentCount">0</span> alumnos en la base de datos?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="hideSaveModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="guardarAlumnosEnBD()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2023 Tecnológico Nacional de México - Campus Valle de Etla. Todos los derechos reservados.
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+   
+    <script>
+        let students = [];
+        let currentActivity = 'Danza';
+
+        function renderTable() {
+            const tableBody = document.getElementById('tabla-alumnos');
+            tableBody.innerHTML = '';
+            
+            if (students.length === 0) {
+                tableBody.innerHTML = `<tr class="empty-row"><td colspan="7">No hay alumnos cargados. Por favor, suba un archivo de Excel para comenzar.</td></tr>`;
+                document.getElementById('btnGuardarBD').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('btnGuardarBD').style.display = 'inline-block';
+            
+            students.forEach((student, index) => {
+                const row = `
+                    <tr>
+                        <td>${student.numeroControl || ''}</td>
+                        <td>${student.nombre || ''}</td>
+                        <td>${student.carrera || ''}</td>
+                        <td>${student.semestre || ''}</td>
+                        <td>${student.actividad || currentActivity}</td>
+                        <td>${student.correo || ''}</td>
+                        <td class="acciones-tabla">
+                            <i class="fa-solid fa-eye" title="Ver" onclick="verAlumno(${index})"></i>
+                            <i class="fa-solid fa-pen-to-square" title="Editar" onclick="editarAlumno(${index})"></i>
+                            <i class="fa-solid fa-trash" title="Eliminar" onclick="eliminarAlumno(${index})"></i>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function cargarDatosExcel() {
+            const file = document.getElementById('excelFile').files[0];
+            if (!file) {
+                Swal.fire('Error', 'Por favor, seleccione un archivo Excel.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = e.target.result;
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonData.length === 0) {
+                        Swal.fire('Error', 'El archivo Excel no contiene datos.', 'error');
+                        return;
+                    }
+
+                    students = jsonData.map((row, index) => ({
+                        id: index + 1, 
+                        numeroControl: String(row['Numero de Control'] || row['numero de control'] || row['No. Control'] || row['Número de Control'] || '').trim(),
+                        nombre: String(row['Nombre Completo'] || row['nombre completo'] || row['Nombre'] || '').trim(),
+                        carrera: String(row['Carrera'] || row['carrera'] || '').trim(),
+                        semestre: String(row['Semestre'] || row['semestre'] || '').trim(),
+                        correo: String(row['Correo Electronico'] || row['correo electronico'] || row['Correo'] || row['Email'] || '').trim(),
+                        actividad: currentActivity
+                    }));
+
+                    renderTable();
+                    Swal.fire('Éxito', `Se cargaron ${students.length} alumnos desde el archivo Excel.`, 'success');
+                } catch (error) {
+                    console.error('Error al procesar el archivo Excel:', error);
+                    Swal.fire('Error', 'Hubo un problema al leer el archivo Excel. Asegúrese de que el formato sea correcto.', 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                Swal.fire('Error', 'Error al leer el archivo. Inténtelo de nuevo.', 'error');
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        function filterTable() {
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
+            
+            for (let row of rows) {
+                if(row.classList.contains('empty-row')) continue;
+                const text = row.textContent || row.innerText;
+                row.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+
+        function showSaveModal() {
+            if (students.length === 0) {
+                Swal.fire('Advertencia', 'No hay alumnos para guardar.', 'warning');
+                return;
+            }
+            
+            document.getElementById('studentCount').textContent = students.length;
+            document.getElementById('saveModal').style.display = 'block';
+        }
+
+        function hideSaveModal() {
+            document.getElementById('saveModal').style.display = 'none';
+        }
+
+        function verAlumno(index) {
+            const alumno = students[index];
+            Swal.fire({
+                title: 'Detalles del Alumno',
+                html: `
+                    <p><strong>No. Control:</strong> ${alumno.numeroControl}</p>
+                    <p><strong>Nombre:</strong> ${alumno.nombre}</p>
+                    <p><strong>Carrera:</strong> ${alumno.carrera}</p>
+                    <p><strong>Semestre:</strong> ${alumno.semestre}</p>
+                    <p><strong>Actividad:</strong> ${alumno.actividad}</p>
+                    <p><strong>Correo:</strong> ${alumno.correo}</p>
+                `,
+                icon: 'info'
+            });
+        }
+
+        function editarAlumno(index) {
+            const alumno = students[index];
+            Swal.fire({
+                title: 'Editar datos del alumno',
+                width: 700, // Más ancho
+                html: `
+                    <div style="text-align:left">
+                        <label>No. Control</label>
+                        <input id="swal-numero" class="swal2-input" value="${alumno.numeroControl || ''}" style="width:95%">
+                        <label>Nombre Completo</label>
+                        <input id="swal-nombre" class="swal2-input" value="${alumno.nombre || ''}" style="width:95%">
+                        <label>Carrera</label>
+                        <input id="swal-carrera" class="swal2-input" value="${alumno.carrera || ''}" style="width:95%">
+                        <label>Semestre</label>
+                        <input id="swal-semestre" class="swal2-input" value="${alumno.semestre || ''}" style="width:95%">
+                        <label>Actividad</label>
+                        <input id="swal-actividad" class="swal2-input" value="${alumno.actividad || ''}" style="width:95%">
+                        <label>Correo Electrónico</label>
+                        <input id="swal-correo" class="swal2-input" value="${alumno.correo || ''}" style="width:95%">
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    return {
+                        numeroControl: document.getElementById('swal-numero').value,
+                        nombre: document.getElementById('swal-nombre').value,
+                        carrera: document.getElementById('swal-carrera').value,
+                        semestre: document.getElementById('swal-semestre').value,
+                        actividad: document.getElementById('swal-actividad').value,
+                        correo: document.getElementById('swal-correo').value
+                    }
+                }
+            }).then(result => {
+                if (result.isConfirmed) {
+                    // Aquí puedes actualizar el alumno en tu array y refrescar la tabla
+                    // Por ejemplo:
+                    Object.assign(alumno, result.value);
+                    renderTable();
+                    Swal.fire('¡Actualizado!', 'Los datos han sido guardados.', 'success');
+                }
+            });
+        }
+
+        function eliminarAlumno(index) {
+            Swal.fire({
+                title: '¿Eliminar alumno?',
+                text: "Esta acción no se puede deshacer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    students.splice(index, 1);
+                    renderTable();
+                    Swal.fire('Eliminado', 'El alumno ha sido eliminado.', 'success');
+                }
+            });
+        }
+
+        function guardarAlumnosEnBD() {
+            if (students.length === 0) {
+                alert('No hay alumnos para guardar.');
+                return;
+            }
+
+            // Validación de números de control duplicados en el archivo
+            const numeros = students.map(a => a.numeroControl);
+            const duplicados = numeros.filter((item, index) => numeros.indexOf(item) !== index);
+            if (duplicados.length > 0) {
+                if (window.Swal) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Número de control duplicado',
+                        text: `El número de control "${duplicados[0]}" está repetido en el archivo. Corrige antes de guardar.`,
+                    });
+                } else {
+                    alert(`El número de control "${duplicados[0]}" está repetido en el archivo. Corrige antes de guardar.`);
+                }
+                return;
+            }
+
+            // Validación de campos
+            for (const alumno of students) {
+                if (
+                    !alumno.numeroControl ||
+                    !alumno.nombre ||
+                    !alumno.carrera ||
+                    !alumno.semestre ||
+                    !alumno.actividad ||
+                    !alumno.correo
+                ) {
+                    alert('Todos los campos son obligatorios. Verifica los datos del archivo Excel.');
+                    return;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(alumno.correo)) {
+                    alert('Correo electrónico inválido para: ' + alumno.nombre);
+                    return;
+                }
+            }
+
+            // AJUSTA la ruta si tu archivo PHP está en otra carpeta
+            fetch('php/guardar_alumnos.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(students)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (window.Swal) {
+                        Swal.fire('¡Éxito!', 'Alumnos guardados correctamente.', 'success');
+                    } else {
+                        alert('Alumnos guardados correctamente.');
+                    }
+                } else {
+                    // Validación para error de número de control duplicado
+                    if (data.message && data.message.includes('Duplicate entry')) {
+                        // Extrae el número de control duplicado del mensaje
+                        const match = data.message.match(/Duplicate entry '([^']+)'/);
+                        const duplicado = match ? match[1] : 'Número de control duplicado';
+                        if (window.Swal) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Número de control repetido',
+                                text: `El número de control "${duplicado}" ya existe en la base de datos. Corrige antes de guardar.`,
+                            });
+                        } else {
+                            alert(`El número de control "${duplicado}" ya existe en la base de datos. Corrige antes de guardar.`);
+                        }
+                    } else {
+                        alert('Error al guardar: ' + (data.message || 'Error desconocido.'));
+                    }
+                }
+            })
+            .catch(error => {
+                alert('Error de conexión o servidor.');
+                console.error(error);
+            });
+        }
+
+        // Cargar datos existentes al iniciar la página
+        async function cargarDatosIniciales() {
+            try {
+                const response = await fetch('php/cargar_estudiantes.php?actividad=' + encodeURIComponent(currentActivity));
+                const data = await response.json();
+                
+                if (data.success && data.alumnos) {
+                    students = data.alumnos;
+                    renderTable();
+                }
+            } catch (error) {
+                console.error('Error al cargar datos iniciales:', error);
+            }
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDatosIniciales();
+        });
+    </script>
+</body>
+</html>
