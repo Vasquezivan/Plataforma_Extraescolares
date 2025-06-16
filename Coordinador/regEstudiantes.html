@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Actividades Extraescolares</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-azul-principal: #1a3461;
+            --color-azul-hover: #12284b;
+            --color-fondo: #f8f9fa;
+            --color-superficie: #ffffff;
+            --color-texto-claro: #ffffff;
+            --color-texto-oscuro: #333;
+            --color-borde: #e0e0e0;
+            --color-verde: #28a745;
+            --color-rojo: #dc3545;
+            --color-naranja: #fd7e14;
+            --color-gris: #6c757d;
+            --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transicion: all 0.3s ease;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: var(--color-azul-principal); color: var(--color-texto-claro); padding: 15px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        header .logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; width: 100%; max-width: 960px; margin-bottom: 15px; }
+        header .logos img { height: 50px; object-fit: contain; }
+        header h2 { font-size: 1.1em; margin: 0; font-weight: 500; }
+        main { flex-grow: 1; }
+        
+        #vista-tarjetas .seccion { padding: 20px; }
+        .seccion-titulo { background-color: var(--color-azul-principal); color: var(--color-texto-claro); border: none; padding: 10px 20px; font-size: 1.2em; margin-bottom: 20px; width: 100%; text-align: left; border-radius: 5px; box-sizing: border-box; }
+        .tarjetas-contenedor { display: flex; flex-wrap: wrap; gap: 20px; }
+        .tarjeta { cursor: pointer; position: relative; width: 280px; height: 180px; border-radius: 10px; background-size: cover; background-position: center; color: var(--color-texto-claro); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: var(--transicion); }
+        .tarjeta:hover { transform: scale(1.05); }
+        .tarjeta-header { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 15px; }
+        .tarjeta .titulo { font-size: 1.4em; font-weight: bold; }
+        
+        #vista-lista-alumnos { display: none; }
+        .container { max-width: 1200px; margin: 30px auto; background-color: var(--color-superficie); padding: 20px; border-radius: 8px; box-shadow: var(--sombra-profesional); }
+        .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-top-left-radius: 6px; border-top-right-radius: 6px; }
+        .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
+        #btn-regresar { background: none; border: 2px solid white; color: white; font-size: 0.8em; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: var(--transicion); }
+        #btn-regresar:hover { background: white; color: var(--color-azul-principal); }
+        .search-wrapper { position: relative; }
+        .search-wrapper .fa-search { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #999; }
+        #searchInput { padding: 8px 12px 8px 35px; border-radius: 5px; border: 1px solid var(--color-borde); font-size: 0.9em; }
+        .upload-bar { display: flex; justify-content: center; align-items: center; margin: 20px 0; gap: 10px; }
+        .upload-bar button { background-color: var(--color-verde); color:white; border:none; padding:10px 15px; border-radius:4px; cursor:pointer; font-size:1em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--color-borde); text-align: left; }
+        thead th { background-color: #f2f2f2; }
+        .empty-row td { text-align: center; color: var(--color-gris); padding: 40px; font-style: italic; }
+        footer { text-align: center; padding: 20px; background-color: #333; color: white; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logos">
+            <img src="assets/img/educacion1.png" alt="SEP">
+            <img src="assets/img/gobierno de mexico.jpeg" alt="Gobierno">
+            <img src="assets/img/logo tec etla.png" alt="Tec Etla">
+            <img src="assets/img/tec mex.png" alt="TECNM">
+        </div>
+        <h2>Gobierno de México<br>Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
+    </header>
+
+    <main>
+        <div id="vista-tarjetas">
+            <div class="seccion">
+                <h2 class="seccion-titulo">Actividades Culturales</h2>
+                <div class="tarjetas-contenedor">
+                    <div class="tarjeta" style="background-image: url('assets/img/danza.jpeg');" onclick="mostrarVistaLista('Danza')">
+                        <div class="tarjeta-header"><span class="titulo">Danza</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/teatro.jpg');" onclick="mostrarVistaLista('Teatro')">
+                        <div class="tarjeta-header"><span class="titulo">Teatro</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/pintura.jpg');" onclick="mostrarVistaLista('Pintura')">
+                        <div class="tarjeta-header"><span class="titulo">Pintura</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="seccion">
+                <h2 class="seccion-titulo">Actividades Deportivas</h2>
+                <div class="tarjetas-contenedor">
+                    <div class="tarjeta" style="background-image: url('assets/img/futbol.png');" onclick="mostrarVistaLista('Fútbol')">
+                        <div class="tarjeta-header"><span class="titulo">Fútbol</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/basquetbol.jpg');" onclick="mostrarVistaLista('Básquetbol')">
+                        <div class="tarjeta-header"><span class="titulo">Básquetbol</span></div>
+                    </div>
+                    <div class="tarjeta" style="background-image: url('assets/img/ajedrez.jpeg');" onclick="mostrarVistaLista('Ajedrez')">
+                        <div class="tarjeta-header"><span class="titulo">Ajedrez</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vista-lista-alumnos" style="display: none;">
+            <div class="container">
+                <div class="table-controls">
+                    <button id="btn-regresar" onclick="mostrarVistaTarjetas()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+                    <h3 id="activity-title" class="title"></h3>
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
+                    </div>
+                </div>
+                <div class="upload-bar">
+                    <input type="file" id="excelFile" accept=".xlsx, .xls">
+                    <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No. Control</th>
+                            <th>Nombre Completo</th>
+                            <th>Carrera</th>
+                            <th>Semestre</th>
+                            <th>Actividad</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-alumnos"></tbody>
+                </table>
+            </div>
+        </div>
+    </main> 
+    <div id="overlay" class="overlay"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        const vistaTarjetas = document.getElementById('vista-tarjetas');
+        const vistaListaAlumnos = document.getElementById('vista-lista-alumnos');
+        const activityTitle = document.getElementById('activity-title');
+        
+        let students = [];
+        let currentActivity = '';
+
+        function mostrarVistaLista(nombreActividad) {
+            currentActivity = nombreActividad;
+            vistaTarjetas.style.display = 'none';
+            vistaListaAlumnos.style.display = 'block';
+            activityTitle.textContent = "Gestión de " + nombreActividad;
+            students = []; // Reiniciar la lista de estudiantes al cambiar de actividad
+            renderTable(); // Renderizar la tabla vacía inicialmente
+        }
+
+        function mostrarVistaTarjetas() {
+            vistaTarjetas.style.display = 'block';
+            vistaListaAlumnos.style.display = 'none';
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('tabla-alumnos');
+            tableBody.innerHTML = ''; 
+
+            if (students.length === 0) {
+                tableBody.innerHTML = `<tr class="empty-row"><td colspan="7">No hay alumnos cargados. Por favor, suba un archivo de Excel para comenzar.</td></tr>`;
+                return;
+            }
+
+            students.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.numeroControl || ''}</td>
+                        <td>${student.nombre || ''}</td>
+                        <td>${student.carrera || ''}</td>
+                        <td>${student.semestre || ''}</td>
+                        <td>${student.actividad || ''}</td>
+                        <td>${student.correo || ''}</td>
+                        <td class="acciones-tabla">
+                            <i class="fa-solid fa-eye" title="Ver"></i>
+                            <i class="fa-solid fa-pen-to-square" title="Editar"></i>
+                            <i class="fa-solid fa-trash" title="Eliminar"></i>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function cargarDatosExcel() {
+            console.log("Función cargarDatosExcel() se está ejecutando."); // Agregado para depuración
+            const file = document.getElementById('excelFile').files[0];
+            if (!file) {
+                alert('Por favor, seleccione un archivo Excel.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = e.target.result;
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                // Mapear los datos del Excel a un formato que el PHP espera
+                // Asegurarse de que los valores sean cadenas y limpiar espacios
+                students = jsonData.map((row, index) => ({
+                    // El 'id' es solo para uso temporal en el frontend si fuera necesario.
+                    // El backend generará su propio ID para la base de datos.
+                    id: index + 1, 
+                    numeroControl: String(row['Numero de Control'] || row['numero de control'] || '').trim(),
+                    nombre: String(row['Nombre Completo'] || row['nombre completo'] || '').trim(),
+                    carrera: String(row['Carrera'] || row['carrera'] || '').trim(),
+                    semestre: String(row['Semestre'] || row['semestre'] || '').trim(),
+                    correo: String(row['Correo Electronico'] || row['correo electronico'] || '').trim(),
+                    actividad: currentActivity // Se usa la actividad seleccionada en la tarjeta
+                }));
+
+                // --- INICIO DE LA LÓGICA PARA ENVIAR DATOS AL SERVIDOR ---
+                if (students.length > 0) {
+                    // *** CAMBIO CRÍTICO AQUÍ: Ruta relativa a api.php ***
+                    fetch('../php/api.php', { // RUTA CORREGIDA. Asume que api.php está en ../php/
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
+                        },
+                        body: JSON.stringify(students) // Convierte el array de alumnos a una cadena JSON
+                    })
+                    .then(response => {
+                        // Verifica si la respuesta HTTP fue exitosa (código 2xx)
+                        if (!response.ok) { 
+                            // Si no es exitosa, intenta leer el error del texto de la respuesta
+                            return response.text().then(text => { 
+                                throw new Error('Error HTTP ' + response.status + ': ' + text);
+                            });
+                        }
+                        // Si es exitosa, intenta parsear la respuesta como JSON
+                        return response.json(); 
+                    })
+                    .then(data => {
+                        if (data.exito) { // Usamos 'exito' porque así lo nombramos en PHP
+                            alert(data.mensaje); // Muestra el mensaje de éxito del servidor
+                            renderTable(); // Vuelve a renderizar la tabla con los datos cargados desde el Excel
+                            // Opcional: Si quisieras que los datos se recargaran desde la BD para confirmar
+                            // podrías hacer otra llamada fetch aquí para obtenerlos.
+                        } else {
+                            // Muestra el mensaje de error del servidor
+                            alert('Error al guardar datos en la base de datos: ' + (data.mensaje || 'Error desconocido.'));
+                            if (data.errores) {
+                                console.error("Errores detallados al guardar:", data.errores);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        // Maneja errores de red o errores lanzados en el bloque .then()
+                        console.error('Error al enviar datos o al procesar la respuesta del servidor:', error);
+                        alert('Error de conexión o problema en el servidor al intentar guardar los datos. Por favor, revisa la consola del navegador (F12) para más detalles.');
+                    });
+                } else {
+                    alert('No se encontraron datos de alumnos válidos en el archivo Excel.');
+                }
+                // --- FIN DE LA LÓGICA DE ENVÍO ---
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function filterTable() {
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            const rows = document.getElementById("tabla-alumnos").getElementsByTagName("tr");
+            for (let row of rows) {
+                // Saltar la fila de "No hay alumnos cargados" si está presente
+                if(row.classList.contains('empty-row')) continue;
+                const text = row.textContent || row.innerText;
+                row.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>
