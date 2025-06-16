@@ -326,7 +326,6 @@
     function cancelarGenerarConstancia() { closeModal('confirmacionModal'); openModal('formularioEvaluacion'); }
     function generarConstanciaPDF() { const doc = new jsPDF(); const s = students.find(s => s.id === studentIdToEvaluate); const f = document.getElementById('evaluationForm'); /* ...código de PDF... */ doc.save(`Constancia_${s.name.replace(/\s/g, "_")}.pdf`); }
 
-    // --- 6. LÓGICA DE MODALES Y NOTIFICACIONES ---
     const overlay = document.getElementById('overlay');
     function openModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.add('visible'); m.classList.add('visible'); } }
     function closeModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.remove('visible'); m.classList.remove('visible'); } }
