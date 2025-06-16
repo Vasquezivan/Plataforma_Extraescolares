@@ -12,7 +12,7 @@ try {
     $id_unidad = 2;
 
     // Ruta base para las imágenes - ajusta según tu estructura de directorios
-    $baseUrl = "http://localhost/Proyectoextras/Administrador/";
+    $baseUrl = "http://localhost/Valle_Etla/Administrador/";
 
     // Consulta para categorías
     $stmt = $conn->query("SELECT id_categoria, nombre_categoria FROM categorias");
