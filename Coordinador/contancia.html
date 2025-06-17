@@ -547,13 +547,12 @@
         doc.text(`Valor numérico: ${form.valorNumericoEval.value}`, 20, 115);
         doc.text(`Nivel de desempeño: ${form.nivelDesempenoEval.value}`, 20, 125);
         
-        // Observaciones
         if (form.observaciones.value) {
             doc.setFont('helvetica', 'normal');
             doc.text(`Observaciones: ${form.observaciones.value}`, 20, 135);
         }
         
-        // Firma y sello
+        
         doc.setFontSize(10);
         doc.text(`Fecha de expedición: ${form.fechaExpedicion.value}`, 20, 160);
         doc.text('_________________________________', 50, 190);
