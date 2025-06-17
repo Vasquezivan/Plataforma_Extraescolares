@@ -1,50 +1,22 @@
 <?php
 header('Content-Type: application/json');
-require_once 'conexion.php';
-
-$response = ['success' => false, 'message' => '', 'alumnos' => []];
-
+$host = 'localhost';
+$dbname = 'extraescolares';
+$username = 'root';
+$password = '';
 try {
-    // Consulta SQL para obtener todos los alumnos
-    $sql = "SELECT 
-                id_alumno AS id,
-                nombre AS name,
-                numero_control AS controlNumber,
-                carrera,
-                semestre
-            FROM alumnos
-            ORDER BY nombre ASC";
-    
-    $result = $conn->query($sql);
-    
-    if (!$result) {
-        throw new Exception("Error en la consulta: " . $conn->error);
-    }
-    
-    while($row = $result->fetch_assoc()) {
-        $response['alumnos'][] = [
-            'id' => $row['id'],
-            'controlNumber' => $row['controlNumber'],
-            'name' => $row['name'],
-            'carrera' => $row['carrera'],
-            'semestre' => $row['semestre'],
-            'status' => 'Pendiente' // Valor por defecto
-        ];
-    }
-    
-    $response['success'] = true;
-
-} catch (Exception $e) {
-    $response['message'] = $e->getMessage();
-    error_log("Error en obtener_alumnos.php: " . $e->getMessage());
+    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $stmt = $conn->prepare("SELECT id_alumno, nombre, numero_control, carrera, semestre FROM alumnos");
+    $stmt->execute();
+    $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode([
+        'success' => true,
+        'alumnos' => $alumnos
+    ]);
+} catch (PDOException $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Error al conectar o consultar la base de datos: ' . $e->getMessage()
+    ]);
 }
-
-// Para depuración (puedes comentar esto después)
-$response['debug'] = [
-    'sql' => $sql,
-    'num_rows' => $result->num_rows ?? 0
-];
-
-echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-$conn->close();
-?>

@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --color-azul-principal: #1a3461;
@@ -25,7 +24,6 @@
             --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.08);
             --transicion-fluida: all 0.3s ease;
         }
-
         [data-theme="dark"] {
             --color-azul-principal: #3a5a9a;
             --color-azul-claro-hover: #4a6abc;
@@ -40,7 +38,6 @@
             --color-borde-fuerte: #555;
             --sombra-profesional: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
-
         body { font-family: 'Inter', sans-serif; background-color: var(--color-fondo-claro); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: var(--color-texto-oscuro); transition: background-color 0.3s, color 0.3s; }
         header { background-color: var(--color-azul-principal); color: var(--color-texto-claro); padding: 15px 20px; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
         .logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; width: 100%; max-width: 960px; margin-bottom: 15px; }
@@ -49,7 +46,6 @@
         [data-theme="dark"] .logos .logo-itvo { background-color: rgba(255, 255, 255, 0.92); padding: 5px; border-radius: 4px; }
         header h2 { font-size: 1.1em; margin: 0; font-weight: 500; }
         .container { flex-grow: 1; padding: 20px; max-width: 1100px; margin: 30px auto; background-color: var(--color-fondo-tarjeta); border: 1px solid var(--color-borde-suave); border-radius: 8px; box-shadow: var(--sombra-profesional); transition: background-color 0.3s, border-color 0.3s; }
-
         .stats-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 25px; }
         .stat-card { background-color: var(--color-fondo-claro); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--color-borde-suave); }
         .stat-card .stat-value { font-size: 2.5em; font-weight: 700; color: var(--color-azul-principal); }
@@ -57,7 +53,6 @@
         .stat-card .fa-users { color: #007bff; }
         .stat-card .fa-user-check { color: #28a745; }
         .stat-card .fa-user-clock { color: #ffc107; }
-
         .table-controls { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; padding: 10px 15px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-top-left-radius: 6px; border-top-right-radius: 6px; }
         .table-controls .title { font-size: 1.2em; font-weight: bold; margin: 0; }
         .controls-right { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
@@ -67,7 +62,6 @@
         .btn-action:hover { background-color: var(--color-verde-accion-hover); transform: translateY(-1px); }
         .btn-export { background-color: #17a2b8; }
         .btn-export:hover { background-color: #138496; }
-        
         .theme-switch-wrapper { display: flex; align-items: center; gap: 8px; }
         .theme-switch { display: inline-block; height: 24px; position: relative; width: 44px; }
         .theme-switch input { display: none; }
@@ -77,14 +71,12 @@
         input:checked + .slider:before { transform: translateX(20px); }
         .slider.round { border-radius: 34px; }
         .slider.round:before { border-radius: 50%; }
-
         table { width: 100%; border-collapse: collapse; border: 1px solid var(--color-borde-suave); border-top: none; }
         th, td { padding: 12px 15px; border-bottom: 1px solid var(--color-borde-suave); text-align: left; }
         thead th { background-color: var(--color-fondo-claro); color: var(--color-texto-oscuro); font-weight: 700; transition: background-color 0.3s; }
         thead th.sortable { cursor: pointer; user-select: none; }
         thead th.sortable:hover { background-color: var(--color-borde-suave); }
         thead th .sort-icon { margin-left: 8px; color: var(--color-texto-secundario); transition: transform 0.2s; }
-
         tbody tr:last-child td { border-bottom: none; }
         tbody tr { transition: background-color 0.2s ease; }
         tbody tr:hover { background-color: var(--color-borde-suave); }
@@ -92,12 +84,10 @@
         .status-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; color: #fff; text-transform: uppercase; }
         .status-pending { background-color: #ffc107; }
         .status-completed { background-color: #6c757d; }
-
         .actions-container { display: flex; align-items: center; gap: 10px; }
         .btn-generar-constancia { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: var(--transicion-fluida); display: inline-flex; align-items: center; gap: 5px; }
         .btn-generar-constancia:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .btn-generar-constancia:disabled { background-color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
-
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1000; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .overlay.visible { display: block; opacity: 1; }
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background-color: var(--color-fondo-tarjeta); border: 1px solid var(--color-borde-suave); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); z-index: 1001; border-radius: 10px; max-height: 90vh; overflow-y: auto; max-width: 600px; width: 90%; opacity: 0; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; padding: 20px 20px 40px 20px; }
@@ -112,7 +102,6 @@
         .modal button:hover { background-color: var(--color-azul-claro-hover); }
         .modal .btn-cerrar { background-color: #6c757d; margin-top: 10px; }
         .modal .btn-cerrar:hover { background-color: #5a6268; }
-        
         #confirmacionModal, #deleteConfirmModal { max-width: 400px; text-align: center; }
         #confirmacionModal p, #deleteConfirmModal p { font-size: 1.2em; margin-bottom: 25px; color: var(--color-texto-oscuro); }
         .modal-buttons { display: flex; justify-content: space-around; gap: 15px; }
@@ -123,11 +112,9 @@
         .modal-buttons .confirm-no:hover, .modal-buttons .confirm-delete-no:hover { background-color: #5a6268; }
         .modal-buttons .confirm-delete-yes { background-color: #dc3545; }
         .modal-buttons .confirm-delete-yes:hover { background-color: #c82333; }
-
         #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 100px); padding: 15px 25px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-radius: 6px; box-shadow: var(--sombra-profesional); display: flex; align-items: center; gap: 10px; z-index: 9999; opacity: 0; transition: transform 0.5s ease, opacity 0.5s ease; }
         #toast-notification.show { transform: translate(-50%, 0); opacity: 1; }
         #toast-notification .fa-circle-check { color: #28a745; }
-        
         footer { background-color: var(--color-azul-principal); color: var(--color-texto-claro); text-align: center; padding: 15px; margin-top: auto; font-size: 0.9em; width: 100%; }
         #viewStudentDetails p { margin: 5px 0; font-size: 1.1em; }
         #viewStudentDetails p strong { color: var(--color-azul-principal); }
@@ -137,22 +124,19 @@
     <header>
         <div class="logos">
              <img src="../Administrador/assets/img/Logo Educacion.png" alt="SEP" />
-            
              <img src="../Administrador/assets/img/Logo TecNM.png" alt="TecNM" />
              <img src="../Administrador/assets/img/Logo IT Valle de etla.png" alt="IT Valle de Etla" class="logo-itvo" style="height: 60px;"/>
         </div>
         <h2>Gobierno de México<br />Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
     </header>
-
     <div class="container">
         <div class="stats-panel">
             <div class="stat-card"><div class="stat-value"><i class="fas fa-users"></i> <span id="stat-total">0</span></div><div class="stat-label">Total de Alumnos</div></div>
             <div class="stat-card"><div class="stat-value"><i class="fas fa-user-check"></i> <span id="stat-evaluated">0</span></div><div class="stat-label">Alumnos Evaluados</div></div>
             <div class="stat-card"><div class="stat-value"><i class="fas fa-user-clock"></i> <span id="stat-pending">0</span></div><div class="stat-label">Alumnos Pendientes</div></div>
         </div>
-
         <div class="table-controls">
-            <h3 class="title">Club de Danza</h3>
+            <h3 class="title">Actividad</h3>
             <div class="controls-right">
                 <button class="btn-action btn-export" onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exportar a CSV</button>
                 <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Buscar alumno..."></div>
@@ -160,25 +144,21 @@
             </div>
         </div>
         <table>
-           <thead>
-    <tr>
-        <th class="sortable" data-column="id_alumno" onclick="handleSort('id_alumno')">id_alumno<i class="fas fa-sort sort-icon"></i></th>
-        <th class="sortable" data-column="nombre" onclick="handleSort('nombre')">nombre<i class="fas fa-sort sort-icon"></i></th>
-        <th class="sortable" data-column="id_usuario" onclick="handleSort('id_usuario')">id_usuario<i class="fas fa-sort sort-icon"></i></th>
-        <th class="sortable" data-column="numero_control" onclick="handleSort('numero_control')">numero_control<i class="fas fa-sort sort-icon"></i></th>
-        <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">carrera<i class="fas fa-sort sort-icon"></i></th>
-        <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">semestre<i class="fas fa-sort sort-icon"></i></th>
-        <th>Acciones</th>
-    </tr>
-</thead>
-
+            <thead>
+                <tr>
+                    <th class="sortable" data-column="numero_control" onclick="handleSort('numero_control')">No. Control<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="nombre" onclick="handleSort('nombre')">Nombre<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">Carrera<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">Semestre<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="status" onclick="handleSort('status')">Estado<i class="fas fa-sort sort-icon"></i></th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
             <tbody id="tabla-alumnos"></tbody>
             <tbody id="empty-state-tbody" style="display: none;"><tr class="empty-row"><td colspan="6"></td></tr></tbody>
         </table>
     </div>
-    
     <div id="overlay" class="overlay"></div>
-    
     <div id="formularioEvaluacion" class="modal">
         <h2>Evaluación de Actividades Complementarias</h2>
         <form id="evaluationForm">
@@ -211,7 +191,6 @@
             <button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button>
         </form>
     </div>
-    
     <div id="confirmacionModal" class="modal">
         <p>¿Desea generar la constancia con los datos de la evaluación?</p>
         <div class="modal-buttons">
@@ -219,28 +198,22 @@
             <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
         </div>
     </div>
-    
     <div id="toast-notification">
         <i class="fa-solid fa-circle-check"></i>
         <span id="toast-message"></span>
     </div>
-
     <footer>© 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla</footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
     const { jsPDF } = window.jspdf;
     let students = [];
     let studentIdToEvaluate = null;
-    let currentSort = { column: 'name', direction: 'asc' };
-
-    // --- 1. INICIALIZACIÓN ---
+    let currentSort = { column: 'nombre', direction: 'asc' };
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
         loadStudents();
         initializeEvaluationForm();
     });
-
     function setupTheme() {
         const themeToggle = document.getElementById('theme-toggle');
         const storedTheme = localStorage.getItem('theme') || 'light';
@@ -252,65 +225,26 @@
             localStorage.setItem('theme', newTheme);
         });
     }
-
-    // --- 2. CARGA DE DATOS ---
     async function loadStudents() {
         try {
-            console.log("🔄 Iniciando carga de alumnos...");
-            const response = await fetch('obtener_alumnos.php');
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
-            }
-
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                const text = await response.text();
-                throw new Error(`Respuesta no es JSON: ${text.substring(0, 100)}...`);
-            }
-
+            const response = await fetch('../php/obtener_alumnos.php');
+            if (!response.ok) throw new Error('Error al cargar alumnos');
             const data = await response.json();
-            console.log("📊 Datos recibidos:", data);
-            
             if (data.success && Array.isArray(data.alumnos)) {
                 students = data.alumnos.map(alumno => ({
                     ...alumno,
                     status: alumno.status || 'Pendiente'
                 }));
-                console.log(`✅ ${students.length} alumnos cargados`);
                 renderTable();
             } else {
                 throw new Error(data.message || "Formato de respuesta inválido");
             }
         } catch (error) {
-            console.error('❌ Error al cargar alumnos:', error);
-            showToast('Error al cargar datos. Ver consola para detalles.');
-            
-            // Datos de prueba para desarrollo
-            students = [
-                {
-                    id: 1,
-                    controlNumber: '20500024',
-                    name: 'Carlos Ramírez',
-                    carrera: 'Industrial',
-                    semestre: 4,
-                    status: 'Pendiente'
-                },
-                {
-                    id: 2,
-                    controlNumber: '20500025',
-                    name: 'Lucía Martínez',
-                    carrera: 'Sistemas',
-                    semestre: 2,
-                    status: 'Pendiente'
-                }
-            ];
+            showToast('Error al cargar datos.');
+            students = [];
             renderTable();
         }
     }
-
-    // --- 3. RENDERIZADO DE TABLA ---
     function updateStats() {
         const total = students.length;
         const evaluated = students.filter(s => s.status === 'Evaluado').length;
@@ -318,7 +252,6 @@
         document.getElementById('stat-evaluated').textContent = evaluated;
         document.getElementById('stat-pending').textContent = total - evaluated;
     }
-
     function handleSort(column) {
         if (currentSort.column === column) {
             currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -328,17 +261,15 @@
         }
         renderTable();
     }
-
     function renderTable() {
         updateStats();
         const filter = document.getElementById("searchInput").value.toUpperCase();
         let filteredStudents = students.filter(s => 
-            (s.name && s.name.toUpperCase().includes(filter)) || 
-            (s.controlNumber && s.controlNumber.toUpperCase().includes(filter)) ||
+            (s.nombre && s.nombre.toUpperCase().includes(filter)) || 
+            (s.numero_control && s.numero_control.toUpperCase().includes(filter)) ||
             (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
             (s.semestre && s.semestre.toString().includes(filter))
         );
-        
         filteredStudents.sort((a, b) => {
             const valA = a[currentSort.column];
             const valB = b[currentSort.column];
@@ -346,16 +277,13 @@
             let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
             return currentSort.direction === 'desc' ? comp * -1 : comp;
         });
-
         document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
             const column = icon.parentElement.dataset.column;
             icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
         });
-
         const tableBody = document.getElementById('tabla-alumnos');
         const emptyStateTbody = document.getElementById('empty-state-tbody');
         tableBody.innerHTML = '';
-
         if (filteredStudents.length === 0) {
             tableBody.style.display = 'none';
             emptyStateTbody.style.display = '';
@@ -365,47 +293,40 @@
         } else {
             tableBody.style.display = '';
             emptyStateTbody.style.display = 'none';
-            
             filteredStudents.forEach(student => {
                 const isEvaluado = student.status === 'Evaluado';
                 tableBody.innerHTML += `
-                   <tr>
-        <td>${student.id_alumno || 'N/A'}</td>
-        <td>${student.nombre || 'N/A'}</td>
-        <td>${student.id_usuario || 'N/A'}</td>
-        <td>${student.numero_control || 'N/A'}</td>
-        <td>${student.carrera || 'N/A'}</td>
-        <td>${student.semestre || 'N/A'}</td>
-        <td>
-            <div class="actions-container">
-                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${student.status === 'Evaluado' ? 'disabled' : ''}>
-                    <i class="fa-solid ${student.status === 'Evaluado' ? 'fa-check' : 'fa-clipboard-check'}"></i> ${student.status === 'Evaluado' ? 'Evaluado' : 'Evaluar'}
-                </button>
-            </div>
-        </td>
-    </tr>`;
+                    <tr>
+                        <td>${student.numero_control || 'N/A'}</td>
+                        <td>${student.nombre || 'N/A'}</td>
+                        <td>${student.carrera || 'N/A'}</td>
+                        <td>${student.semestre || 'N/A'}</td>
+                        <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
+                        <td>
+                            <div class="actions-container">
+                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${isEvaluado ? 'disabled' : ''}>
+                                    <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
             });
         }
     }
-
-  
     function exportToCSV() {
         if (students.length === 0) {
             showToast("No hay alumnos para exportar.");
             return;
         }
-        
         const headers = ['No. Control', 'Nombre Completo', 'Carrera', 'Semestre', 'Estado'];
         let csv = "data:text/csv;charset=utf-8," + headers.join(',') + '\n';
-        
         csv += students.map(s => [
-            `"${s.controlNumber || ''}"`,
-            `"${s.name || ''}"`,
+            `"${s.numero_control || ''}"`,
+            `"${s.nombre || ''}"`,
             `"${s.carrera || ''}"`,
             `"${s.semestre || ''}"`,
             `"${s.status || 'Pendiente'}"`
         ].join(',')).join('\n');
-        
         const a = document.createElement("a");
         a.setAttribute("href", encodeURI(csv));
         a.setAttribute("download", `alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`);
@@ -413,14 +334,10 @@
         a.click();
         document.body.removeChild(a);
     }
-
-   
     const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
-
     function initializeEvaluationForm() {
         const container = document.getElementById("criteriosContainer");
         container.innerHTML = "";
-        
         criterios.forEach((texto, i) => {
             container.innerHTML += `
                 <div class="criterio-item">
@@ -436,142 +353,106 @@
                     </div>
                 </div>`;
         });
-        
         document.getElementById('evaluationForm').addEventListener("change", (e) => {
             if (e.target.name && e.target.name.startsWith("criterio")) {
                 calcularPromedioYDesempeno();
             }
         });
     }
-
     function mostrarFormularioEvaluacion(studentId) {
-        const student = students.find(s => s.id === studentId);
+        const student = students.find(s => s.id_alumno == studentId);
         if(!student) return;
-        
         studentIdToEvaluate = studentId;
         document.getElementById('evaluationForm').reset();
         document.getElementById('fechaExpedicion').valueAsDate = new Date();
-        document.getElementById("nombreEstudianteEval").value = student.name || '';
+        document.getElementById("nombreEstudianteEval").value = student.nombre || '';
         document.getElementById("evalStudentId").value = studentId;
         calcularPromedioYDesempeno();
         openModal('formularioEvaluacion');
     }
-
     function calcularPromedioYDesempeno() {
         let total = 0;
         let count = 0;
         const radios = document.querySelectorAll('#evaluationForm input[type="radio"]:checked');
-        
         radios.forEach(radio => {
             total += parseInt(radio.value);
             count++;
         });
-        
         const promedio = count > 0 ? total / count : 0;
         let nivel = "Insuficiente";
-        
         if (promedio >= 4) nivel = "Excelente";
         else if (promedio >= 3) nivel = "Notable";
         else if (promedio >= 2) nivel = "Bueno";
         else if (promedio >= 1) nivel = "Suficiente";
-        
         document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
         document.getElementById("nivelDesempenoEval").value = nivel;
     }
-
     function finalizarEvaluacion() {
         if (!document.getElementById('evaluationForm').checkValidity()) {
             showToast('Complete todos los campos requeridos');
             return;
         }
-        
         closeModal('formularioEvaluacion');
         openModal('confirmacionModal');
     }
-
     function confirmarGenerarConstancia() {
         generarConstanciaPDF();
         closeModal('confirmacionModal');
         showToast('Constancia generada con éxito.');
-        
-        const idx = students.findIndex(s => s.id === studentIdToEvaluate);
+        const idx = students.findIndex(s => s.id_alumno == studentIdToEvaluate);
         if(idx > -1) {
             students[idx].status = 'Evaluado';
             renderTable();
         }
         studentIdToEvaluate = null;
     }
-
     function cancelarGenerarConstancia() {
         closeModal('confirmacionModal');
         openModal('formularioEvaluacion');
     }
-
     function generarConstanciaPDF() {
         const doc = new jsPDF();
-        const student = students.find(s => s.id === studentIdToEvaluate);
+        const student = students.find(s => s.id_alumno == studentIdToEvaluate);
         const form = document.getElementById('evaluationForm');
-        
-        // Configuración básica
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
-        
-        // Encabezado
         doc.setFontSize(16);
         doc.setTextColor(40, 53, 147);
         doc.text('Instituto Tecnológico del Valle de Etla', 105, 20, null, null, 'center');
         doc.setFontSize(14);
         doc.text('Constancia de Participación', 105, 30, null, null, 'center');
-        
-        // Línea divisoria
         doc.setDrawColor(40, 53, 147);
         doc.setLineWidth(0.5);
         doc.line(20, 35, 190, 35);
-        
-      
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
         doc.text('Por medio del presente documento se hace constar que:', 20, 45);
-      
         doc.setFont('helvetica', 'bold');
-        doc.text(`Nombre del alumno: ${student.name || ''}`, 20, 55);
-        doc.text(`Número de control: ${student.controlNumber || ''}`, 20, 65);
+        doc.text(`Nombre del alumno: ${student.nombre || ''}`, 20, 55);
+        doc.text(`Número de control: ${student.numero_control || ''}`, 20, 65);
         doc.text(`Carrera: ${student.carrera || ''}`, 20, 75);
         doc.text(`Semestre: ${student.semestre || ''}`, 20, 85);
-        
-        // Participación
         doc.setFont('helvetica', 'normal');
         doc.text(`Ha participado en la actividad complementaria "${form.actividadComplementaria.value}"`, 20, 95);
         doc.text(`durante el periodo ${form.periodo.value}, obteniendo un nivel de desempeño:`, 20, 105);
-        
-        // Evaluación
         doc.setFont('helvetica', 'bold');
         doc.text(`Valor numérico: ${form.valorNumericoEval.value}`, 20, 115);
         doc.text(`Nivel de desempeño: ${form.nivelDesempenoEval.value}`, 20, 125);
-        
         if (form.observaciones.value) {
             doc.setFont('helvetica', 'normal');
             doc.text(`Observaciones: ${form.observaciones.value}`, 20, 135);
         }
-        
-        
         doc.setFontSize(10);
         doc.text(`Fecha de expedición: ${form.fechaExpedicion.value}`, 20, 160);
         doc.text('_________________________________', 50, 190);
         doc.text('Profesor Responsable', 50, 195);
         doc.text(form.nombreResponsable.value, 50, 200);
-        
         doc.text('_________________________________', 120, 190);
         doc.text('Jefe de Actividades Extraescolares', 120, 195);
         doc.text(form.nombreJefeExtra.value, 120, 200);
-        
-        // Guardar el PDF
-        doc.save(`Constancia_${student.name.replace(/\s/g, "_")}.pdf`);
+        doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
     }
-
-    // --- FUNCIONES DE INTERFAZ ---
     const overlay = document.getElementById('overlay');
-
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -580,7 +461,6 @@
             document.body.style.overflow = 'hidden';
         }
     }
-
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
@@ -589,17 +469,14 @@
             document.body.style.overflow = '';
         }
     }
-
     function showToast(msg) {
         const toast = document.getElementById('toast-notification');
         toast.querySelector('#toast-message').textContent = msg;
         toast.classList.add('show');
-        
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
     }
-
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal.visible').forEach(modal => {
