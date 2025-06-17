@@ -525,12 +525,11 @@
         doc.setLineWidth(0.5);
         doc.line(20, 35, 190, 35);
         
-        // Cuerpo del documento
+      
         doc.setFontSize(12);
         doc.setTextColor(0, 0, 0);
         doc.text('Por medio del presente documento se hace constar que:', 20, 45);
-        
-        // Datos del alumno
+      
         doc.setFont('helvetica', 'bold');
         doc.text(`Nombre del alumno: ${student.name || ''}`, 20, 55);
         doc.text(`Número de control: ${student.controlNumber || ''}`, 20, 65);
