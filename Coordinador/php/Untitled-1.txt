@@ -1,0 +1,53 @@
+<?php
+// api_alumnos.php
+
+// 1. Configuración de la conexión a la base de datos
+$servidor = "localhost";    // Generalmente es 'localhost'
+$usuario_db = "root";       // El usuario de tu base de datos (por defecto en XAMPP/MAMP es 'root')
+$password_db = "";          // La contraseña de tu usuario (por defecto está vacía)
+$nombre_db = "extraescolares"; // El nombre de tu base de datos
+
+// 2. Crear la conexión
+$conexion = new mysqli($servidor, $usuario_db, $password_db, $nombre_db);
+
+// Establecer el charset a utf8mb4 para soportar acentos y caracteres especiales
+$conexion->set_charset("utf8mb4");
+
+// Verificar si la conexión falló
+if ($conexion->connect_error) {
+    // Detener la ejecución y mostrar un error en formato JSON
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Error de conexión: ' . $conexion->connect_error]);
+    die();
+}
+
+// 3. Preparar la consulta SQL para obtener los alumnos
+// Seleccionamos las columnas que tu JavaScript espera, dándoles el nombre correcto con "AS"
+$sql = "SELECT 
+            id_alumno AS id, 
+            numero_control AS controlNumber, 
+            nombre AS name 
+        FROM alumnos";
+
+$resultado = $conexion->query($sql);
+
+// 4. Procesar los resultados y guardarlos en un array
+$alumnos = [];
+if ($resultado->num_rows > 0) {
+    // Obtener cada fila como un array asociativo
+    while($fila = $resultado->fetch_assoc()) {
+        // Agregamos un estado por defecto, ya que no está en tu tabla de alumnos
+        $fila['status'] = 'Pendiente'; 
+        $alumnos[] = $fila;
+    }
+}
+
+// 5. Cerrar la conexión
+$conexion->close();
+
+// 6. Enviar la respuesta como JSON
+// Esto es lo que tu JavaScript recibirá
+header('Content-Type: application/json');
+echo json_encode($alumnos);
+
+?>

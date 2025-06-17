@@ -133,7 +133,6 @@
         footer { background-color: var(--color-azul-principal); color: var(--color-texto-claro); text-align: center; padding: 15px; margin-top: auto; font-size: 0.9em; width: 100%; }
         #viewStudentDetails p { margin: 5px 0; font-size: 1.1em; }
         #viewStudentDetails p strong { color: var(--color-azul-principal); }
-
     </style>
 </head>
 <body data-theme="light">
@@ -168,24 +167,112 @@
                 <tr>
                     <th class="sortable" data-column="controlNumber" onclick="handleSort('controlNumber')">No. Control<i class="fas fa-sort sort-icon"></i></th>
                     <th class="sortable" data-column="name" onclick="handleSort('name')">Nombres y Apellidos<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">Carrera<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">Semestre<i class="fas fa-sort sort-icon"></i></th>
                     <th class="sortable" data-column="status" onclick="handleSort('status')">Estado<i class="fas fa-sort sort-icon"></i></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tabla-alumnos"></tbody>
-            <tbody id="empty-state-tbody" style="display: none;"><tr class="empty-row"><td colspan="4"></td></tr></tbody>
+            <tbody id="empty-state-tbody" style="display: none;"><tr class="empty-row"><td colspan="6"></td></tr></tbody>
         </table>
     </div>
     
     <div id="overlay" class="overlay"></div>
 
-    <div id="viewModal" class="modal"><h2>Detalles del Alumno</h2><div id="viewStudentDetails"></div><button class="btn-cerrar" onclick="closeModal('viewModal')">Cerrar</button></div>
-    <div id="editModal" class="modal"><h2>Editar Alumno</h2><form id="editForm" onsubmit="saveStudentChanges(event)"><input type="hidden" id="editStudentId"><label for="editControlNumber">No. de Control:</label><input type="text" id="editControlNumber" required><label for="editStudentName">Nombre Completo:</label><input type="text" id="editStudentName" required><button type="submit">Guardar Cambios</button><button type="button" class="btn-cerrar" onclick="closeModal('editModal')">Cancelar</button></form></div>
-    <div id="addModal" class="modal"><h2>Agregar Nuevo Alumno</h2><form id="addForm" onsubmit="saveNewStudent(event)"><label for="addControlNumber">No. de Control:</label><input type="text" id="addControlNumber" required><label for="addStudentName">Nombre Completo:</label><input type="text" id="addStudentName" required><button type="submit">Registrar Alumno</button><button type="button" class="btn-cerrar" onclick="closeModal('addModal')">Cancelar</button></form></div>
-    <div id="deleteConfirmModal" class="modal"><p>¿Estás seguro de que deseas eliminar a este alumno?</p><div id="deleteStudentInfo" style="font-weight:bold; margin-bottom:20px;"></div><div class="modal-buttons"><button class="confirm-delete-yes" onclick="confirmDelete()">Sí, eliminar</button><button class="confirm-delete-no" onclick="closeModal('deleteConfirmModal')">No, cancelar</button></div></div>
-    <div id="formularioEvaluacion" class="modal"><h2>Evaluación de Actividades Complementarias</h2><form id="evaluationForm"><input type="hidden" id="evalStudentId"><label for="nombreEstudianteEval">Nombre del Estudiante:</label><input type="text" id="nombreEstudianteEval" readonly /><label for="actividadComplementaria">Actividad Complementaria:</label><input type="text" id="actividadComplementaria" value="Club de Danza" /><label for="periodo">Periodo de Realización:</label><input type="text" id="periodo" placeholder="Ej: Agosto - Diciembre 2025" required /><fieldset><legend>Criterios de Evaluación</legend><div id="criteriosContainer"></div></fieldset><label for="observaciones">Observaciones:</label><textarea id="observaciones" rows="3"></textarea><label for="valorNumericoEval">Valor Numérico:</label><input type="number" id="valorNumericoEval" readonly /><label for="nivelDesempenoEval">Nivel de Desempeño:</label><input type="text" id="nivelDesempenoEval" readonly /><hr /><h3>Validación Final</h3><label for="nombreResponsable">Nombre del Profesor Responsable:</label><input type="text" id="nombreResponsable" placeholder="Nombre completo del responsable" required/><label for="nombreJefeExtra">Nombre del Jefe(a) de Act. Extraescolares:</label><input type="text" id="nombreJefeExtra" placeholder="Nombre completo del jefe/a" required/><label for="fechaExpedicion">Fecha de Expedición:</label><input type="date" id="fechaExpedicion" required/><button type="button" onclick="finalizarEvaluacion()">Finalizar Evaluación</button><button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button></form></div>
-    <div id="confirmacionModal" class="modal"><p>¿Desea generar la constancia con los datos de la evaluación?</p><div class="modal-buttons"><button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar</button><button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button></div></div>
-    <div id="toast-notification"><i class="fa-solid fa-circle-check"></i><span id="toast-message"></span></div>
+    <div id="viewModal" class="modal">
+        <h2>Detalles del Alumno</h2>
+        <div id="viewStudentDetails"></div>
+        <button class="btn-cerrar" onclick="closeModal('viewModal')">Cerrar</button>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <h2>Editar Alumno</h2>
+        <form id="editForm" onsubmit="saveStudentChanges(event)">
+            <input type="hidden" id="editStudentId">
+            <label for="editControlNumber">No. de Control:</label>
+            <input type="text" id="editControlNumber" required>
+            <label for="editStudentName">Nombre Completo:</label>
+            <input type="text" id="editStudentName" required>
+            <label for="editCarrera">Carrera:</label>
+            <input type="text" id="editCarrera" required>
+            <label for="editSemestre">Semestre:</label>
+            <input type="number" id="editSemestre" required>
+            <button type="submit">Guardar Cambios</button>
+            <button type="button" class="btn-cerrar" onclick="closeModal('editModal')">Cancelar</button>
+        </form>
+    </div>
+    
+    <div id="addModal" class="modal">
+        <h2>Agregar Nuevo Alumno</h2>
+        <form id="addForm" onsubmit="saveNewStudent(event)">
+            <label for="addControlNumber">No. de Control:</label>
+            <input type="text" id="addControlNumber" required>
+            <label for="addStudentName">Nombre Completo:</label>
+            <input type="text" id="addStudentName" required>
+            <label for="addCarrera">Carrera:</label>
+            <input type="text" id="addCarrera" required>
+            <label for="addSemestre">Semestre:</label>
+            <input type="number" id="addSemestre" required>
+            <button type="submit">Registrar Alumno</button>
+            <button type="button" class="btn-cerrar" onclick="closeModal('addModal')">Cancelar</button>
+        </form>
+    </div>
+    
+    <div id="deleteConfirmModal" class="modal">
+        <p>¿Estás seguro de que deseas eliminar a este alumno?</p>
+        <div id="deleteStudentInfo" style="font-weight:bold; margin-bottom:20px;"></div>
+        <div class="modal-buttons">
+            <button class="confirm-delete-yes" onclick="confirmDelete()">Sí, eliminar</button>
+            <button class="confirm-delete-no" onclick="closeModal('deleteConfirmModal')">No, cancelar</button>
+        </div>
+    </div>
+    
+    <div id="formularioEvaluacion" class="modal">
+        <h2>Evaluación de Actividades Complementarias</h2>
+        <form id="evaluationForm">
+            <input type="hidden" id="evalStudentId">
+            <label for="nombreEstudianteEval">Nombre del Estudiante:</label>
+            <input type="text" id="nombreEstudianteEval" readonly />
+            <label for="actividadComplementaria">Actividad Complementaria:</label>
+            <input type="text" id="actividadComplementaria" value="Club de Danza" />
+            <label for="periodo">Periodo de Realización:</label>
+            <input type="text" id="periodo" placeholder="Ej: Agosto - Diciembre 2025" required />
+            <fieldset>
+                <legend>Criterios de Evaluación</legend>
+                <div id="criteriosContainer"></div>
+            </fieldset>
+            <label for="observaciones">Observaciones:</label>
+            <textarea id="observaciones" rows="3"></textarea>
+            <label for="valorNumericoEval">Valor Numérico:</label>
+            <input type="number" id="valorNumericoEval" readonly />
+            <label for="nivelDesempenoEval">Nivel de Desempeño:</label>
+            <input type="text" id="nivelDesempenoEval" readonly />
+            <hr />
+            <h3>Validación Final</h3>
+            <label for="nombreResponsable">Nombre del Profesor Responsable:</label>
+            <input type="text" id="nombreResponsable" placeholder="Nombre completo del responsable" required/>
+            <label for="nombreJefeExtra">Nombre del Jefe(a) de Act. Extraescolares:</label>
+            <input type="text" id="nombreJefeExtra" placeholder="Nombre completo del jefe/a" required/>
+            <label for="fechaExpedicion">Fecha de Expedición:</label>
+            <input type="date" id="fechaExpedicion" required/>
+            <button type="button" onclick="finalizarEvaluacion()">Finalizar Evaluación</button>
+            <button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button>
+        </form>
+    </div>
+    
+    <div id="confirmacionModal" class="modal">
+        <p>¿Desea generar la constancia con los datos de la evaluación?</p>
+        <div class="modal-buttons">
+            <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar</button>
+            <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
+        </div>
+    </div>
+    
+    <div id="toast-notification">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message"></span>
+    </div>
 
     <footer>© 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla</footer>
 
@@ -197,12 +284,11 @@
     let studentIdToEvaluate = null;
     let currentSort = { column: 'name', direction: 'asc' };
 
-    // --- 1. INICIALIZACIÓN Y GESTIÓN DEL TEMA ---
+    // --- 1. INICIALIZACIÓN ---
     document.addEventListener('DOMContentLoaded', () => {
         setupTheme();
         loadStudents();
         initializeEvaluationForm();
-        renderTable();
     });
 
     function setupTheme() {
@@ -217,22 +303,64 @@
         });
     }
 
-    // --- 2. GESTIÓN DE DATOS (localStorage) ---
-    function saveStudents() {
-        localStorage.setItem('danceClubStudents', JSON.stringify(students));
-        updateStats();
+    // --- 2. CARGA DE DATOS ---
+    async function loadStudents() {
+        try {
+            console.log("🔄 Iniciando carga de alumnos...");
+            const response = await fetch('obtener_alumnos.php');
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error HTTP: ${response.status} - ${errorText}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                throw new Error(`Respuesta no es JSON: ${text.substring(0, 100)}...`);
+            }
+
+            const data = await response.json();
+            console.log("📊 Datos recibidos:", data);
+            
+            if (data.success && Array.isArray(data.alumnos)) {
+                students = data.alumnos.map(alumno => ({
+                    ...alumno,
+                    status: alumno.status || 'Pendiente'
+                }));
+                console.log(`✅ ${students.length} alumnos cargados`);
+                renderTable();
+            } else {
+                throw new Error(data.message || "Formato de respuesta inválido");
+            }
+        } catch (error) {
+            console.error('❌ Error al cargar alumnos:', error);
+            showToast('Error al cargar datos. Ver consola para detalles.');
+            
+            // Datos de prueba para desarrollo
+            students = [
+                {
+                    id: 1,
+                    controlNumber: '20500024',
+                    name: 'Carlos Ramírez',
+                    carrera: 'Industrial',
+                    semestre: 4,
+                    status: 'Pendiente'
+                },
+                {
+                    id: 2,
+                    controlNumber: '20500025',
+                    name: 'Lucía Martínez',
+                    carrera: 'Sistemas',
+                    semestre: 2,
+                    status: 'Pendiente'
+                }
+            ];
+            renderTable();
+        }
     }
-    function loadStudents() {
-        const storedStudents = localStorage.getItem('danceClubStudents');
-        students = storedStudents ? JSON.parse(storedStudents) : [
-             { id: 1, controlNumber: '19011234', name: 'Adán Cristóbal Cruz Espinoza', status: 'Pendiente' },
-             { id: 2, controlNumber: '18015678', name: 'Mariana Sofía Reyes Castillo', status: 'Evaluado' },
-             { id: 3, controlNumber: '20019012', name: 'Carlos Alberto Jiménez Pérez', status: 'Pendiente' },
-             { id: 4, controlNumber: '19013456', name: 'Valeria Mendoza López', status: 'Pendiente' },
-        ];
-    }
-    
-    // --- 3. RENDERIZADO Y LÓGICA DE LA TABLA ---
+
+    // --- 3. RENDERIZADO DE TABLA ---
     function updateStats() {
         const total = students.length;
         const evaluated = students.filter(s => s.status === 'Evaluado').length;
@@ -240,97 +368,463 @@
         document.getElementById('stat-evaluated').textContent = evaluated;
         document.getElementById('stat-pending').textContent = total - evaluated;
     }
+
     function handleSort(column) {
         if (currentSort.column === column) {
             currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-        } else { currentSort.column = column; currentSort.direction = 'asc'; }
+        } else {
+            currentSort.column = column;
+            currentSort.direction = 'asc';
+        }
         renderTable();
     }
+
     function renderTable() {
         updateStats();
         const filter = document.getElementById("searchInput").value.toUpperCase();
-        let filteredStudents = students.filter(s => s.name.toUpperCase().includes(filter) || s.controlNumber.toUpperCase().includes(filter));
+        let filteredStudents = students.filter(s => 
+            (s.name && s.name.toUpperCase().includes(filter)) || 
+            (s.controlNumber && s.controlNumber.toUpperCase().includes(filter)) ||
+            (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
+            (s.semestre && s.semestre.toString().includes(filter))
+        );
+        
         filteredStudents.sort((a, b) => {
-            const valA = a[currentSort.column]; const valB = b[currentSort.column];
+            const valA = a[currentSort.column];
+            const valB = b[currentSort.column];
+            if (valA === undefined || valB === undefined) return 0;
             let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
             return currentSort.direction === 'desc' ? comp * -1 : comp;
         });
+
         document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
             const column = icon.parentElement.dataset.column;
             icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
         });
+
         const tableBody = document.getElementById('tabla-alumnos');
         const emptyStateTbody = document.getElementById('empty-state-tbody');
         tableBody.innerHTML = '';
+
         if (filteredStudents.length === 0) {
-            tableBody.style.display = 'none'; emptyStateTbody.style.display = '';
-            emptyStateTbody.querySelector('td').textContent = students.length === 0 ? "Aún no hay alumnos registrados. ¡Agrega uno!" : "No se encontraron alumnos que coincidan.";
+            tableBody.style.display = 'none';
+            emptyStateTbody.style.display = '';
+            emptyStateTbody.querySelector('td').textContent = students.length === 0 ? 
+                "Aún no hay alumnos registrados. ¡Agrega uno!" : 
+                "No se encontraron alumnos que coincidan.";
         } else {
-            tableBody.style.display = ''; emptyStateTbody.style.display = 'none';
+            tableBody.style.display = '';
+            emptyStateTbody.style.display = 'none';
+            
             filteredStudents.forEach(student => {
                 const isEvaluado = student.status === 'Evaluado';
-                tableBody.innerHTML += `<tr><td>${student.controlNumber}</td><td>${student.name}</td><td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status}</span></td><td><div class="actions-container"><i class="fa-solid fa-eye" title="Ver" onclick="showViewModal(${student.id})" role="button"></i><i class="fa-solid fa-pen-to-square" title="Editar" onclick="showEditModal(${student.id})" role="button"></i><i class="fa-solid fa-trash" title="Eliminar" onclick="showDeleteModal(${student.id})" role="button"></i><button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}><i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}</button></div></td></tr>`;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${student.controlNumber || 'N/A'}</td>
+                        <td>${student.name || 'N/A'}</td>
+                        <td>${student.carrera || 'N/A'}</td>
+                        <td>${student.semestre || 'N/A'}</td>
+                        <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
+                        <td>
+                            <div class="actions-container">
+                                <i class="fa-solid fa-eye" title="Ver" onclick="showViewModal(${student.id})" role="button"></i>
+                                <i class="fa-solid fa-pen-to-square" title="Editar" onclick="showEditModal(${student.id})" role="button"></i>
+                                <i class="fa-solid fa-trash" title="Eliminar" onclick="showDeleteModal(${student.id})" role="button"></i>
+                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}>
+                                    <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
             });
         }
     }
 
-    // --- 4. FUNCIONALIDAD DE ACCIONES (CRUD + EXPORT) ---
-    function showAddModal() { document.getElementById('addForm').reset(); openModal('addModal'); }
-    function saveNewStudent(e) { e.preventDefault(); const cn = document.getElementById('addControlNumber').value; if (students.some(s => s.controlNumber === cn)) { alert('Error: Ya existe un alumno con ese número de control.'); return; } const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1; students.push({ id: newId, controlNumber: cn, name: document.getElementById('addStudentName').value, status: 'Pendiente' }); saveStudents(); renderTable(); closeModal('addModal'); showToast('Alumno agregado correctamente.'); }
-    function showViewModal(id) { const s = students.find(s => s.id === id); if (!s) return; document.getElementById('viewStudentDetails').innerHTML = `<p><strong>No. de Control:</strong> ${s.controlNumber}</p><p><strong>Nombre:</strong> ${s.name}</p><p><strong>Estado:</strong> ${s.status}</p>`; openModal('viewModal'); }
-    function showEditModal(id) { const s = students.find(s => s.id === id); if (!s) return; document.getElementById('editStudentId').value = s.id; document.getElementById('editControlNumber').value = s.controlNumber; document.getElementById('editStudentName').value = s.name; openModal('editModal'); }
-    function saveStudentChanges(e) { e.preventDefault(); const id = parseInt(document.getElementById('editStudentId').value); const idx = students.findIndex(s => s.id === id); if (idx > -1) { students[idx].controlNumber = document.getElementById('editControlNumber').value; students[idx].name = document.getElementById('editStudentName').value; } saveStudents(); renderTable(); closeModal('editModal'); showToast('Datos del alumno actualizados.'); }
-    function showDeleteModal(id) { studentIdToDelete = id; const s = students.find(s => s.id === id); if(!s) return; document.getElementById('deleteStudentInfo').textContent = `${s.name} (${s.controlNumber})`; openModal('deleteConfirmModal'); }
-    function confirmDelete() { students = students.filter(s => s.id !== studentIdToDelete); saveStudents(); renderTable(); closeModal('deleteConfirmModal'); showToast('Alumno eliminado.'); studentIdToDelete = null; }
-    function exportToCSV() { if (students.length === 0) { showToast("No hay alumnos para exportar."); return; } const h = ['No. Control', 'Nombre Completo', 'Estado']; let csv = "data:text/csv;charset=utf-8," + h.join(',') + '\n'; csv += students.map(s => [s.controlNumber, `"${s.name}"`, s.status].join(',')).join('\n'); const a = document.createElement("a"); a.setAttribute("href", encodeURI(csv)); a.setAttribute("download", `lista_alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`); document.body.appendChild(a); a.click(); document.body.removeChild(a); }
+    // --- 4. FUNCIONES CRUD ---
+    function showAddModal() {
+        document.getElementById('addForm').reset();
+        openModal('addModal');
+    }
 
-    // --- 5. LÓGICA DE EVALUACIÓN Y CONSTANCIA ---
+    async function saveNewStudent(e) {
+        e.preventDefault();
+        const controlNumber = document.getElementById('addControlNumber').value;
+        const name = document.getElementById('addStudentName').value;
+        const carrera = document.getElementById('addCarrera').value;
+        const semestre = document.getElementById('addSemestre').value;
+        
+        try {
+            const response = await fetch('agregar_alumno.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    controlNumber: controlNumber,
+                    name: name,
+                    carrera: carrera,
+                    semestre: semestre
+                })
+            });
+            
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
+            
+            if(data.success) {
+                students.push({
+                    id: data.id,
+                    controlNumber: controlNumber,
+                    name: name,
+                    carrera: carrera,
+                    semestre: semestre,
+                    status: 'Pendiente'
+                });
+                renderTable();
+                closeModal('addModal');
+                showToast('Alumno agregado correctamente.');
+            } else {
+                throw new Error(data.message || "Error al agregar alumno");
+            }
+        } catch (error) {
+            console.error('Error al agregar alumno:', error);
+            showToast(`Error: ${error.message}`);
+        }
+    }
+
+    function showViewModal(id) {
+        const student = students.find(s => s.id === id);
+        if (!student) return;
+        
+        document.getElementById('viewStudentDetails').innerHTML = `
+            <p><strong>No. de Control:</strong> ${student.controlNumber || 'N/A'}</p>
+            <p><strong>Nombre:</strong> ${student.name || 'N/A'}</p>
+            <p><strong>Carrera:</strong> ${student.carrera || 'N/A'}</p>
+            <p><strong>Semestre:</strong> ${student.semestre || 'N/A'}</p>
+            <p><strong>Estado:</strong> ${student.status || 'Pendiente'}</p>
+        `;
+        openModal('viewModal');
+    }
+
+    function showEditModal(id) {
+        const student = students.find(s => s.id === id);
+        if (!student) return;
+        
+        document.getElementById('editStudentId').value = student.id;
+        document.getElementById('editControlNumber').value = student.controlNumber || '';
+        document.getElementById('editStudentName').value = student.name || '';
+        document.getElementById('editCarrera').value = student.carrera || '';
+        document.getElementById('editSemestre').value = student.semestre || '';
+        openModal('editModal');
+    }
+
+    async function saveStudentChanges(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('editStudentId').value);
+        const controlNumber = document.getElementById('editControlNumber').value;
+        const name = document.getElementById('editStudentName').value;
+        const carrera = document.getElementById('editCarrera').value;
+        const semestre = document.getElementById('editSemestre').value;
+        
+        try {
+            const response = await fetch('actualizar_alumno.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    controlNumber: controlNumber,
+                    name: name,
+                    carrera: carrera,
+                    semestre: semestre
+                })
+            });
+            
+            const data = await response.json();
+            
+            if(data.success) {
+                const idx = students.findIndex(s => s.id === id);
+                if(idx > -1) {
+                    students[idx] = {
+                        ...students[idx],
+                        controlNumber: controlNumber,
+                        name: name,
+                        carrera: carrera,
+                        semestre: semestre
+                    };
+                }
+                renderTable();
+                closeModal('editModal');
+                showToast('Datos del alumno actualizados.');
+            } else {
+                throw new Error(data.message || "Error al actualizar alumno");
+            }
+        } catch (error) {
+            console.error('Error al actualizar alumno:', error);
+            showToast(`Error: ${error.message}`);
+        }
+    }
+
+    function showDeleteModal(id) {
+        studentIdToDelete = id;
+        const student = students.find(s => s.id === id);
+        if(!student) return;
+        
+        document.getElementById('deleteStudentInfo').textContent = `${student.name || 'Alumno'} (${student.controlNumber || 'Sin número'})`;
+        openModal('deleteConfirmModal');
+    }
+
+    async function confirmDelete() {
+        try {
+            const response = await fetch('eliminar_alumno.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: studentIdToDelete
+                })
+            });
+            
+            const data = await response.json();
+            
+            if(data.success) {
+                students = students.filter(s => s.id !== studentIdToDelete);
+                renderTable();
+                closeModal('deleteConfirmModal');
+                showToast('Alumno eliminado.');
+                studentIdToDelete = null;
+            } else {
+                throw new Error(data.message || "Error al eliminar alumno");
+            }
+        } catch (error) {
+            console.error('Error al eliminar alumno:', error);
+            showToast(`Error: ${error.message}`);
+        }
+    }
+
+    // --- 5. FUNCIONES AUXILIARES ---
+    function exportToCSV() {
+        if (students.length === 0) {
+            showToast("No hay alumnos para exportar.");
+            return;
+        }
+        
+        const headers = ['No. Control', 'Nombre Completo', 'Carrera', 'Semestre', 'Estado'];
+        let csv = "data:text/csv;charset=utf-8," + headers.join(',') + '\n';
+        
+        csv += students.map(s => [
+            `"${s.controlNumber || ''}"`,
+            `"${s.name || ''}"`,
+            `"${s.carrera || ''}"`,
+            `"${s.semestre || ''}"`,
+            `"${s.status || 'Pendiente'}"`
+        ].join(',')).join('\n');
+        
+        const a = document.createElement("a");
+        a.setAttribute("href", encodeURI(csv));
+        a.setAttribute("download", `alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // --- 6. SISTEMA DE EVALUACIÓN ---
     const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
+
     function initializeEvaluationForm() {
-        const container = document.getElementById("criteriosContainer"); container.innerHTML = "";
-        criterios.forEach((texto, i) => { container.innerHTML += `<div class="criterio-item"><label>${i + 1}. ${texto}</label><div class="radio-group">${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"].map((nivel, idx) => `<label><input type='radio' name='criterio${i}' value='${idx}' required> ${nivel}</label>`).join(" ")}</div></div>`; });
-        // CORRECCIÓN DEL ERROR TIPOGRÁFICO
+        const container = document.getElementById("criteriosContainer");
+        container.innerHTML = "";
+        
+        criterios.forEach((texto, i) => {
+            container.innerHTML += `
+                <div class="criterio-item">
+                    <label>${i + 1}. ${texto}</label>
+                    <div class="radio-group">
+                        ${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"]
+                            .map((nivel, idx) => `
+                                <label>
+                                    <input type="radio" name="criterio${i}" value="${idx}" required>
+                                    ${nivel}
+                                </label>
+                            `).join(" ")}
+                    </div>
+                </div>`;
+        });
+        
         document.getElementById('evaluationForm').addEventListener("change", (e) => {
-            if (e.target.name && e.target.name.startsWith("criterio")) calcularPromedioYDesempeno();
+            if (e.target.name && e.target.name.startsWith("criterio")) {
+                calcularPromedioYDesempeno();
+            }
         });
     }
+
     function mostrarFormularioEvaluacion(studentId) {
-        const student = students.find(s => s.id === studentId); if(!student) return;
+        const student = students.find(s => s.id === studentId);
+        if(!student) return;
+        
         studentIdToEvaluate = studentId;
         document.getElementById('evaluationForm').reset();
         document.getElementById('fechaExpedicion').valueAsDate = new Date();
-        document.getElementById("nombreEstudianteEval").value = student.name;
+        document.getElementById("nombreEstudianteEval").value = student.name || '';
+        document.getElementById("evalStudentId").value = studentId;
         calcularPromedioYDesempeno();
         openModal('formularioEvaluacion');
     }
+
     function calcularPromedioYDesempeno() {
         let total = 0;
+        let count = 0;
         const radios = document.querySelectorAll('#evaluationForm input[type="radio"]:checked');
-        radios.forEach(radio => total += parseInt(radio.value));
-        const promedio = criterios.length > 0 ? total / radios.length : 0;
+        
+        radios.forEach(radio => {
+            total += parseInt(radio.value);
+            count++;
+        });
+        
+        const promedio = count > 0 ? total / count : 0;
         let nivel = "Insuficiente";
-        if (promedio >= 3.5) nivel = "Excelente"; else if (promedio >= 2.5) nivel = "Notable"; else if (promedio >= 1.5) nivel = "Bueno"; else if (promedio >= 1.0) nivel = "Suficiente";
+        
+        if (promedio >= 4) nivel = "Excelente";
+        else if (promedio >= 3) nivel = "Notable";
+        else if (promedio >= 2) nivel = "Bueno";
+        else if (promedio >= 1) nivel = "Suficiente";
+        
         document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
         document.getElementById("nivelDesempenoEval").value = nivel;
     }
+
     function finalizarEvaluacion() {
-        if (!document.getElementById('evaluationForm').checkValidity()) { alert('Por favor, complete todos los campos requeridos, incluyendo todos los criterios de la rúbrica.'); return; }
-        closeModal('formularioEvaluacion'); openModal('confirmacionModal');
+        if (!document.getElementById('evaluationForm').checkValidity()) {
+            showToast('Complete todos los campos requeridos');
+            return;
+        }
+        
+        closeModal('formularioEvaluacion');
+        openModal('confirmacionModal');
     }
+
     function confirmarGenerarConstancia() {
-        generarConstanciaPDF(); closeModal('confirmacionModal'); showToast('Constancia generada con éxito.');
+        generarConstanciaPDF();
+        closeModal('confirmacionModal');
+        showToast('Constancia generada con éxito.');
+        
         const idx = students.findIndex(s => s.id === studentIdToEvaluate);
-        if(idx > -1) { students[idx].status = 'Evaluado'; saveStudents(); renderTable(); }
+        if(idx > -1) {
+            students[idx].status = 'Evaluado';
+            renderTable();
+        }
         studentIdToEvaluate = null;
     }
-    function cancelarGenerarConstancia() { closeModal('confirmacionModal'); openModal('formularioEvaluacion'); }
-    function generarConstanciaPDF() { const doc = new jsPDF(); const s = students.find(s => s.id === studentIdToEvaluate); const f = document.getElementById('evaluationForm'); /* ...código de PDF... */ doc.save(`Constancia_${s.name.replace(/\s/g, "_")}.pdf`); }
 
+    function cancelarGenerarConstancia() {
+        closeModal('confirmacionModal');
+        openModal('formularioEvaluacion');
+    }
+
+    function generarConstanciaPDF() {
+        const doc = new jsPDF();
+        const student = students.find(s => s.id === studentIdToEvaluate);
+        const form = document.getElementById('evaluationForm');
+        
+        // Configuración básica
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        
+        // Encabezado
+        doc.setFontSize(16);
+        doc.setTextColor(40, 53, 147);
+        doc.text('Instituto Tecnológico del Valle de Etla', 105, 20, null, null, 'center');
+        doc.setFontSize(14);
+        doc.text('Constancia de Participación', 105, 30, null, null, 'center');
+        
+        // Línea divisoria
+        doc.setDrawColor(40, 53, 147);
+        doc.setLineWidth(0.5);
+        doc.line(20, 35, 190, 35);
+        
+        // Cuerpo del documento
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text('Por medio del presente documento se hace constar que:', 20, 45);
+        
+        // Datos del alumno
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Nombre del alumno: ${student.name || ''}`, 20, 55);
+        doc.text(`Número de control: ${student.controlNumber || ''}`, 20, 65);
+        doc.text(`Carrera: ${student.carrera || ''}`, 20, 75);
+        doc.text(`Semestre: ${student.semestre || ''}`, 20, 85);
+        
+        // Participación
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Ha participado en la actividad complementaria "${form.actividadComplementaria.value}"`, 20, 95);
+        doc.text(`durante el periodo ${form.periodo.value}, obteniendo un nivel de desempeño:`, 20, 105);
+        
+        // Evaluación
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Valor numérico: ${form.valorNumericoEval.value}`, 20, 115);
+        doc.text(`Nivel de desempeño: ${form.nivelDesempenoEval.value}`, 20, 125);
+        
+        // Observaciones
+        if (form.observaciones.value) {
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Observaciones: ${form.observaciones.value}`, 20, 135);
+        }
+        
+        // Firma y sello
+        doc.setFontSize(10);
+        doc.text(`Fecha de expedición: ${form.fechaExpedicion.value}`, 20, 160);
+        doc.text('_________________________________', 50, 190);
+        doc.text('Profesor Responsable', 50, 195);
+        doc.text(form.nombreResponsable.value, 50, 200);
+        
+        doc.text('_________________________________', 120, 190);
+        doc.text('Jefe de Actividades Extraescolares', 120, 195);
+        doc.text(form.nombreJefeExtra.value, 120, 200);
+        
+        // Guardar el PDF
+        doc.save(`Constancia_${student.name.replace(/\s/g, "_")}.pdf`);
+    }
+
+    // --- FUNCIONES DE INTERFAZ ---
     const overlay = document.getElementById('overlay');
-    function openModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.add('visible'); m.classList.add('visible'); } }
-    function closeModal(modalId) { const m = document.getElementById(modalId); if (m) { overlay.classList.remove('visible'); m.classList.remove('visible'); } }
-    function showToast(msg) { const t = document.getElementById('toast-notification'); t.querySelector('#toast-message').textContent = msg; t.classList.add('show'); setTimeout(() => { t.classList.remove('show'); }, 3000); }
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal.visible').forEach(m => closeModal(m.id)); });
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            overlay.classList.add('visible');
+            modal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            overlay.classList.remove('visible');
+            modal.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast-notification');
+        toast.querySelector('#toast-message').textContent = msg;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.visible').forEach(modal => {
+                closeModal(modal.id);
+            });
+        }
+    });
     </script>
 </body>
 </html>

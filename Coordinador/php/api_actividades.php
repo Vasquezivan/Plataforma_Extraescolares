@@ -12,7 +12,7 @@ try {
     $id_unidad = isset($_GET['id_unidad']) ? (int)$_GET['id_unidad'] : 4;
 
     // Ruta base para las imágenes - ajusta según tu estructura de directorios
-    $baseUrl = "http://localhost/Proyectoextras/Administrador/";
+    $baseUrl = "http://localhost/Valle_Etla/Administrador/";
 
     // Consulta de categorías
     $stmt = $conn->query("SELECT id_categoria, nombre_categoria FROM categorias");
