@@ -160,16 +160,18 @@
             </div>
         </div>
         <table>
-            <thead>
-                <tr>
-                    <th class="sortable" data-column="controlNumber" onclick="handleSort('controlNumber')">No. Control<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="name" onclick="handleSort('name')">Nombres y Apellidos<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">Carrera<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">Semestre<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="status" onclick="handleSort('status')">Estado<i class="fas fa-sort sort-icon"></i></th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+           <thead>
+    <tr>
+        <th class="sortable" data-column="id_alumno" onclick="handleSort('id_alumno')">id_alumno<i class="fas fa-sort sort-icon"></i></th>
+        <th class="sortable" data-column="nombre" onclick="handleSort('nombre')">nombre<i class="fas fa-sort sort-icon"></i></th>
+        <th class="sortable" data-column="id_usuario" onclick="handleSort('id_usuario')">id_usuario<i class="fas fa-sort sort-icon"></i></th>
+        <th class="sortable" data-column="numero_control" onclick="handleSort('numero_control')">numero_control<i class="fas fa-sort sort-icon"></i></th>
+        <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">carrera<i class="fas fa-sort sort-icon"></i></th>
+        <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">semestre<i class="fas fa-sort sort-icon"></i></th>
+        <th>Acciones</th>
+    </tr>
+</thead>
+
             <tbody id="tabla-alumnos"></tbody>
             <tbody id="empty-state-tbody" style="display: none;"><tr class="empty-row"><td colspan="6"></td></tr></tbody>
         </table>
@@ -367,20 +369,21 @@
             filteredStudents.forEach(student => {
                 const isEvaluado = student.status === 'Evaluado';
                 tableBody.innerHTML += `
-                    <tr>
-                        <td>${student.controlNumber || 'N/A'}</td>
-                        <td>${student.name || 'N/A'}</td>
-                        <td>${student.carrera || 'N/A'}</td>
-                        <td>${student.semestre || 'N/A'}</td>
-                        <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
-                        <td>
-                            <div class="actions-container">
-                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}>
-                                    <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
+                   <tr>
+        <td>${student.id_alumno || 'N/A'}</td>
+        <td>${student.nombre || 'N/A'}</td>
+        <td>${student.id_usuario || 'N/A'}</td>
+        <td>${student.numero_control || 'N/A'}</td>
+        <td>${student.carrera || 'N/A'}</td>
+        <td>${student.semestre || 'N/A'}</td>
+        <td>
+            <div class="actions-container">
+                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${student.status === 'Evaluado' ? 'disabled' : ''}>
+                    <i class="fa-solid ${student.status === 'Evaluado' ? 'fa-check' : 'fa-clipboard-check'}"></i> ${student.status === 'Evaluado' ? 'Evaluado' : 'Evaluar'}
+                </button>
+            </div>
+        </td>
+    </tr>`;
             });
         }
     }
