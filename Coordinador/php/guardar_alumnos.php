@@ -18,10 +18,15 @@ try {
         exit;
     }
 
-    // Prepara la consulta para insertar
+    // Prepara la consulta para insertar alumnos
     $stmt = $conn->prepare("INSERT INTO alumnos 
         (nombre, id_usuario, numero_control, carrera, semestre)
         VALUES (?, ?, ?, ?, ?)");
+
+    // Prepara la consulta para insertar inscripciones
+    $stmtInscripcion = $conn->prepare("INSERT INTO inscripciones 
+        (id_alumno, id_actividad, fecha_inscripcion)
+        VALUES (?, ?, NOW())");
 
     foreach ($input as $alumno) {
         // Validación básica
@@ -30,18 +35,29 @@ try {
             empty($alumno['id_usuario']) ||
             empty($alumno['numero_control']) ||
             empty($alumno['carrera']) ||
-            empty($alumno['semestre'])
+            empty($alumno['semestre']) ||
+            empty($alumno['id_actividad']) // Validar que venga el id_actividad
         ) {
             echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios.']);
             exit;
         }
 
+        // Insertar alumno
         $stmt->execute([
             $alumno['nombre'],
             $alumno['id_usuario'],
             $alumno['numero_control'],
             $alumno['carrera'],
             $alumno['semestre']
+        ]);
+
+        // Obtener el id del alumno recién insertado
+        $id_alumno = $conn->lastInsertId();
+
+        // Insertar inscripción
+        $stmtInscripcion->execute([
+            $id_alumno,
+            $alumno['id_actividad']
         ]);
     }
 
