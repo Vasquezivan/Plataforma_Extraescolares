@@ -162,11 +162,11 @@
         <table>
             <thead>
                 <tr>
-                    <th class="sortable" data-column="controlNumber" onclick="handleSort('controlNumber')">No. Control<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="name" onclick="handleSort('name')">Nombres y Apellidos<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="id_alumno" onclick="handleSort('id_alumno')">ID<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="nombre" onclick="handleSort('nombre')">Nombre Completo<i class="fas fa-sort sort-icon"></i></th>
+                    <th class="sortable" data-column="numero_control" onclick="handleSort('numero_control')">Número de Control<i class="fas fa-sort sort-icon"></i></th>
                     <th class="sortable" data-column="carrera" onclick="handleSort('carrera')">Carrera<i class="fas fa-sort sort-icon"></i></th>
                     <th class="sortable" data-column="semestre" onclick="handleSort('semestre')">Semestre<i class="fas fa-sort sort-icon"></i></th>
-                    <th class="sortable" data-column="status" onclick="handleSort('status')">Estado<i class="fas fa-sort sort-icon"></i></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -230,7 +230,7 @@
     const { jsPDF } = window.jspdf;
     let students = [];
     let studentIdToEvaluate = null;
-    let currentSort = { column: 'name', direction: 'asc' };
+    let currentSort = { column: 'nombre', direction: 'asc' };
 
     // --- 1. INICIALIZACIÓN ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -273,7 +273,12 @@
             
             if (data.success && Array.isArray(data.alumnos)) {
                 students = data.alumnos.map(alumno => ({
-                    ...alumno,
+                    id_alumno: alumno.id_alumno,
+                    nombre: alumno.nombre,
+                    id_usuario: alumno.id_usuario,
+                    numero_control: alumno.numero_control,
+                    carrera: alumno.carrera,
+                    semestre: alumno.semestre,
                     status: alumno.status || 'Pendiente'
                 }));
                 console.log(`✅ ${students.length} alumnos cargados`);
@@ -288,17 +293,19 @@
             // Datos de prueba para desarrollo
             students = [
                 {
-                    id: 1,
-                    controlNumber: '20500024',
-                    name: 'Carlos Ramírez',
+                    id_alumno: 1,
+                    nombre: 'Carlos Ramírez',
+                    id_usuario: 101,
+                    numero_control: '20500024',
                     carrera: 'Industrial',
                     semestre: 4,
                     status: 'Pendiente'
                 },
                 {
-                    id: 2,
-                    controlNumber: '20500025',
-                    name: 'Lucía Martínez',
+                    id_alumno: 2,
+                    nombre: 'Lucía Martínez',
+                    id_usuario: 102,
+                    numero_control: '20500025',
                     carrera: 'Sistemas',
                     semestre: 2,
                     status: 'Pendiente'
@@ -331,8 +338,8 @@
         updateStats();
         const filter = document.getElementById("searchInput").value.toUpperCase();
         let filteredStudents = students.filter(s => 
-            (s.name && s.name.toUpperCase().includes(filter)) || 
-            (s.controlNumber && s.controlNumber.toUpperCase().includes(filter)) ||
+            (s.nombre && s.nombre.toUpperCase().includes(filter)) || 
+            (s.numero_control && s.numero_control.toUpperCase().includes(filter)) ||
             (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
             (s.semestre && s.semestre.toString().includes(filter))
         );
@@ -368,14 +375,14 @@
                 const isEvaluado = student.status === 'Evaluado';
                 tableBody.innerHTML += `
                     <tr>
-                        <td>${student.controlNumber || 'N/A'}</td>
-                        <td>${student.name || 'N/A'}</td>
+                        <td>${student.id_alumno || 'N/A'}</td>
+                        <td>${student.nombre || 'N/A'}</td>
+                        <td>${student.numero_control || 'N/A'}</td>
                         <td>${student.carrera || 'N/A'}</td>
                         <td>${student.semestre || 'N/A'}</td>
-                        <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
                         <td>
                             <div class="actions-container">
-                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}>
+                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${isEvaluado ? 'disabled' : ''}>
                                     <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
                                 </button>
                             </div>
@@ -392,12 +399,13 @@
             return;
         }
         
-        const headers = ['No. Control', 'Nombre Completo', 'Carrera', 'Semestre', 'Estado'];
+        const headers = ['ID', 'Nombre', 'Número de Control', 'Carrera', 'Semestre', 'Estado'];
         let csv = "data:text/csv;charset=utf-8," + headers.join(',') + '\n';
         
         csv += students.map(s => [
-            `"${s.controlNumber || ''}"`,
-            `"${s.name || ''}"`,
+            `"${s.id_alumno || ''}"`,
+            `"${s.nombre || ''}"`,
+            `"${s.numero_control || ''}"`,
             `"${s.carrera || ''}"`,
             `"${s.semestre || ''}"`,
             `"${s.status || 'Pendiente'}"`
@@ -442,13 +450,13 @@
     }
 
     function mostrarFormularioEvaluacion(studentId) {
-        const student = students.find(s => s.id === studentId);
+        const student = students.find(s => s.id_alumno === studentId);
         if(!student) return;
         
         studentIdToEvaluate = studentId;
         document.getElementById('evaluationForm').reset();
         document.getElementById('fechaExpedicion').valueAsDate = new Date();
-        document.getElementById("nombreEstudianteEval").value = student.name || '';
+        document.getElementById("nombreEstudianteEval").value = student.nombre || '';
         document.getElementById("evalStudentId").value = studentId;
         calcularPromedioYDesempeno();
         openModal('formularioEvaluacion');
@@ -491,7 +499,7 @@
         closeModal('confirmacionModal');
         showToast('Constancia generada con éxito.');
         
-        const idx = students.findIndex(s => s.id === studentIdToEvaluate);
+        const idx = students.findIndex(s => s.id_alumno === studentIdToEvaluate);
         if(idx > -1) {
             students[idx].status = 'Evaluado';
             renderTable();
@@ -506,7 +514,7 @@
 
     function generarConstanciaPDF() {
         const doc = new jsPDF();
-        const student = students.find(s => s.id === studentIdToEvaluate);
+        const student = students.find(s => s.id_alumno === studentIdToEvaluate);
         const form = document.getElementById('evaluationForm');
         
         // Configuración básica
@@ -532,8 +540,8 @@
         
         // Datos del alumno
         doc.setFont('helvetica', 'bold');
-        doc.text(`Nombre del alumno: ${student.name || ''}`, 20, 55);
-        doc.text(`Número de control: ${student.controlNumber || ''}`, 20, 65);
+        doc.text(`Nombre del alumno: ${student.nombre || ''}`, 20, 55);
+        doc.text(`Número de control: ${student.numero_control || ''}`, 20, 65);
         doc.text(`Carrera: ${student.carrera || ''}`, 20, 75);
         doc.text(`Semestre: ${student.semestre || ''}`, 20, 85);
         
@@ -547,12 +555,13 @@
         doc.text(`Valor numérico: ${form.valorNumericoEval.value}`, 20, 115);
         doc.text(`Nivel de desempeño: ${form.nivelDesempenoEval.value}`, 20, 125);
         
+        // Observaciones
         if (form.observaciones.value) {
             doc.setFont('helvetica', 'normal');
             doc.text(`Observaciones: ${form.observaciones.value}`, 20, 135);
         }
         
-        
+        // Firma y sello
         doc.setFontSize(10);
         doc.text(`Fecha de expedición: ${form.fechaExpedicion.value}`, 20, 160);
         doc.text('_________________________________', 50, 190);
@@ -564,7 +573,7 @@
         doc.text(form.nombreJefeExtra.value, 120, 200);
         
         // Guardar el PDF
-        doc.save(`Constancia_${student.name.replace(/\s/g, "_")}.pdf`);
+        doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
     }
 
     // --- FUNCIONES DE INTERFAZ ---
