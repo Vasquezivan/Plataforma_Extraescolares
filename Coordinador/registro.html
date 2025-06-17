@@ -68,6 +68,24 @@
             color: white;
             border: none;
         }
+        .custom-file-upload {
+            display: inline-block;
+            padding: 10px 24px;
+            cursor: pointer;
+            background-color: #1a3461;
+            color: #fff;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.2s;
+            border: none;
+            font-size: 1em;
+        }
+        .custom-file-upload:hover {
+            background-color: #27477a;
+        }
+        #excelFile {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -85,6 +103,9 @@
                 </div>
             </div>
             <div class="upload-bar">
+                <label for="excelFile" class="custom-file-upload">
+                    Seleccionar archivo Excel
+                </label>
                 <input type="file" id="excelFile" accept=".xlsx, .xls">
                 <button onclick="cargarDatosExcel()">Cargar Alumnos</button>
                 <button onclick="showSaveModal()" id="btnGuardarBD" style="display:none; background-color: #007bff;">Guardar en Base de Datos</button>
@@ -422,4 +443,3 @@
     </script>
 </body>
 </html>
-<a href="registro.html?id_actividad=123" target="_blank">Ir a registro</a>
