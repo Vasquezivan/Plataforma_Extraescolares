@@ -176,6 +176,7 @@ function mostrarGestionUsuarios() {
                   <th>Nombre</th>
                   <th>Contacto</th>
                   <th>Contraseña</th>
+                  <th>Unidad Académica</th>
                   <th>Rol</th>
                   <th>Acciones</th>
                 </tr>
@@ -497,7 +498,7 @@ function cargarAlumnosActividad(idActividad, nombreActividad) {
           <tr class="alumno-${nombreActividad.toLowerCase()}">
             <td>${index + 1}</td>
             <td>${alumno.nombre}</td>
-            <td>${alumno.numero_control}</td>
+            <td>${alumno.control}</td>
             <td>${alumno.semestre}</td>
             <td>${alumno.carrera}</td>
           </tr>
@@ -1086,6 +1087,7 @@ function cargarUsuariosDesdeBaseDeDatos() {
                 <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
                 <td>${usuario.contraseña || 'No especificada'}</td>
+                <td>${usuario.unidad_academica || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
                 <td>
                   <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
@@ -1362,11 +1364,11 @@ function guardarNuevoUsuario() {
 
 // Función para editar usuario
 function editarUsuario(filaUsuario) {
-  // Obtener los datos de cada celda en el orden correcto según la nueva estructura de la tabla
   const nombre = filaUsuario.cells[0].textContent;
   const contacto = filaUsuario.cells[1].textContent;
   const password = filaUsuario.cells[2].textContent;
-  const rol = filaUsuario.cells[3].textContent;
+  const unidad = filaUsuario.cells[3].textContent; // <- ahora sí obtiene la unidad
+  const rol = filaUsuario.cells[4].textContent;
   
   const modalHTML = `
     <div id="modalEditarUsuario" class="modal" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 999;">
@@ -1589,7 +1591,8 @@ function actualizarFilaUsuario(fila, nombre, unidad, contacto, password, rol) {
   fila.children[0].textContent = nombre;
   fila.children[1].textContent = contacto;
   fila.children[2].textContent = password;
-  fila.children[3].textContent = rol;
+  fila.children[3].textContent = unidad;
+  fila.children[4].textContent = rol;
 }
 
 // Función para eliminar usuario
@@ -2359,7 +2362,7 @@ function cargarAlumnosActividadValle(idActividad, nombreActividad) {
           return;
         }
         
-        // Llenar la tabla con los alumnos
+        // Llenar la tabla with los alumnos
         cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
           <tr class="alumno-${nombreActividad.toLowerCase()}">
             <td>${index + 1}</td>
@@ -2444,6 +2447,7 @@ function mostrarGestionActividades() {
                   <th>Nombre</th>
                   <th>Contacto</th>
                   <th>Contraseña</th>
+                  <th>Unidad Académica</th>
                   <th>Rol</th>
                   <th>Acciones</th>
                 </tr>
@@ -2585,6 +2589,7 @@ function cargarUsuariosDesdeBaseDeDatosCoordinador() {
                 <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
                 <td>${usuario.contraseña || 'No especificada'}</td>
+                <td>${usuario.unidad_academica || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
                 <td>
                   <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
