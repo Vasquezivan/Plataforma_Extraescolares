@@ -385,8 +385,9 @@ document.addEventListener("DOMContentLoaded", function() {
             `;
         });
 });
+// Redirige al detalle de la actividad de Santa María
 function irADetalleActividad(id) {
-    window.open(`registro.html.html?id_actividad=${id}`, '_blank');
+    window.location.href = `registro.html?id_actividad=${id}`;
 }
 async function cargarActividades() {
     const contenedor = document.getElementById('categorias-container');
