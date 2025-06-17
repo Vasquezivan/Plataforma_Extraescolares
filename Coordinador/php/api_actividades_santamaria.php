@@ -12,11 +12,9 @@ try {
     $id_unidad = 3;
 
     // Ruta base para las imágenes - ajusta según tu estructura de directorios
-<<<<<<< HEAD
-    $baseUrl = "http://localhost/extraescolar/Administrador/";
-=======
+
     $baseUrl = "http://localhost/Valle_Etla/Administrador/";
->>>>>>> aa1cae0dd7cf9d6fcbba7e083f16c451a6b5e686
+
 
     // Solo selecciona las categorías que tengan actividades en esta unidad
     $stmt = $conn->query("SELECT id_categoria, nombre_categoria FROM categorias");
