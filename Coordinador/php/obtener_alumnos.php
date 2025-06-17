@@ -13,7 +13,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Consulta SQL para obtener los alumnos
-    $stmt = $conn->prepare("SELECT id_alumno, nombre, numero_control, carrera, semestre FROM alumnos");
+    $stmt = $conn->prepare("SELECT id_alumno, nombre, id_usuario, numero_control, carrera, semestre FROM alumnos");
     $stmt->execute();
     
     $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Gestión de Danza</title>
+    <title>Gestión de Alumnos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Agregar SweetAlert para modales bonitos -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -72,13 +72,13 @@
 </head>
 <body>
     <header>
-        <h2>Gestión de Danza</h2>
+        <h2>Gestión de Alumnos</h2>
     </header>
     <main>
         <div class="container">
             <div class="table-controls">
-                <button id="btn-regresar" onclick="window.location.href='Pagina Principal.html'"><i class="fa-solid fa-arrow-left"></i> Inicio</button>
-                <h3 class="title">Alumnos inscritos en Danza</h3>
+                <button id="btn-regresar" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+                <h3 class="title">Listado de Alumnos</h3>
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Buscar alumno...">
@@ -92,12 +92,12 @@
             <table>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>No. Control</th>
                         <th>Nombre Completo</th>
+                        <th>ID Usuario</th>
                         <th>Carrera</th>
                         <th>Semestre</th>
-                        <th>Actividad</th>
-                        <th>Correo Electrónico</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -126,7 +126,6 @@
    
     <script>
         let students = [];
-        let currentActivity = 'Danza';
 
         function renderTable() {
             const tableBody = document.getElementById('tabla-alumnos');
@@ -143,12 +142,12 @@
             students.forEach((student, index) => {
                 const row = `
                     <tr>
-                        <td>${student.numeroControl || ''}</td>
+                        <td>${student.id_alumno || ''}</td>
+                        <td>${student.numero_control || ''}</td>
                         <td>${student.nombre || ''}</td>
+                        <td>${student.id_usuario || ''}</td>
                         <td>${student.carrera || ''}</td>
                         <td>${student.semestre || ''}</td>
-                        <td>${student.actividad || currentActivity}</td>
-                        <td>${student.correo || ''}</td>
                         <td class="acciones-tabla">
                             <i class="fa-solid fa-eye" title="Ver" onclick="verAlumno(${index})"></i>
                             <i class="fa-solid fa-pen-to-square" title="Editar" onclick="editarAlumno(${index})"></i>
@@ -182,13 +181,12 @@
                     }
 
                     students = jsonData.map((row, index) => ({
-                        id: index + 1, 
-                        numeroControl: String(row['Numero de Control'] || row['numero de control'] || row['No. Control'] || row['Número de Control'] || '').trim(),
-                        nombre: String(row['Nombre Completo'] || row['nombre completo'] || row['Nombre'] || '').trim(),
+                        id_alumno: row['ID'] || index + 1,
+                        numero_control: row['numero_control'] || row['Numero de Control'] || '',
+                        nombre: row['nombre'] || row['Nombre Completo'] || row['nombre_completo'] || '',
+                        id_usuario: row['ID Usuario'] || row['id_usuario'] || '',
                         carrera: String(row['Carrera'] || row['carrera'] || '').trim(),
-                        semestre: String(row['Semestre'] || row['semestre'] || '').trim(),
-                        correo: String(row['Correo Electronico'] || row['correo electronico'] || row['Correo'] || row['Email'] || '').trim(),
-                        actividad: currentActivity
+                        semestre: String(row['Semestre'] || row['semestre'] || '').trim()
                     }));
 
                     renderTable();
@@ -236,12 +234,12 @@
             Swal.fire({
                 title: 'Detalles del Alumno',
                 html: `
-                    <p><strong>No. Control:</strong> ${alumno.numeroControl}</p>
+                    <p><strong>ID:</strong> ${alumno.id_alumno}</p>
+                    <p><strong>No. Control:</strong> ${alumno.numero_control}</p>
                     <p><strong>Nombre:</strong> ${alumno.nombre}</p>
+                    <p><strong>ID Usuario:</strong> ${alumno.id_usuario}</p>
                     <p><strong>Carrera:</strong> ${alumno.carrera}</p>
                     <p><strong>Semestre:</strong> ${alumno.semestre}</p>
-                    <p><strong>Actividad:</strong> ${alumno.actividad}</p>
-                    <p><strong>Correo:</strong> ${alumno.correo}</p>
                 `,
                 icon: 'info'
             });
@@ -251,21 +249,21 @@
             const alumno = students[index];
             Swal.fire({
                 title: 'Editar datos del alumno',
-                width: 700, // Más ancho
+                width: 700,
                 html: `
                     <div style="text-align:left">
+                        <label>ID Alumno</label>
+                        <input id="swal-id" class="swal2-input" value="${alumno.id_alumno || ''}" style="width:95%">
                         <label>No. Control</label>
-                        <input id="swal-numero" class="swal2-input" value="${alumno.numeroControl || ''}" style="width:95%">
+                        <input id="swal-numero" class="swal2-input" value="${alumno.numero_control || ''}" style="width:95%">
                         <label>Nombre Completo</label>
                         <input id="swal-nombre" class="swal2-input" value="${alumno.nombre || ''}" style="width:95%">
+                        <label>ID Usuario</label>
+                        <input id="swal-usuario" class="swal2-input" value="${alumno.id_usuario || ''}" style="width:95%">
                         <label>Carrera</label>
                         <input id="swal-carrera" class="swal2-input" value="${alumno.carrera || ''}" style="width:95%">
                         <label>Semestre</label>
                         <input id="swal-semestre" class="swal2-input" value="${alumno.semestre || ''}" style="width:95%">
-                        <label>Actividad</label>
-                        <input id="swal-actividad" class="swal2-input" value="${alumno.actividad || ''}" style="width:95%">
-                        <label>Correo Electrónico</label>
-                        <input id="swal-correo" class="swal2-input" value="${alumno.correo || ''}" style="width:95%">
                     </div>
                 `,
                 focusConfirm: false,
@@ -274,18 +272,16 @@
                 cancelButtonText: 'Cancelar',
                 preConfirm: () => {
                     return {
-                        numeroControl: document.getElementById('swal-numero').value,
+                        id_alumno: document.getElementById('swal-id').value,
+                        numero_control: document.getElementById('swal-numero').value,
                         nombre: document.getElementById('swal-nombre').value,
+                        id_usuario: document.getElementById('swal-usuario').value,
                         carrera: document.getElementById('swal-carrera').value,
-                        semestre: document.getElementById('swal-semestre').value,
-                        actividad: document.getElementById('swal-actividad').value,
-                        correo: document.getElementById('swal-correo').value
+                        semestre: document.getElementById('swal-semestre').value
                     }
                 }
             }).then(result => {
                 if (result.isConfirmed) {
-                    // Aquí puedes actualizar el alumno en tu array y refrescar la tabla
-                    // Por ejemplo:
                     Object.assign(alumno, result.value);
                     renderTable();
                     Swal.fire('¡Actualizado!', 'Los datos han sido guardados.', 'success');
@@ -319,7 +315,7 @@
             }
 
             // Validación de números de control duplicados en el archivo
-            const numeros = students.map(a => a.numeroControl);
+            const numeros = students.map(a => a.numero_control);
             const duplicados = numeros.filter((item, index) => numeros.indexOf(item) !== index);
             if (duplicados.length > 0) {
                 if (window.Swal) {
@@ -337,18 +333,12 @@
             // Validación de campos
             for (const alumno of students) {
                 if (
-                    !alumno.numeroControl ||
+                    !alumno.numero_control ||
                     !alumno.nombre ||
                     !alumno.carrera ||
-                    !alumno.semestre ||
-                    !alumno.actividad ||
-                    !alumno.correo
+                    !alumno.semestre
                 ) {
                     alert('Todos los campos son obligatorios. Verifica los datos del archivo Excel.');
-                    return;
-                }
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(alumno.correo)) {
-                    alert('Correo electrónico inválido para: ' + alumno.nombre);
                     return;
                 }
             }
@@ -362,11 +352,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    if (window.Swal) {
-                        Swal.fire('¡Éxito!', 'Alumnos guardados correctamente.', 'success');
-                    } else {
-                        alert('Alumnos guardados correctamente.');
-                    }
+                    Swal.fire('¡Éxito!', 'Alumnos guardados correctamente.', 'success');
+                    // alert('Alumnos guardados correctamente.'); // Elimina o comenta esta línea
                 } else {
                     // Validación para error de número de control duplicado
                     if (data.message && data.message.includes('Duplicate entry')) {
@@ -396,7 +383,7 @@
         // Cargar datos existentes al iniciar la página
         async function cargarDatosIniciales() {
             try {
-                const response = await fetch('php/cargar_estudiantes.php?actividad=' + encodeURIComponent(currentActivity));
+                const response = await fetch('php/cargar_alumnos.php');
                 const data = await response.json();
                 
                 if (data.success && data.alumnos) {
@@ -412,6 +399,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             cargarDatosIniciales();
         });
+
+        function irADetalleActividad(id) {
+            window.location.href = `registro.html?id_actividad=${id}`;
+        }
     </script>
 </body>
 </html>
+<a href="registro.html?id_actividad=123" target="_blank">Ir a registro</a>
