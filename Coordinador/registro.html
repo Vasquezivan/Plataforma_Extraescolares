@@ -308,6 +308,12 @@
             });
         }
 
+        // 1. Función para obtener el id_actividad de la URL
+        function getIdActividadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id_actividad');
+        }
+
         function guardarAlumnosEnBD() {
             if (students.length === 0) {
                 alert('No hay alumnos para guardar.');
@@ -343,21 +349,31 @@
                 }
             }
 
+            // 2. Vincular id_actividad a cada alumno
+            const id_actividad = getIdActividadFromURL();
+            if (!id_actividad) {
+                Swal.fire('Error', 'No se encontró el id de la actividad en la URL.', 'error');
+                return;
+            }
+            // Creamos un nuevo array con el id_actividad incluido
+            const alumnosConActividad = students.map(alumno => ({
+                ...alumno,
+                id_actividad: id_actividad
+            }));
+
             // AJUSTA la ruta si tu archivo PHP está en otra carpeta
             fetch('php/guardar_alumnos.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(students)
+                body: JSON.stringify(alumnosConActividad)
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     Swal.fire('¡Éxito!', 'Alumnos guardados correctamente.', 'success');
-                    // alert('Alumnos guardados correctamente.'); // Elimina o comenta esta línea
                 } else {
                     // Validación para error de número de control duplicado
                     if (data.message && data.message.includes('Duplicate entry')) {
-                        // Extrae el número de control duplicado del mensaje
                         const match = data.message.match(/Duplicate entry '([^']+)'/);
                         const duplicado = match ? match[1] : 'Número de control duplicado';
                         if (window.Swal) {
