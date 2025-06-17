@@ -94,8 +94,6 @@
         .status-completed { background-color: #6c757d; }
 
         .actions-container { display: flex; align-items: center; gap: 10px; }
-        .actions-container i { cursor: pointer; margin: 0 4px; color: var(--color-texto-secundario); font-size: 1.2em; transition: var(--transicion-fluida); padding: 5px; border-radius: 50%; }
-        .actions-container i:hover { color: var(--color-azul-principal); transform: scale(1.1); background-color: var(--color-borde-suave); }
         .btn-generar-constancia { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: var(--transicion-fluida); display: inline-flex; align-items: center; gap: 5px; }
         .btn-generar-constancia:hover { background-color: #218838; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .btn-generar-constancia:disabled { background-color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -157,7 +155,6 @@
             <h3 class="title">Club de Danza</h3>
             <div class="controls-right">
                 <button class="btn-action btn-export" onclick="exportToCSV()"><i class="fas fa-file-csv"></i> Exportar a CSV</button>
-                <button class="btn-action" onclick="showAddModal()"><i class="fas fa-plus"></i> Agregar Alumno</button>
                 <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Buscar alumno..."></div>
                 <div class="theme-switch-wrapper"><i class="fas fa-moon"></i><label class="theme-switch" for="theme-toggle"><input type="checkbox" id="theme-toggle" /><span class="slider round"></span></label><i class="fas fa-sun"></i></div>
             </div>
@@ -179,54 +176,6 @@
     </div>
     
     <div id="overlay" class="overlay"></div>
-
-    <div id="viewModal" class="modal">
-        <h2>Detalles del Alumno</h2>
-        <div id="viewStudentDetails"></div>
-        <button class="btn-cerrar" onclick="closeModal('viewModal')">Cerrar</button>
-    </div>
-    
-    <div id="editModal" class="modal">
-        <h2>Editar Alumno</h2>
-        <form id="editForm" onsubmit="saveStudentChanges(event)">
-            <input type="hidden" id="editStudentId">
-            <label for="editControlNumber">No. de Control:</label>
-            <input type="text" id="editControlNumber" required>
-            <label for="editStudentName">Nombre Completo:</label>
-            <input type="text" id="editStudentName" required>
-            <label for="editCarrera">Carrera:</label>
-            <input type="text" id="editCarrera" required>
-            <label for="editSemestre">Semestre:</label>
-            <input type="number" id="editSemestre" required>
-            <button type="submit">Guardar Cambios</button>
-            <button type="button" class="btn-cerrar" onclick="closeModal('editModal')">Cancelar</button>
-        </form>
-    </div>
-    
-    <div id="addModal" class="modal">
-        <h2>Agregar Nuevo Alumno</h2>
-        <form id="addForm" onsubmit="saveNewStudent(event)">
-            <label for="addControlNumber">No. de Control:</label>
-            <input type="text" id="addControlNumber" required>
-            <label for="addStudentName">Nombre Completo:</label>
-            <input type="text" id="addStudentName" required>
-            <label for="addCarrera">Carrera:</label>
-            <input type="text" id="addCarrera" required>
-            <label for="addSemestre">Semestre:</label>
-            <input type="number" id="addSemestre" required>
-            <button type="submit">Registrar Alumno</button>
-            <button type="button" class="btn-cerrar" onclick="closeModal('addModal')">Cancelar</button>
-        </form>
-    </div>
-    
-    <div id="deleteConfirmModal" class="modal">
-        <p>¿Estás seguro de que deseas eliminar a este alumno?</p>
-        <div id="deleteStudentInfo" style="font-weight:bold; margin-bottom:20px;"></div>
-        <div class="modal-buttons">
-            <button class="confirm-delete-yes" onclick="confirmDelete()">Sí, eliminar</button>
-            <button class="confirm-delete-no" onclick="closeModal('deleteConfirmModal')">No, cancelar</button>
-        </div>
-    </div>
     
     <div id="formularioEvaluacion" class="modal">
         <h2>Evaluación de Actividades Complementarias</h2>
@@ -280,7 +229,6 @@
     <script>
     const { jsPDF } = window.jspdf;
     let students = [];
-    let studentIdToDelete = null;
     let studentIdToEvaluate = null;
     let currentSort = { column: 'name', direction: 'asc' };
 
@@ -410,7 +358,7 @@
             tableBody.style.display = 'none';
             emptyStateTbody.style.display = '';
             emptyStateTbody.querySelector('td').textContent = students.length === 0 ? 
-                "Aún no hay alumnos registrados. ¡Agrega uno!" : 
+                "Aún no hay alumnos registrados." : 
                 "No se encontraron alumnos que coincidan.";
         } else {
             tableBody.style.display = '';
@@ -427,9 +375,6 @@
                         <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
                         <td>
                             <div class="actions-container">
-                                <i class="fa-solid fa-eye" title="Ver" onclick="showViewModal(${student.id})" role="button"></i>
-                                <i class="fa-solid fa-pen-to-square" title="Editar" onclick="showEditModal(${student.id})" role="button"></i>
-                                <i class="fa-solid fa-trash" title="Eliminar" onclick="showDeleteModal(${student.id})" role="button"></i>
                                 <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id})" ${isEvaluado ? 'disabled' : ''}>
                                     <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
                                 </button>
@@ -440,171 +385,7 @@
         }
     }
 
-    // --- 4. FUNCIONES CRUD ---
-    function showAddModal() {
-        document.getElementById('addForm').reset();
-        openModal('addModal');
-    }
-
-    async function saveNewStudent(e) {
-        e.preventDefault();
-        const controlNumber = document.getElementById('addControlNumber').value;
-        const name = document.getElementById('addStudentName').value;
-        const carrera = document.getElementById('addCarrera').value;
-        const semestre = document.getElementById('addSemestre').value;
-        
-        try {
-            const response = await fetch('agregar_alumno.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    controlNumber: controlNumber,
-                    name: name,
-                    carrera: carrera,
-                    semestre: semestre
-                })
-            });
-            
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
-            const data = await response.json();
-            
-            if(data.success) {
-                students.push({
-                    id: data.id,
-                    controlNumber: controlNumber,
-                    name: name,
-                    carrera: carrera,
-                    semestre: semestre,
-                    status: 'Pendiente'
-                });
-                renderTable();
-                closeModal('addModal');
-                showToast('Alumno agregado correctamente.');
-            } else {
-                throw new Error(data.message || "Error al agregar alumno");
-            }
-        } catch (error) {
-            console.error('Error al agregar alumno:', error);
-            showToast(`Error: ${error.message}`);
-        }
-    }
-
-    function showViewModal(id) {
-        const student = students.find(s => s.id === id);
-        if (!student) return;
-        
-        document.getElementById('viewStudentDetails').innerHTML = `
-            <p><strong>No. de Control:</strong> ${student.controlNumber || 'N/A'}</p>
-            <p><strong>Nombre:</strong> ${student.name || 'N/A'}</p>
-            <p><strong>Carrera:</strong> ${student.carrera || 'N/A'}</p>
-            <p><strong>Semestre:</strong> ${student.semestre || 'N/A'}</p>
-            <p><strong>Estado:</strong> ${student.status || 'Pendiente'}</p>
-        `;
-        openModal('viewModal');
-    }
-
-    function showEditModal(id) {
-        const student = students.find(s => s.id === id);
-        if (!student) return;
-        
-        document.getElementById('editStudentId').value = student.id;
-        document.getElementById('editControlNumber').value = student.controlNumber || '';
-        document.getElementById('editStudentName').value = student.name || '';
-        document.getElementById('editCarrera').value = student.carrera || '';
-        document.getElementById('editSemestre').value = student.semestre || '';
-        openModal('editModal');
-    }
-
-    async function saveStudentChanges(e) {
-        e.preventDefault();
-        const id = parseInt(document.getElementById('editStudentId').value);
-        const controlNumber = document.getElementById('editControlNumber').value;
-        const name = document.getElementById('editStudentName').value;
-        const carrera = document.getElementById('editCarrera').value;
-        const semestre = document.getElementById('editSemestre').value;
-        
-        try {
-            const response = await fetch('actualizar_alumno.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: id,
-                    controlNumber: controlNumber,
-                    name: name,
-                    carrera: carrera,
-                    semestre: semestre
-                })
-            });
-            
-            const data = await response.json();
-            
-            if(data.success) {
-                const idx = students.findIndex(s => s.id === id);
-                if(idx > -1) {
-                    students[idx] = {
-                        ...students[idx],
-                        controlNumber: controlNumber,
-                        name: name,
-                        carrera: carrera,
-                        semestre: semestre
-                    };
-                }
-                renderTable();
-                closeModal('editModal');
-                showToast('Datos del alumno actualizados.');
-            } else {
-                throw new Error(data.message || "Error al actualizar alumno");
-            }
-        } catch (error) {
-            console.error('Error al actualizar alumno:', error);
-            showToast(`Error: ${error.message}`);
-        }
-    }
-
-    function showDeleteModal(id) {
-        studentIdToDelete = id;
-        const student = students.find(s => s.id === id);
-        if(!student) return;
-        
-        document.getElementById('deleteStudentInfo').textContent = `${student.name || 'Alumno'} (${student.controlNumber || 'Sin número'})`;
-        openModal('deleteConfirmModal');
-    }
-
-    async function confirmDelete() {
-        try {
-            const response = await fetch('eliminar_alumno.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: studentIdToDelete
-                })
-            });
-            
-            const data = await response.json();
-            
-            if(data.success) {
-                students = students.filter(s => s.id !== studentIdToDelete);
-                renderTable();
-                closeModal('deleteConfirmModal');
-                showToast('Alumno eliminado.');
-                studentIdToDelete = null;
-            } else {
-                throw new Error(data.message || "Error al eliminar alumno");
-            }
-        } catch (error) {
-            console.error('Error al eliminar alumno:', error);
-            showToast(`Error: ${error.message}`);
-        }
-    }
-
-    // --- 5. FUNCIONES AUXILIARES ---
+    // --- 4. FUNCIONES AUXILIARES ---
     function exportToCSV() {
         if (students.length === 0) {
             showToast("No hay alumnos para exportar.");
@@ -630,7 +411,7 @@
         document.body.removeChild(a);
     }
 
-    // --- 6. SISTEMA DE EVALUACIÓN ---
+    // --- 5. SISTEMA DE EVALUACIÓN ---
     const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
 
     function initializeEvaluationForm() {
