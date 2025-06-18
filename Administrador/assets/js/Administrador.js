@@ -203,22 +203,7 @@ function mostrarGestionUsuarios() {
 
 // Función para mostrar información de una unidad académica
 function mostrarInformacionUnidad(unidad) {
-  // Si es la unidad de Unión Hidalgo, obtenemos los datos de la base de datos
-  if (unidad === "CIDERS unión Hidalgo") {
-    cargarDatosUnionHidalgo();
-    return;
-  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
-    cargarDatosDemetrioVallejo();
-    return;
-  } else if (unidad === "Unidad académica Tlahuitoltepec") {
-    cargarDatosTlahuitoltepec();
-    return;
-  } else if (unidad === "Valle de Etla") {
-    cargarDatosValleEtla();
-    return;
-  }
-  
-  // Para las demás unidades, seguimos usando los datos estáticos
+  // Usar SIEMPRE los datos estáticos
   const datosUnidad = datosUnidades[unidad];
   if (!datosUnidad) {
     console.error("No se encontraron datos para la unidad:", unidad);
@@ -227,7 +212,9 @@ function mostrarInformacionUnidad(unidad) {
 
   // Determinar el archivo HTML correcto según la unidad
   let archivoHTML = '';
-  if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
+  if (unidad === "CIDERS unión Hidalgo") {
+    archivoHTML = "U_CentrodeInvestigacion.html";
+  } else if (unidad === "Unidad Demetrio Vallejo en el Espinal") {
     archivoHTML = "U_Demetrio.html";
   } else if (unidad === "Unidad académica Tlahuitoltepec") {
     archivoHTML = "U_SantaMaria.html";
@@ -251,20 +238,16 @@ function mostrarInformacionUnidad(unidad) {
     <div class="seccion-alumnos">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${datosUnidad.actividades[0]}</h3>
-        
-        <!-- Botón Vista Previa más pequeño y a la derecha -->
         <a href="./${archivoHTML}" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
           <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
         </a>
       </div>
-
       <div class="contenedor-busqueda">
         <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
         <div class="contador-alumnos" id="contadorAlumnos">
           <span class="numero">${datosUnidad.alumnos[datosUnidad.actividades[0]].length}</span> alumnos inscritos
         </div>
       </div>
-
       <div class="contenedor-tabla">
         <table class="tabla-alumnos">
           <thead>
@@ -291,8 +274,6 @@ function mostrarInformacionUnidad(unidad) {
       </div>
     </div>
   `;
-  
-  // Configurar eventos para botones de actividades
   configurarEventosUnidad(unidad);
 }
 
