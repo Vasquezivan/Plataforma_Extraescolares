@@ -437,7 +437,7 @@ function construirInterfazUnionHidalgo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnionHidalgo(actividades);
+  configurarEventosUnidadHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica
@@ -670,7 +670,7 @@ function construirInterfazDemetrioVallejo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnionHidalgo(actividades);
+  configurarEventosUnidadHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
@@ -903,7 +903,7 @@ function construirInterfazTlahuitoltepec(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnionHidalgo(actividades);
+  configurarEventosUnidadHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Tlahuitoltepec
@@ -1079,14 +1079,16 @@ function cargarUsuariosDesdeBaseDeDatos() {
             // Agregar cada usuario a la tabla
             result.data.forEach(usuario => {
               const fila = document.createElement('tr');
-              // Añadimos el ID real como atributo data-id para operaciones posteriores
               fila.setAttribute('data-id', usuario.id_usuario);
-              
-              // Asegurar que el contenido de la fila está en el orden correcto de las columnas
+
               fila.innerHTML = `
                 <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
-                <td>${usuario.contraseña || 'No especificada'}</td>
+                <td style="position:relative;">
+                  <span class="password-oculta">••••••••</span>
+                  <span class="password-real" style="display:none;">${usuario.contraseña || ''}</span>
+                  <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
+                </td>
                 <td>${usuario.unidad_academica || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
                 <td>
@@ -1095,6 +1097,28 @@ function cargarUsuariosDesdeBaseDeDatos() {
                 </td>
               `;
               tablaUsuarios.appendChild(fila);
+
+              // Evento para mostrar/ocultar contraseña
+              const iconoVer = fila.querySelector('.ver-password');
+              if (iconoVer) {
+                iconoVer.addEventListener('click', function() {
+                  const spanOculta = fila.querySelector('.password-oculta');
+                  const spanReal = fila.querySelector('.password-real');
+                  if (spanOculta.style.display === 'none') {
+                    spanOculta.style.display = '';
+                    spanReal.style.display = 'none';
+                    iconoVer.classList.remove('fa-eye');
+                    iconoVer.classList.add('fa-eye-slash');
+                    iconoVer.title = "Ver contraseña";
+                  } else {
+                    spanOculta.style.display = 'none';
+                    spanReal.style.display = '';
+                    iconoVer.classList.remove('fa-eye-slash');
+                    iconoVer.classList.add('fa-eye');
+                    iconoVer.title = "Ocultar contraseña";
+                  }
+                });
+              }
             });
           } else {
             tablaUsuarios.innerHTML = `
@@ -1366,8 +1390,11 @@ function guardarNuevoUsuario() {
 function editarUsuario(filaUsuario) {
   const nombre = filaUsuario.cells[0].textContent;
   const contacto = filaUsuario.cells[1].textContent;
-  const password = filaUsuario.cells[2].textContent;
-  const unidad = filaUsuario.cells[3].textContent; // <- ahora sí obtiene la unidad
+  // Obtener la contraseña real del span oculto
+  const password = filaUsuario.cells[2].querySelector('.password-real') 
+    ? filaUsuario.cells[2].querySelector('.password-real').textContent 
+    : '';
+  const unidad = filaUsuario.cells[3].textContent;
   const rol = filaUsuario.cells[4].textContent;
   
   const modalHTML = `
@@ -1590,9 +1617,36 @@ function guardarCambiosUsuario(filaUsuario) {
 function actualizarFilaUsuario(fila, nombre, unidad, contacto, password, rol) {
   fila.children[0].textContent = nombre;
   fila.children[1].textContent = contacto;
-  fila.children[2].textContent = password;
+  // Mantener la estructura con el ojo y los spans
+  fila.children[2].innerHTML = `
+    <span class="password-oculta">••••••••</span>
+    <span class="password-real" style="display:none;">${password}</span>
+    <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
+  `;
   fila.children[3].textContent = unidad;
   fila.children[4].textContent = rol;
+
+  // Volver a agregar el evento al icono de ojo
+  const iconoVer = fila.children[2].querySelector('.ver-password');
+  if (iconoVer) {
+    iconoVer.addEventListener('click', function() {
+      const spanOculta = fila.children[2].querySelector('.password-oculta');
+      const spanReal = fila.children[2].querySelector('.password-real');
+      if (spanOculta.style.display === 'none') {
+        spanOculta.style.display = '';
+        spanReal.style.display = 'none';
+        iconoVer.classList.remove('fa-eye');
+        iconoVer.classList.add('fa-eye-slash');
+        iconoVer.title = "Ver contraseña";
+      } else {
+        spanOculta.style.display = 'none';
+        spanReal.style.display = '';
+        iconoVer.classList.remove('fa-eye-slash');
+        iconoVer.classList.add('fa-eye');
+        iconoVer.title = "Ocultar contraseña";
+      }
+    });
+  }
 }
 
 // Función para eliminar usuario
@@ -2073,7 +2127,7 @@ function construirInterfazDemetrioVallejo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnionHidalgo(actividades);
+  configurarEventosUnidadHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
@@ -2306,7 +2360,7 @@ function construirInterfazValleEtla(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnionHidalgo(actividades);
+  configurarEventosUnidadHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Valle de Etla
@@ -2584,11 +2638,16 @@ function cargarUsuariosDesdeBaseDeDatosCoordinador() {
             // Agregar cada usuario a la tabla
             result.data.forEach(usuario => {
               const fila = document.createElement('tr');
-              
+              fila.setAttribute('data-id', usuario.id_usuario);
+
               fila.innerHTML = `
                 <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
-                <td>${usuario.contraseña || 'No especificada'}</td>
+                <td style="position:relative;">
+                  <span class="password-oculta">••••••••</span>
+                  <span class="password-real" style="display:none;">${usuario.contraseña || ''}</span>
+                  <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
+                </td>
                 <td>${usuario.unidad_academica || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
                 <td>
@@ -2597,6 +2656,28 @@ function cargarUsuariosDesdeBaseDeDatosCoordinador() {
                 </td>
               `;
               tablaUsuarios.appendChild(fila);
+
+              // Evento para mostrar/ocultar contraseña
+              const iconoVer = fila.querySelector('.ver-password');
+              if (iconoVer) {
+                iconoVer.addEventListener('click', function() {
+                  const spanOculta = fila.querySelector('.password-oculta');
+                  const spanReal = fila.querySelector('.password-real');
+                  if (spanOculta.style.display === 'none') {
+                    spanOculta.style.display = '';
+                    spanReal.style.display = 'none';
+                    iconoVer.classList.remove('fa-eye');
+                    iconoVer.classList.add('fa-eye-slash');
+                    iconoVer.title = "Ver contraseña";
+                  } else {
+                    spanOculta.style.display = 'none';
+                    spanReal.style.display = '';
+                    iconoVer.classList.remove('fa-eye-slash');
+                    iconoVer.classList.add('fa-eye');
+                    iconoVer.title = "Ocultar contraseña";
+                  }
+                });
+              }
             });
           } else {
             tablaUsuarios.innerHTML = `
