@@ -72,6 +72,53 @@
 
   <!-- Cargar JavaScript al final del documento -->
   <script src="./assets/js/Administrador.js"></script>
+  <script>
+  // Mostrar modal de perfil al hacer clic en el icono de usuario
+  document.addEventListener('DOMContentLoaded', function() {
+    const iconoPerfil = document.getElementById('iconoPerfil');
+    if (iconoPerfil) {
+      iconoPerfil.addEventListener('click', mostrarModalPerfil);
+    }
+  });
 
+  function mostrarModalPerfil() {
+    // Evita duplicar el modal
+    if (document.getElementById('modalPerfilUsuario')) return;
+
+    // Obtiene el usuario actual desde sessionStorage
+    const usuarioActual = sessionStorage.getItem('usuario') || 'Usuario Invitado';
+
+    const modalHTML = `
+      <div id="modalPerfilUsuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 12px; padding: 30px 40px; min-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; position: relative;">
+          <i class="fas fa-user-circle" style="font-size: 60px; color: #1B396A; margin-top: 10px; margin-bottom: 20px;"></i>
+          <h2 style="color: #1B396A; font-size: 22px; margin-bottom: 10px;">Perfil de Usuario</h2>
+          <p style="font-size: 16px; margin-bottom: 25px;"><strong>${usuarioActual}</strong></p>
+          <button id="btnCerrarSesion" style="background: #d33; color: #fff; border: none; border-radius: 5px; padding: 10px 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+            <i class="fas fa-sign-out-alt" style="margin-right: 7px;"></i>Cerrar Sesión
+          </button>
+          <button id="btnCerrarModalPerfil" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 22px; color: #888; cursor: pointer;">&times;</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Evento para cerrar sesión
+    document.getElementById('btnCerrarSesion').onclick = function() {
+      sessionStorage.clear();
+      window.location.href = '../index.html'; // Ajusta la ruta si es necesario
+    };
+
+    // Evento para cerrar el modal
+    document.getElementById('btnCerrarModalPerfil').onclick = function() {
+      document.getElementById('modalPerfilUsuario').remove();
+    };
+
+    // Cierra el modal si se hace clic fuera del contenido
+    document.getElementById('modalPerfilUsuario').onclick = function(e) {
+      if (e.target === this) this.remove();
+    };
+  }
+</script>
 </body>
 </html>
