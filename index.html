@@ -394,6 +394,7 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
       if (data.success) {
         let mensaje = "";
         let destino = "";
+        sessionStorage.setItem('usuario', usuario); // usuario es el nombre del usuario logueado
         if (data.role === "Administrador") {
           mensaje = "¡Bienvenido Administrador!";
           destino = "Administrador/Principal_Admin.html";
