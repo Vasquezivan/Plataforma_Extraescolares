@@ -126,6 +126,12 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
+
+  // Mostrar modal de perfil al hacer clic en el icono de usuario
+  const iconoPerfil = document.getElementById('iconoPerfil');
+  if (iconoPerfil) {
+    iconoPerfil.addEventListener('click', mostrarModalPerfil);
+  }
 });
 
 // Función para mostrar la página de inicio
@@ -418,7 +424,7 @@ function construirInterfazUnionHidalgo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnidadHidalgo(actividades);
+  configurarEventosUnionHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica
@@ -651,7 +657,7 @@ function construirInterfazDemetrioVallejo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnidadHidalgo(actividades);
+  configurarEventosUnionHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
@@ -884,7 +890,7 @@ function construirInterfazTlahuitoltepec(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnidadHidalgo(actividades);
+  configurarEventosUnionHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Tlahuitoltepec
@@ -1060,16 +1066,14 @@ function cargarUsuariosDesdeBaseDeDatos() {
             // Agregar cada usuario a la tabla
             result.data.forEach(usuario => {
               const fila = document.createElement('tr');
+              // Añadimos el ID real como atributo data-id para operaciones posteriores
               fila.setAttribute('data-id', usuario.id_usuario);
-
+              
+              // Asegurar que el contenido de la fila está en el orden correcto de las columnas
               fila.innerHTML = `
                 <td>${usuario.nombre || 'Sin nombre'}</td>
                 <td>${usuario.contacto || 'No especificado'}</td>
-                <td style="position:relative;">
-                  <span class="password-oculta">••••••••</span>
-                  <span class="password-real" style="display:none;">${usuario.contraseña || ''}</span>
-                  <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
-                </td>
+                <td>${usuario.contraseña || 'No especificada'}</td>
                 <td>${usuario.unidad_academica || 'No especificada'}</td>
                 <td>${usuario.rol || 'No especificado'}</td>
                 <td>
@@ -1078,28 +1082,6 @@ function cargarUsuariosDesdeBaseDeDatos() {
                 </td>
               `;
               tablaUsuarios.appendChild(fila);
-
-              // Evento para mostrar/ocultar contraseña
-              const iconoVer = fila.querySelector('.ver-password');
-              if (iconoVer) {
-                iconoVer.addEventListener('click', function() {
-                  const spanOculta = fila.querySelector('.password-oculta');
-                  const spanReal = fila.querySelector('.password-real');
-                  if (spanOculta.style.display === 'none') {
-                    spanOculta.style.display = '';
-                    spanReal.style.display = 'none';
-                    iconoVer.classList.remove('fa-eye');
-                    iconoVer.classList.add('fa-eye-slash');
-                    iconoVer.title = "Ver contraseña";
-                  } else {
-                    spanOculta.style.display = 'none';
-                    spanReal.style.display = '';
-                    iconoVer.classList.remove('fa-eye-slash');
-                    iconoVer.classList.add('fa-eye');
-                    iconoVer.title = "Ocultar contraseña";
-                  }
-                });
-              }
             });
           } else {
             tablaUsuarios.innerHTML = `
@@ -1371,11 +1353,8 @@ function guardarNuevoUsuario() {
 function editarUsuario(filaUsuario) {
   const nombre = filaUsuario.cells[0].textContent;
   const contacto = filaUsuario.cells[1].textContent;
-  // Obtener la contraseña real del span oculto
-  const password = filaUsuario.cells[2].querySelector('.password-real') 
-    ? filaUsuario.cells[2].querySelector('.password-real').textContent 
-    : '';
-  const unidad = filaUsuario.cells[3].textContent;
+  const password = filaUsuario.cells[2].textContent;
+  const unidad = filaUsuario.cells[3].textContent; // <- ahora sí obtiene la unidad
   const rol = filaUsuario.cells[4].textContent;
   
   const modalHTML = `
@@ -1598,36 +1577,9 @@ function guardarCambiosUsuario(filaUsuario) {
 function actualizarFilaUsuario(fila, nombre, unidad, contacto, password, rol) {
   fila.children[0].textContent = nombre;
   fila.children[1].textContent = contacto;
-  // Mantener la estructura con el ojo y los spans
-  fila.children[2].innerHTML = `
-    <span class="password-oculta">••••••••</span>
-    <span class="password-real" style="display:none;">${password}</span>
-    <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
-  `;
+  fila.children[2].textContent = password;
   fila.children[3].textContent = unidad;
   fila.children[4].textContent = rol;
-
-  // Volver a agregar el evento al icono de ojo
-  const iconoVer = fila.children[2].querySelector('.ver-password');
-  if (iconoVer) {
-    iconoVer.addEventListener('click', function() {
-      const spanOculta = fila.children[2].querySelector('.password-oculta');
-      const spanReal = fila.children[2].querySelector('.password-real');
-      if (spanOculta.style.display === 'none') {
-        spanOculta.style.display = '';
-        spanReal.style.display = 'none';
-        iconoVer.classList.remove('fa-eye');
-        iconoVer.classList.add('fa-eye-slash');
-        iconoVer.title = "Ver contraseña";
-      } else {
-        spanOculta.style.display = 'none';
-        spanReal.style.display = '';
-        iconoVer.classList.remove('fa-eye-slash');
-        iconoVer.classList.add('fa-eye');
-        iconoVer.title = "Ocultar contraseña";
-      }
-    });
-  }
 }
 
 // Función para eliminar usuario
@@ -2108,240 +2060,7 @@ function construirInterfazDemetrioVallejo(actividades) {
   `;
   
   // Configurar eventos para los botones de actividades
-  configurarEventosUnidadHidalgo(actividades);
-}
-
-// Función para cargar los alumnos de una actividad específica en Demetrio Vallejo
-function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
-  // Actualizar título
-  const tituloActividad = document.getElementById('tituloActividad');
-  if (tituloActividad) {
-    tituloActividad.textContent = `Alumnos inscritos a ${nombreActividad}`;
-  }
-  
-  // Mostrar spinner mientras se cargan los alumnos
-  const cuerpoTabla = document.getElementById('cuerpoTablaAlumnos');
-  const contadorAlumnos = document.getElementById('contadorAlumnos');
-  
-  if (cuerpoTabla) {
-    cuerpoTabla.innerHTML = `
-      <tr>
-        <td colspan="5" style="text-align: center; padding: 20px;">
-          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-          <p style="margin-top: 10px;">Cargando alumnos...</p>
-        </td>
-      </tr>
-    `;
-  }
-  
-  if (contadorAlumnos) {
-    contadorAlumnos.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...`;
-  }
-  
-  // Hacer la solicitud para obtener los alumnos inscritos en esta actividad
-  fetch(`./php/obtener_alumnos_inscritos_demetrio.php?id_actividad=${idActividad}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al obtener alumnos');
-      }
-      return response.json();
-    })
-    .then(alumnos => {
-      if (cuerpoTabla) {
-        if (!alumnos || alumnos.length === 0) {
-          cuerpoTabla.innerHTML = `
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
-                No hay estudiantes registrados en esta actividad
-              </td>
-            </tr>
-          `;
-          
-          if (contadorAlumnos) {
-            contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
-          }
-          
-          return;
-        }
-        
-        // Llenar la tabla con los alumnos
-        cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
-          <tr class="alumno-${nombreActividad.toLowerCase()}">
-            <td>${index + 1}</td>
-            <td>${alumno.nombre}</td>
-            <td>${alumno.numero_control}</td>
-            <td>${alumno.semestre}</td>
-            <td>${alumno.carrera}</td>
-          </tr>
-        `).join('');
-        
-        // Actualizar contador
-        if (contadorAlumnos) {
-          contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
-        }
-      }
-    })
-    .catch(error => {
-      console.error('Error al cargar alumnos:', error);
-      if (cuerpoTabla) {
-        cuerpoTabla.innerHTML = `
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 20px; color: #d33;">
-              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-              Error al cargar los estudiantes. Por favor, intente nuevamente.
-            </td>
-          </tr>
-        `;
-      }
-      
-      if (contadorAlumnos) {
-        contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
-      }
-    });
-}
-
-// Función para cargar los datos de Valle de Etla desde la base de datos
-function cargarDatosValleEtla() {
-  const mainContent = document.querySelector('.main-content');
-  
-  // Mostrar indicador de carga
-  mainContent.innerHTML = `
-    <div class="cargando" style="text-align: center; padding: 50px;">
-      <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: #1B396A;"></i>
-      <p style="margin-top: 20px; color: #555; font-size: 18px;">Cargando actividades de Valle de Etla...</p>
-    </div>
-  `;
-
-  // Primero obtenemos las actividades disponibles para esta unidad
-  fetch('./php/obtener_actividades_valle.php')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al obtener actividades');
-      }
-      return response.json();
-    })
-    .then(actividades => {
-      if (!actividades || actividades.length === 0) {
-        mostrarMensajeNoActividadesValle();
-        return;
-      }
-      
-      // Ya tenemos las actividades, ahora construimos la interfaz
-      construirInterfazValleEtla(actividades);
-      
-      // Seleccionamos la primera actividad por defecto
-      if (actividades.length > 0) {
-        cargarAlumnosActividadValle(actividades[0].id_actividad, actividades[0].nombre_actividad);
-      }
-    })
-    .catch(error => {
-      console.error('Error al cargar actividades:', error);
-      mostrarErrorCargaValle();
-    });
-}
-
-// Función para mostrar mensaje cuando no hay actividades en Valle de Etla
-function mostrarMensajeNoActividadesValle() {
-  const mainContent = document.querySelector('.main-content');
-  mainContent.innerHTML = `
-    <div class="encabezado-modal">
-      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
-      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
-    </div>
-    
-    <div class="sin-actividades" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
-      <i class="fas fa-exclamation-circle" style="font-size: 50px; color: #ff7f00; margin-bottom: 20px;"></i>
-      <h3 style="color: #1B396A; margin-bottom: 15px;">No hay actividades registradas</h3>
-      <p style="color: #555; font-size: 16px;">No se encontraron actividades extraescolares para esta unidad académica.</p>
-      <a href="./U_CentrodeInvestigacion.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; margin-top: 20px; justify-content: center; max-width: 200px; margin-left: auto; margin-right: auto;">
-        <i class="fas fa-plus" style="margin-right: 5px;"></i>Ir a gestión de actividades
-      </a>
-    </div>
-  `;
-}
-
-// Función para mostrar mensaje de error en carga de Valle de Etla
-function mostrarErrorCargaValle() {
-  const mainContent = document.querySelector('.main-content');
-  mainContent.innerHTML = `
-    <div class="encabezado-modal">
-      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
-      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
-    </div>
-    
-    <div class="error" style="text-align: center; padding: 50px; background-color: white; border-radius: 8px; margin-top: 20px;">
-      <i class="fas fa-exclamation-triangle" style="font-size: 50px; color: #d33; margin-bottom: 20px;"></i>
-      <h3 style="color: #1B396A; margin-bottom: 15px;">Error de conexión</h3>
-      <p style="color: #555; font-size: 16px;">No se pudieron cargar las actividades desde la base de datos. Por favor, verifique su conexión e intente nuevamente.</p>
-      <button onclick="cargarDatosValleEtla()" class="btn-reintentar" style="background-color: #1B396A; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px; cursor: pointer;">
-        <i class="fas fa-sync-alt" style="margin-right: 5px;"></i>Reintentar
-      </button>
-    </div>
-  `;
-}
-
-// Función para construir la interfaz con las actividades obtenidas para Valle de Etla
-function construirInterfazValleEtla(actividades) {
-  const mainContent = document.querySelector('.main-content');
-  
-  // Construimos los botones de actividades
-  const botonesActividades = actividades.map((actividad, index) => 
-    `<button class="boton-actividad${index === 0 ? ' activo' : ''}" data-id="${actividad.id_actividad}" data-nombre="${actividad.nombre_actividad}">${actividad.nombre_actividad}</button>`
-  ).join('');
-  
-  mainContent.innerHTML = `
-    <div class="encabezado-modal">
-      <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" class="logo-modal">
-      <h2 class="titulo-modal">Actividades Extraescolares - Valle de Etla</h2>
-    </div>
-
-    <div class="barra-actividades">
-      ${botonesActividades}
-    </div>
-
-    <div class="seccion-alumnos">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 class="titulo-centrado" id="tituloActividad">Alumnos inscritos a ${actividades[0].nombre_actividad}</h3>
-        
-        <!-- Botón Vista Previa más pequeño y a la derecha -->
-        <a href="./U_ValleEtla.html" class="btn-vista-previa" style="background-color: #ff7f00; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 13px;">
-          <i class="fas fa-eye" style="margin-right: 5px;"></i>Vista Previa
-        </a>
-      </div>
-
-      <div class="contenedor-busqueda">
-        <input type="text" id="busquedaAlumnos" placeholder="Buscar alumno..." class="busqueda-input" onkeyup="filtrarTabla()">
-        <div class="contador-alumnos" id="contadorAlumnos">
-          <i class="fas fa-spinner fa-spin" style="margin-right: 5px;"></i> Cargando alumnos...
-        </div>
-      </div>
-
-      <div class="contenedor-tabla">
-        <table class="tabla-alumnos">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>No. de Control</th>
-              <th>Semestre</th>
-              <th>Carrera</th>
-            </tr>
-          </thead>
-          <tbody id="cuerpoTablaAlumnos">
-            <tr>
-              <td colspan="5" style="text-align: center; padding: 20px;">
-                <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-                <p style="margin-top: 10px;">Cargando alumnos...</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
-  
-  // Configurar eventos para los botones de actividades
-  configurarEventosUnidadHidalgo(actividades);
+  configurarEventosUnionHidalgo(actividades);
 }
 
 // Función para cargar los alumnos de una actividad específica en Valle de Etla
@@ -2433,264 +2152,42 @@ function cargarAlumnosActividadValle(idActividad, nombreActividad) {
     });
 }
 
-// Función para mostrar la página de gestión de actividades
-function mostrarGestionActividades() {
-  const mainContent = document.querySelector('.main-content');
-  mainContent.innerHTML = `
-    <div class="gestion-actividades" style="margin-top: 20px;">
-      <h1 class="titulo-recuadro" style="font-family: 'Segoe UI', sans-serif; color: #1B396A; font-size: 24px; text-align: center;">G E S T I Ó N &nbsp; D E &nbsp; A C T I V I D A D E S</h1>
-      <p class="mb-4" style="font-family: 'Segoe UI', sans-serif; color: #555; font-size: 16px; text-align: center; margin-top: 10px;">Administra las actividades extraescolares de cada unidad académica. Agrega, edita o elimina actividades, y asigna alumnos a las mismas de manera sencilla y rápida.</p>
+// Función para mostrar el modal de perfil
+function mostrarModalPerfil() {
+  // Evita duplicar el modal
+  if (document.getElementById('modalPerfilUsuario')) return;
 
-      <div class="card shadow mb-4" style="margin: 0 auto; max-width: 90%;">
-        <div class="card-header py-3" style="background-color: #1B396A; color: white; padding: 10px; border-radius: 5px;">
-          <h6 class="m-0 font-weight-bold text-primary" style="font-family: 'Segoe UI', sans-serif; font-size: 18px; color: white;">Actividades por Unidad</h6>
-        </div>
-        <div class="card-body" style="padding: 15px; background-color: white;">
-          <div class="table-responsive" style="overflow-x: auto;">
-            <table class="table table-bordered" id="dataTableCoordinador" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-              <thead>
-                <tr style="background-color: #1B396A; color: white;">
-                  <th>Unidad</th>
-                  <th>Actividad</th>
-                  <th>Inscritos</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="tablaActividadesCoordinador">
-                <!-- Las actividades se cargarán desde la base de datos -->
-                <tr>
-                  <td colspan="4" style="text-align: center; padding: 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-                    <p style="margin-top: 10px;">Cargando actividades...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  // Obtiene el usuario actual desde sessionStorage
+  const usuarioActual = sessionStorage.getItem('usuario') || 'Usuario Invitado';
 
-      <div class="card shadow mb-4" style="margin: 0 auto; max-width: 90%;">
-        <div class="card-header py-3" style="background-color: #1B396A; color: white; padding: 10px; border-radius: 5px;">
-          <h6 class="m-0 font-weight-bold text-primary" style="font-family: 'Segoe UI', sans-serif; font-size: 18px; color: white;">Gestión de Usuarios</h6>
-        </div>
-        <div class="card-body" style="padding: 15px; background-color: white;">
-          <div class="table-responsive" style="overflow-x: auto;">
-            <table class="table table-bordered" id="dataTableUsuariosCoordinador" width="100%" cellspacing="0" style="font-family: 'Segoe UI', sans-serif; font-size: 14px;">
-              <thead>
-                <tr style="background-color: #1B396A; color: white;">
-                  <th>Nombre</th>
-                  <th>Contacto</th>
-                  <th>Contraseña</th>
-                  <th>Unidad Académica</th>
-                  <th>Rol</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="tablaUsuariosCoordinador">
-                <!-- Los usuarios se cargarán desde la base de datos -->
-                <tr>
-                  <td colspan="6" style="text-align: center; padding: 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-                    <p style="margin-top: 10px;">Cargando usuarios...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+  const modalHTML = `
+    <div id="modalPerfilUsuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+      <div style="background: #fff; border-radius: 12px; padding: 30px 40px; min-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; position: relative;">
+        <i class="fas fa-user-circle" style="font-size: 60px; color: #1B396A; margin-bottom: 15px;"></i>
+        <h2 style="color: #1B396A; font-size: 22px; margin-bottom: 10px;">Perfil de Usuario</h2>
+        <p style="font-size: 17px; margin-bottom: 25px;"><strong>${usuarioActual}</strong></p>
+        <button id="btnCerrarSesion" style="background: #d33; color: #fff; border: none; border-radius: 5px; padding: 10px 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+          <i class="fas fa-sign-out-alt" style="margin-right: 7px;"></i>Cerrar Sesión
+        </button>
+        <button id="btnCerrarModalPerfil" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 22px; color: #888; cursor: pointer;">&times;</button>
       </div>
     </div>
   `;
-  
-  // Cargar actividades y usuarios
-  cargarActividadesDesdeBaseDeDatosCoordinador();
-  cargarUsuariosDesdeBaseDeDatosCoordinador();
-}
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-// Función para cargar actividades en el panel del coordinador
-function cargarActividadesDesdeBaseDeDatosCoordinador() {
-  const tablaActividades = document.getElementById('tablaActividadesCoordinador');
-  if (tablaActividades) {
-    tablaActividades.innerHTML = `
-      <tr>
-        <td colspan="4" style="text-align: center; padding: 20px;">
-          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-          <p style="margin-top: 10px;">Cargando actividades...</p>
-        </td>
-      </tr>
-    `;
-    
-    fetch('../php/obtener_actividades_coordinador.php')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(result => {
-        if (result.success) {
-          // Limpiar la tabla
-          tablaActividades.innerHTML = '';
-          
-          // Verificar si hay actividades
-          if (result.data && result.data.length > 0) {
-            // Agregar cada actividad a la tabla
-            result.data.forEach(actividad => {
-              const fila = document.createElement('tr');
-              
-              fila.innerHTML = `
-                <td>${actividad.unidad || 'Sin unidad'}</td>
-                <td>${actividad.nombre_actividad || 'Sin actividad'}</td>
-                <td>${actividad.inscritos || 0}</td>
-                <td>
-                  <button class="btn-editar-actividad" style="background-color: #1B396A; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                    <i class="fas fa-edit" style="margin-right: 5px;"></i>Editar
-                  </button>
-                  <button class="btn-eliminar-actividad" style="background-color: #d33; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                    <i class="fas fa-trash" style="margin-right: 5px;"></i>Eliminar
-                  </button>
-                </td>
-              `;
-              tablaActividades.appendChild(fila);
-            });
-          } else {
-            tablaActividades.innerHTML = `
-              <tr>
-                <td colspan="4" style="text-align: center; padding: 20px;">
-                  No hay actividades registradas.
-                </td>
-              </tr>
-            `;
-          }
-        } else {
-          console.error('Error al obtener actividades:', result.message);
-          tablaActividades.innerHTML = `
-            <tr>
-              <td colspan="4" style="text-align: center; padding: 20px; color: #d33;">
-                <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-                Error al cargar actividades. Por favor, intente nuevamente.
-              </td>
-            </tr>
-          `;
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        tablaActividades.innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align: center; padding: 20px; color: #d33;">
-              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-              Error de conexión. Por favor, verifique su conexión a internet o al servidor. (${error.message})
-            </td>
-          </tr>
-        `;
-      });
-  }
-}
+  // Evento para cerrar sesión
+  document.getElementById('btnCerrarSesion').onclick = function() {
+    sessionStorage.clear();
+    window.location.href = '../index.html'; // Ajusta la ruta si es necesario
+  };
 
-// Función para cargar usuarios en el panel del coordinador
-function cargarUsuariosDesdeBaseDeDatosCoordinador() {
-  const tablaUsuarios = document.getElementById('tablaUsuariosCoordinador');
-  if (tablaUsuarios) {
-    tablaUsuarios.innerHTML = `
-      <tr>
-        <td colspan="6" style="text-align: center; padding: 20px;">
-          <i class="fas fa-spinner fa-spin" style="font-size: 30px; color: #1B396A;"></i>
-          <p style="margin-top: 10px;">Cargando usuarios...</p>
-        </td>
-      </tr>
-    `;
-    
-    fetch('../php/obtener_usuarios.php')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(result => {
-        if (result.success) {
-          // Limpiar la tabla
-          tablaUsuarios.innerHTML = '';
-          
-          // Verificar si hay usuarios
-          if (result.data && result.data.length > 0) {
-            // Agregar cada usuario a la tabla
-            result.data.forEach(usuario => {
-              const fila = document.createElement('tr');
-              fila.setAttribute('data-id', usuario.id_usuario);
+  // Evento para cerrar el modal
+  document.getElementById('btnCerrarModalPerfil').onclick = function() {
+    document.getElementById('modalPerfilUsuario').remove();
+  };
 
-              fila.innerHTML = `
-                <td>${usuario.nombre || 'Sin nombre'}</td>
-                <td>${usuario.contacto || 'No especificado'}</td>
-                <td style="position:relative;">
-                  <span class="password-oculta">••••••••</span>
-                  <span class="password-real" style="display:none;">${usuario.contraseña || ''}</span>
-                  <i class="fas fa-eye-slash ver-password" style="cursor:pointer; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#1B396A;" title="Ver contraseña"></i>
-                </td>
-                <td>${usuario.unidad_academica || 'No especificada'}</td>
-                <td>${usuario.rol || 'No especificado'}</td>
-                <td>
-                  <i class="fas fa-edit" style="cursor: pointer; color: #1B396A; margin-right: 10px; font-size: 18px;"></i>
-                  <i class="fas fa-trash" style="cursor: pointer; color: #d33; font-size: 18px;"></i>
-                </td>
-              `;
-              tablaUsuarios.appendChild(fila);
-
-              // Evento para mostrar/ocultar contraseña
-              const iconoVer = fila.querySelector('.ver-password');
-              if (iconoVer) {
-                iconoVer.addEventListener('click', function() {
-                  const spanOculta = fila.querySelector('.password-oculta');
-                  const spanReal = fila.querySelector('.password-real');
-                  if (spanOculta.style.display === 'none') {
-                    spanOculta.style.display = '';
-                    spanReal.style.display = 'none';
-                    iconoVer.classList.remove('fa-eye');
-                    iconoVer.classList.add('fa-eye-slash');
-                    iconoVer.title = "Ver contraseña";
-                  } else {
-                    spanOculta.style.display = 'none';
-                    spanReal.style.display = '';
-                    iconoVer.classList.remove('fa-eye-slash');
-                    iconoVer.classList.add('fa-eye');
-                    iconoVer.title = "Ocultar contraseña";
-                  }
-                });
-              }
-            });
-          } else {
-            tablaUsuarios.innerHTML = `
-              <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">
-                  No hay usuarios registrados.
-                </td>
-              </tr>
-            `;
-          }
-        } else {
-          console.error('Error al obtener usuarios:', result.message);
-          tablaUsuarios.innerHTML = `
-            <tr>
-              <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
-                <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-                Error al cargar usuarios. Por favor, intente nuevamente.
-              </td>
-            </tr>
-          `;
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        tablaUsuarios.innerHTML = `
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 20px; color: #d33;">
-              <i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>
-              Error de conexión. Por favor, verifique su conexión a internet o al servidor. (${error.message})
-            </td>
-          </tr>
-        `;
-      });
-  }
+  // Cierra el modal si se hace clic fuera del contenido
+  document.getElementById('modalPerfilUsuario').onclick = function(e) {
+    if (e.target === this) this.remove();
+  };
 }
