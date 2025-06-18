@@ -203,12 +203,24 @@ function mostrarGestionUsuarios() {
 
 // Función para mostrar información de una unidad académica
 function mostrarInformacionUnidad(unidad) {
-  // Usar SIEMPRE los datos estáticos
-  const datosUnidad = datosUnidades[unidad];
-  if (!datosUnidad) {
-    console.error("No se encontraron datos para la unidad:", unidad);
-    return;
+  // Determinar qué función de carga usar según la unidad
+  switch(unidad) {
+    case "CIDERS unión Hidalgo":
+      cargarDatosUnionHidalgo();
+      break;
+    case "Unidad Demetrio Vallejo en el Espinal":
+      cargarDatosDemetrioVallejo();
+      break;
+    case "Unidad académica Tlahuitoltepec":
+      cargarDatosTlahuitoltepec();
+      break;
+    case "Valle de Etla":
+      cargarDatosValleEtla();
+      break;
+    default:
+      console.error("Unidad no reconocida:", unidad);
   }
+
 
   // Determinar el archivo HTML correcto según la unidad
   let archivoHTML = '';
@@ -466,25 +478,23 @@ function cargarAlumnosActividad(idActividad, nombreActividad) {
               </td>
             </tr>
           `;
-          
           if (contadorAlumnos) {
             contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
           }
-          
           return;
         }
-        
+
         // Llenar la tabla con los alumnos
         cuerpoTabla.innerHTML = alumnos.map((alumno, index) => `
           <tr class="alumno-${nombreActividad.toLowerCase()}">
             <td>${index + 1}</td>
             <td>${alumno.nombre}</td>
-            <td>${alumno.control}</td>
+            <td>${alumno.numero_control}</td>
             <td>${alumno.semestre}</td>
             <td>${alumno.carrera}</td>
           </tr>
         `).join('');
-        
+
         // Actualizar contador
         if (contadorAlumnos) {
           contadorAlumnos.innerHTML = `<span class="numero">${alumnos.length}</span> alumnos inscritos`;
@@ -699,11 +709,9 @@ function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
               </td>
             </tr>
           `;
-          
           if (contadorAlumnos) {
             contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
           }
-          
           return;
         }
         
@@ -932,11 +940,9 @@ function cargarAlumnosActividadTlahuitoltepec(idActividad, nombreActividad) {
               </td>
             </tr>
           `;
-          
           if (contadorAlumnos) {
             contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
           }
-          
           return;
         }
         
@@ -1937,8 +1943,7 @@ function configurarEventosUnidad(unidad) {
 }
 
 // Función para configurar los eventos para la unión Hidalgo (datos dinámicos)
-function configurarEventosUnionHidalgo(actividades) {
-  // Configurar eventos para los botones de actividades
+function configurarEventosUnidadHidalgo(actividades) {
   document.querySelectorAll('.barra-actividades .boton-actividad').forEach(boton => {
     boton.addEventListener('click', function() {
       // Desactivar todos los botones
@@ -1949,16 +1954,15 @@ function configurarEventosUnionHidalgo(actividades) {
       // Activar el botón clickeado
       this.classList.add('activo');
       
-      // Obtener el ID y nombre de la actividad desde el botón
       const idActividad = this.getAttribute('data-id');
       const nombreActividad = this.getAttribute('data-nombre');
       
       if (idActividad && nombreActividad) {
-        // Cargar los alumnos de esta actividad
         cargarAlumnosActividad(idActividad, nombreActividad);
       }
     });
   });
+
   
   // Configurar campo de búsqueda
   const busquedaInput = document.getElementById('busquedaAlumnos');
@@ -2156,11 +2160,9 @@ function cargarAlumnosActividadDemetrio(idActividad, nombreActividad) {
               </td>
             </tr>
           `;
-          
           if (contadorAlumnos) {
             contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
           }
-          
           return;
         }
         
@@ -2389,11 +2391,9 @@ function cargarAlumnosActividadValle(idActividad, nombreActividad) {
               </td>
             </tr>
           `;
-          
           if (contadorAlumnos) {
             contadorAlumnos.innerHTML = `<span class="numero">0</span> alumnos inscritos`;
           }
-          
           return;
         }
         
