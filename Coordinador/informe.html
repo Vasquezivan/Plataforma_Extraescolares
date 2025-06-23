@@ -152,12 +152,13 @@
     }
 
     /* Ajustar margen superior del contenido principal */
-    .contenido-principal {
-    margin-top: 60px !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    padding-top: 0 !important;
-  }
+  .contenido-principal {
+  margin-top: 60px !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 160px !important; /* espacio para que no lo tapen los botones */
+}
 
     /* Estilos para los botones fijos */
     .btn-fixed {
@@ -214,6 +215,51 @@
 
   /* Ocultar el botón de imprimir */
   .btn-imprimir {
+    display: none !important;
+  }
+}
+
+.footer-botones {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  position: fixed;
+  left: 0;
+  bottom: 90px; /* <- antes era 0, lo subimos para que no tape la firma */
+  background: #fff;
+  padding: 10px 0;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+  z-index: 110; /* un poco más que .footer-firmas (que tiene 100) */
+}
+
+@media (max-width: 600px) {
+  .footer-botones {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px 0;
+  }
+}
+
+.footer-botones .btn-accion {
+  padding: 6px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1B396A;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.footer-botones .btn-accion:hover {
+  background-color: #16305A;
+}
+
+
+@media print {
+  .footer-botones {
     display: none !important;
   }
 }
@@ -289,10 +335,17 @@
       </tbody>
     </table>
 
-    <!-- Botones Agregar Evento e Imprimir fuera del documento, parte inferior derecha -->
-    <button class="btn-fixed btn-agregar" onclick="agregarFila()">Agregar Evento</button>
-    <button class="btn-fixed btn-imprimir" onclick="window.print()">Imprimir</button>
-  </div>
+    <div class="contenedor-tabla">
+      <table class="tabla-alumnos">
+        <!-- ...tabla... -->
+      </table>
+    </div>
+
+ <div class="footer-botones">
+  <button class="btn-accion" onclick="agregarFila()">Agregar Evento</button>
+  <button class="btn-accion" onclick="window.print()">Imprimir</button>
+</div>
+
 
   <div class="footer-firmas" style="display: flex; justify-content: center; align-items: flex-end; position: fixed; left: 0; bottom: 0; width: 100vw; background: #fff; z-index: 100; padding-bottom: 18px; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
     <div class="footer-content" style="max-width: 900px; width: 100%; display: flex; justify-content: center; align-items: flex-end; gap: 60px; padding-top: 18px;">
