@@ -343,6 +343,7 @@
 
  <div class="footer-botones">
   <button class="btn-accion" onclick="agregarFila()">Agregar Evento</button>
+   <button class="btn-accion" onclick="eliminarUltimaFila()">Eliminar Evento</button>
   <button class="btn-accion" onclick="window.print()">Imprimir</button>
 </div>
 
@@ -376,6 +377,16 @@
         <td><span class="editable" data-value=""><input type="text" placeholder="Resultados" oninput="this.parentElement.dataset.value = this.value"></span></td>
       `;
       tbody.appendChild(row);
+    }
+
+    function eliminarUltimaFila() {
+      const tbody = document.getElementById('eventos-body');
+      if (tbody && tbody.rows.length > 0) {
+        // Elimina la última fila de la tabla
+        tbody.deleteRow(tbody.rows.length - 1);
+      } else {
+        alert("No hay filas para eliminar.");
+      }
     }
   </script>
 
