@@ -138,7 +138,7 @@ function mostrarInicio() {
       <img src="./assets/img/Logo TecNM.png" alt="Logo TecNM" style="width: 150px; margin-top: 30px;">
       <div style="margin-top: 25px;">
         <!-- Botón Panel Coordinador -->
-        <a href="../Coordinador/Pagina principal.html" class="btn-coordinador" style="background-color: #ff7f00; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+        <a href="../Coordinador/unidad.html" class="btn-coordinador" style="background-color: #ff7f00; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background-color 0.3s; display: inline-flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
           <i class="fas fa-user-cog" style="margin-right: 8px;"></i>Panel Coordinador
         </a>
       </div>
