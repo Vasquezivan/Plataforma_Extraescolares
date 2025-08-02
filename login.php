@@ -22,19 +22,20 @@ if ($conn->connect_error) {
 }
 
 // Cambia la consulta y los nombres de columnas
-$stmt = $conn->prepare("SELECT contraseña, rol FROM usuarios WHERE nombre = ?");
+$stmt = $conn->prepare("SELECT contraseña, rol, unidad_academica FROM usuarios WHERE nombre = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows > 0) {
-    $stmt->bind_result($db_password, $rol);
+    $stmt->bind_result($db_password, $rol, $unidad_academica);
     $stmt->fetch();
 
     if ($password === $db_password) {
         echo json_encode([
             "success" => true,
-            "role" => $rol
+            "role" => $rol,
+            "unidad_academica" => $unidad_academica
         ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta"]);
