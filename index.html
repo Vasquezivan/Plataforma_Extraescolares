@@ -400,7 +400,22 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
           destino = "Administrador/Principal_Admin.html";
         } else if (data.role === "Coordinador") {
           mensaje = "¡Bienvenido Coordinador!";
-          destino = "Coordinador/Pagina principal.html";
+          switch (data.unidad_academica) {
+            case "CIDERS unión Hidalgo":
+              destino = "Coordinador/U_CentrodeInvestigacion.html";
+              break;
+            case "Unidad Demetrio Vallejo en el Espinal":
+              destino = "Coordinador/U_Demetrio.html";
+              break;
+            case "Unidad académica Tlahuitoltepec":
+              destino = "Coordinador/U_SantaMaria.html";
+              break;
+            case "Valle de Etla":
+              destino = "Coordinador/U_ValleEtla.html";
+              break;
+            default:
+              destino = ""; // Fallback en caso de unidad desconocida
+          }
         }
         Swal.fire({
           position: "center",
