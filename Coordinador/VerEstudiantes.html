@@ -145,9 +145,13 @@
   </div>
 
   <div class="barra-secundaria">
-    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
-      <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
-    </a>
+
+   <a href="javascript:void(0);" onclick="regresar()" class="flecha-regreso" title="Volver al inicio">
+  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+</a>
+
+
+
     <ul>
       <li><a href="index.html">Inicio</a></li>
       <li><a href="unidad.html">Registrar Estudiantes</a></li>
@@ -404,6 +408,14 @@ function actualizarAlumnoEnBD(alumno) {
         Swal.fire('Error', 'Error de conexión o servidor.', 'error');
     });
 }
+
+function regresar() {
+    if (document.referrer !== "") {
+      window.history.back();
+    } else {
+      window.location.href = "Pagina principal.html"; // Cambia esta ruta si necesitas otra
+    }
+  }
 </script>
 
 </body>
