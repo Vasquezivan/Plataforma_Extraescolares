@@ -95,7 +95,8 @@
     <main>
         <div class="container">
             <div class="table-controls">
-                <button id="btn-regresar" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+             <button id="btn-regresar" onclick="window.history.back()"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+
                 <h3 class="title">Listado de Alumnos</h3>
                 <div class="search-wrapper">
                     <i class="fas fa-search"></i>
@@ -440,6 +441,17 @@
         function irADetalleActividad(id) {
             window.location.href = `registro.html?id_actividad=${id}`;
         }
+       
+        // btn regresar
+          function regresar() {
+    if (document.referrer !== "") {
+      window.history.back();
+    } else {
+      window.location.href = "pagina-de-inicio.html"; // cambia esto por tu ruta deseada
+    }
+  }
+
+
     </script>
 </body>
 </html>

@@ -18,7 +18,8 @@
 
 
   <div class="barra-secundaria">
-    <a href="Pagina principal.html" class="flecha-regreso" title="Volver al inicio">
+
+   <a href="javascript:void(0);" onclick="regresar()" class="flecha-regreso" title="Volver al inicio">
   <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
 </a>
   <ul>
@@ -412,6 +413,16 @@
       contenedor.classList.toggle('visible');
       contenedor.classList.toggle('oculto');
     }
+
+    // funcion de regresar
+
+   function regresar() {
+    if (document.referrer !== "") {
+      window.history.back();
+    } else {
+      window.location.href = "Pagina principal.html"; // Cambia esta ruta si necesitas otra
+    }
+  }
   </script>
   
 </body>
