@@ -9,14 +9,18 @@ if (!isset($_SESSION['usuario_id'])) {
 $usuarioId = $_SESSION['usuario_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT nombre FROM usuarios WHERE id = :usuario_id");
+    // Obtener nombre y unidad académica del usuario
+    $stmt = $pdo->prepare("SELECT nombre, unidad_academica FROM usuarios WHERE id = :usuario_id");
     $stmt->bindParam(':usuario_id', $usuarioId, PDO::PARAM_INT);
     $stmt->execute();
     
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($usuario) {
-        echo json_encode(['nombre' => $usuario['nombre']]);
+        echo json_encode([
+            'nombre' => $usuario['nombre'],
+            'unidad_academica' => $usuario['unidad_academica']
+        ]);
     } else {
         echo json_encode(['error' => 'Usuario no encontrado']);
     }
