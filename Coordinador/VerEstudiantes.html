@@ -1,30 +1,130 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Listado de Estudiantes - ITVE</title>
-  
-  <!-- Librerías CSS -->
-  <link rel="stylesheet" href="assets/css/verEstudiantes.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   <style>
-    /* Estilos para el contenedor principal */
-  .tabla-container {
-      margin: 20px auto; /* Cambiado a auto para centrar */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #002147;
+      color: white;
+      transition: all 0.3s;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+    }
+
+    .sidebar-header {
       padding: 20px;
-      background: rgb(175, 175, 175);
+      background-color: #001a36;
+      text-align: center;
+    }
+
+    .sidebar-header h3 {
+      color: white;
+      font-size: 1.2em;
+      margin: 0;
+    }
+
+    .sidebar-menu {
+      padding: 20px 0;
+    }
+
+    .sidebar-menu ul {
+      list-style: none;
+    }
+
+    .sidebar-menu li {
+      position: relative;
+    }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      color: #b8c7ce;
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+      white-space: normal;
+    }
+
+    .sidebar-menu a i {
+      flex-shrink: 0;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      color: white;
+      background-color: #1a3a6a;
+      border-left: 3px solid #ff7f00;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      width: calc(100% - 250px);
+      transition: all 0.3s;
+    }
+
+    /* Header */
+    .top-navbar {
+      background-color: white;
+      padding: 15px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      color: #002147;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* Estilos para la tabla */
+    .tabla-container {
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 95%; /* Añadido para controlar el ancho máximo */
+      max-width: 95%;
     }
+    
     #dataTable_wrapper {
       width: 100%;
       margin: 0 auto;
     }
+    
     /* Estilos para el encabezado con título y buscador */
     .tabla-header {
       display: flex;
@@ -134,70 +234,297 @@
     th, td { padding: 12px 15px; border: 1px solid #ddd; }
     th { background: #1a3461; color: #fff; }
     tr:nth-child(even) { background: #f2f2f2; }
+
+    /* Logos */
+    .header-main {
+      background-color: #f5f5f5;
+      padding: 20px 10px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .logo-enlace img {
+      height: 60px;
+      transition: transform 0.2s;
+    }
+
+    .logo-enlace img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Encabezado de unidad */
+    .unidad-header {
+      background-color: #002147;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    /* Footer */
+    .site-footer {
+      background-color: #002147;
+      color: white;
+      padding: 40px 0 20px;
+      margin-top: 40px;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      gap: 30px;
+    }
+
+    .footer-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .footer-text h3 {
+      color: #ff7f00;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .footer-text p {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .footer-map {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .footer-map iframe {
+      width: 100%;
+      height: 280px;
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .footer-copyright {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9em;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .whatsapp-link img {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.3s;
+    }
+
+    .whatsapp-link img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Icono de usuario flotante en la esquina superior derecha */
+    #iconoPerfilContainer {
+      position: fixed;
+      top: 18px;
+      right: 28px;
+      z-index: 10000;
+    }
+
+    #iconoPerfil {
+      font-size: 32px;
+      color: #1B396A;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    #iconoPerfil:hover {
+      color: #ff7f00;
+      transform: scale(1.08);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        margin-left: -250px;
+      }
+      .sidebar.active {
+        margin-left: 0;
+      }
+      .main-content {
+        width: 100%;
+        margin-left: 0;
+      }
+      .main-content.active {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+      }
+      
+      .footer-container {
+        flex-direction: column;
+      }
+      
+      .footer-map {
+        order: -1;
+      }
+
+      .tabla-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .search-container {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .buscador {
+        width: calc(100% - 44px);
+      }
+    }
   </style>
 </head>
 <body>
-
-  <div class="barra-blanca">
-    <img src="assets/img/Educacion.png" alt="Logo Educación" />
-    <img src="assets/img/Tecnologico_Nacional_de_Mexico.svg-removebg-preview.png" alt="Logo TecNM" />
-    <img src="assets/img/pleca-ITVE.png" alt="Logo ITVE" />
-  </div>
-
-  <div class="barra-secundaria">
-
-   <a href="javascript:void(0);" onclick="regresar()" class="flecha-regreso" title="Volver al inicio">
-  <img src="assets/img/flecha.png" alt="Regresar" style="height: 24px;">
+<!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Actividades Extraescolares</h3>
+    </div>
+    <div class="sidebar-menu">
+      <ul>
+        <a href="#" onclick="window.history.back(); return false;">
+  <i class="fa fa-home"></i> Regresar
 </a>
-
-
-
-    <ul>
-      <li><a href="index.html">Inicio</a></li>
-      <li><a href="unidad.html">Registrar Estudiantes</a></li>
-      <li><a href="VerEstudiantes.html">Ver Estudiantes</a></li>
-      <li><a href="contancia.html">Constancia de cumplimiento</a></li>
-      <li><a href="informe.html">Informe de Actividad</a></li>
-      <li><a href="resultados.html">Resultados de Actividades</a></li>
-    </ul>
+        <li>
+          <a href="VerEstudiantes.html" class="active">
+            <i class="fa fa-users"></i> Ver Estudiantes
+          </a>
+        </li>
+        <li>
+          <a href="contancia.html">
+            <i class="fa fa-file-text"></i> Constancia de Cumplimiento 
+          </a>
+        </li>
+        <li>
+          <a href="informe.html">
+            <i class="fa fa-file-pdf-o"></i> Informe de Actividad
+          </a>
+        </li>
+        <li>
+          <a href="resultados.html">
+            <i class="fa fa-bar-chart"></i> Resultados
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <div class="tabla-container">
-    <div class="tabla-header">
-      <h2>Usuarios Registrados</h2>
-      <div class="search-container">
-        <input type="text" id="buscador-nombre" placeholder="Buscar por nombre..." class="buscador">
-        <button id="btn-buscar-nombre" class="btn-buscar" title="Buscar">
-          <i class="fas fa-search"></i>
-        </button>
-        <button id="btn-recargar" class="btn-recargar" title="Recargar tabla">
-          <i class="fas fa-sync-alt"></i>
-        </button>
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navbar -->
+    <div class="top-navbar">
+      <button class="toggle-sidebar" id="toggle-sidebar">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+      <!-- Logos -->
+      <div class="header-main">
+        <div class="logo-enlace">
+          <a href="https://www.gob.mx/" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-GobMx.png" alt="GobMX"></a>
+          <a href="https://www.gob.mx/sep" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-Educ.png" alt="SEP"></a>
+          <a href="https://www.tecnm.mx" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-TecNM.png" alt="TecNM"></a>
+          <a href="http://www.vetla.tecnm.mx/" target="_blank"><img src="https://vetla.tecnm.mx/wp-content/themes/TecNM-ITVE/images/pleca-ITVE.png" alt="ITVE"></a>
+        </div>
+      </div>
+
+      <!-- Encabezado de unidad -->
+      <div class="unidad-header">
+        Tecnológico Nacional de México - Unidad Académica Demetrio Vallejo Martínez en el Espinal
+      </div>
+
+      <!-- Contenedor de la tabla -->
+      <div class="tabla-container">
+        <div class="tabla-header">
+          <h2>Usuarios Registrados</h2>
+          <div class="search-container">
+            <input type="text" id="buscador-nombre" placeholder="Buscar por nombre..." class="buscador">
+            <button id="btn-buscar-nombre" class="btn-buscar" title="Buscar">
+              <i class="fas fa-search"></i>
+            </button>
+            <button id="btn-recargar" class="btn-recargar" title="Recargar tabla">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </div>
+        
+        <table id="dataTable" class="display nowrap">
+          <thead>
+            <tr>
+              <th>ID Alumno</th>
+              <th>Nombre</th>
+              <th>ID Usuario</th>
+              <th>No. Control</th>
+              <th>Carrera</th>
+              <th>Semestre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Los datos se cargarán dinámicamente mediante AJAX -->
+          </tbody>
+        </table>
       </div>
     </div>
-    
-    <table id="dataTable" class="display nowrap">
-      <thead>
-        <tr>
-          <th>ID Alumno</th>
-          <th>Nombre</th>
-          <th>ID Usuario</th>
-          <th>No. Control</th>
-          <th>Carrera</th>
-          <th>Semestre</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Los datos se cargarán dinámicamente mediante AJAX -->
-      </tbody>
-    </table>
-  </div>
 
-  <div class="barra-informativa">
-    <p>INSTITUTO TECNOLÓGICO DEL VALLE DE ETLA</p>
-    <p>"UNIDAD DEMETRIO VALLEJO EN EL ESPINAL"</p>
-    <p>AVENIDA MATAMOROS, SEGUNDA SECCIÓN, cp. 70117, EL ESPINAL, OAXACA</p>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <!-- Información de contacto -->
+        <div class="footer-text">
+          <h3>Dirección</h3>
+          <p>Abasolo S/N, Barrio del Agua Buena<br>Santiago Suchilquitongo Oaxaca, C.P. 68230</p>
+          
+          <h3>Contacto</h3>
+          <p>
+            Email: info@vetla.tecnm.mx<br>
+            Teléfono: 951 305 29 27
+          </p>
+          
+          <h3>Preguntar por Whatsapp</h3>
+          <a href="https://wa.me/9513052927?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
+            <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
+          </a>
+        </div>
+        
+        <!-- Mapa -->
+        <div class="footer-map">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15241.367048623282!2d-96.8702191!3d17.2506929!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c6e36d891967db%3A0x512f566ad941ae57!2sTecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20campus%20Instituto%20Tecnol%C3%B3gico%20del%20Valle%20de%20Etla!5e0!3m2!1ses!2smx!4v1621983062705!5m2!1ses!2smx"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      
+      <!-- Derechos reservados -->
+      <div class="footer-copyright">
+        <p>© 2023 Tecnológico Nacional de México - Campus Valle de Etla. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  </div>
+  <!-- Icono de usuario flotante en la esquina superior derecha -->
+  <div id="iconoPerfilContainer">
+    <i class="fas fa-user-circle" id="iconoPerfil"></i>
   </div>
 
   <!-- Librerías JavaScript -->
@@ -206,217 +533,203 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Script personalizado -->
-<script>
-$(document).ready(function() {
+  <script>
+  $(document).ready(function() {
+      // Configuración inicial de DataTables
+      var tabla = $('#dataTable').DataTable({
+          "ajax": {
+              "url": "php/obtener_estudiantes.php",
+              "dataSrc": "",
+              "error": function(xhr, error, thrown) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error al cargar datos',
+                      text: 'No se pudieron obtener los registros. Por favor intente más tarde.'
+                  });
+                  console.error("Error en la carga de datos:", xhr.responseText);
+              }
+          },
+          "columns": [
+              { "data": "id_alumno" },
+              { "data": "nombre" },
+              { "data": "id_usuario" },
+              { "data": "numero_control" },
+              { "data": "carrera" },
+              { "data": "semestre" },
+              {
+                  "data": null,
+                  "className": "dt-center",
+                  "orderable": false,
+                  "render": function(data, type, row) {
+                      return `
+                          <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
+                              <i class='fas fa-edit'></i>
+                          </button>
+                      `;
+                  }
+              }
+          ],
+          "language": {
+              "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json"
+          },
+          "responsive": true,
+          "dom": 'rt<"bottom"lip><"clear">'
+      });
 
-    // Configuración inicial de DataTables
-    var tabla = $('#dataTable').DataTable({
-        "ajax": {
-            "url": "php/obtener_estudiantes.php",
-            "dataSrc": "",
-            "error": function(xhr, error, thrown) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al cargar datos',
-                    text: 'No se pudieron obtener los registros. Por favor intente más tarde.'
-                });
-                console.error("Error en la carga de datos:", xhr.responseText);
-            }
-        },
-        "columns": [
-            { "data": "id_alumno" },
-            { "data": "nombre" },
-            { "data": "id_usuario" },
-            { "data": "numero_control" },
-            { "data": "carrera" },
-            { "data": "semestre" },
-            {
-                "data": null,
-                "className": "dt-center",
-                "orderable": false,
-                "render": function(data, type, row) {
-                    return `
-                        <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
-                            <i class='fas fa-edit'></i>
-                        </button>
-                    `;
-                }
-            }
-        ],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json"
-        },
-        "responsive": true,
-        "dom": 'rt<"bottom"lip><"clear">'
-    });
+      // Función para buscar al escribir en el campo de búsqueda
+      $('#buscador-nombre').on('keyup', function() {
+          tabla.search(this.value).draw();
+      });
 
-    // Función para buscar al escribir en el campo de búsqueda
-    $('#buscador-nombre').on('keyup', function() {
-        tabla.search(this.value).draw();
-    });
+      // Función para buscar al hacer clic en el botón de búsqueda
+      $('#btn-buscar-nombre').on('click', function() {
+          tabla.search($('#buscador-nombre').val()).draw();
+      });
 
-    // Función para buscar al hacer clic en el botón de búsqueda
-    $('#btn-buscar-nombre').on('click', function() {
-        tabla.search($('#buscador-nombre').val()).draw();
-    });
+      // Función para recargar la tabla
+      $('#btn-recargar').on('click', function() {
+          tabla.ajax.reload(null, false);
+          $('#buscador-nombre').val('');
+      });
 
-    // Función para recargar la tabla
-    $('#btn-recargar').on('click', function() {
-        tabla.ajax.reload(null, false);
-        $('#buscador-nombre').val('');
-    });
+      // Función para editar un registro
+      $('#dataTable').on('click', '.btn-editar', function() {
+          var id = $(this).data('id');
+          var fila = $(this).closest('tr');
+          var datos = tabla.row(fila).data();
+          
+          Swal.fire({
+              title: 'Editar Estudiante',
+              html: `
+                  <form id="form-editar">
+                      <div class="form-group">
+                          <label for="edit-nombre">Nombre:</label>
+                          <input type="text" id="edit-nombre" class="swal2-input" value="${datos.nombre}" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="edit-numero_control">No. Control:</label>
+                          <input type="text" id="edit-numero_control" class="swal2-input" value="${datos.numero_control}" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="edit-carrera">Carrera:</label>
+                          <input type="text" id="edit-carrera" class="swal2-input" value="${datos.carrera}" required>
+                      </div>
+                      <div class="form-group">
+                          <label for="edit-semestre">Semestre:</label>
+                          <input type="text" id="edit-semestre" class="swal2-input" value="${datos.semestre}" required>
+                      </div>
+                  </form>
+              `,
+              focusConfirm: false,
+              showCancelButton: true,
+              confirmButtonText: 'Guardar',
+              cancelButtonText: 'Cancelar',
+              preConfirm: () => {
+                  return {
+                      nombre: $('#edit-nombre').val(),
+                      numero_control: $('#edit-numero_control').val(),
+                      carrera: $('#edit-carrera').val(),
+                      semestre: $('#edit-semestre').val()
+                  }
+              }
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  $.ajax({
+                      url: 'php/actualizar_estudiante1.php',
+                      type: 'POST',
+                      data: {
+                          id_alumno: id,
+                          nombre: result.value.nombre,
+                          numero_control: result.value.numero_control,
+                          carrera: result.value.carrera,
+                          semestre: result.value.semestre
+                      },
+                      dataType: 'json',
+                      success: function(response) {
+                          if(response.success) {
+                              Swal.fire({
+                                  icon: 'success',
+                                  title: 'Éxito',
+                                  text: 'Registro actualizado correctamente'
+                              });
+                              tabla.ajax.reload(null, false);
+                          } else {
+                              Swal.fire({
+                                  icon: 'error',
+                                  title: 'Error',
+                                  text: response.message || 'Error al actualizar el registro'
+                              });
+                          }
+                      },
+                      error: function() {
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: 'Error al conectar con el servidor'
+                          });
+                      }
+                  });
+              }
+          });
+      });
 
-    // Función para editar un registro
-    $('#dataTable').on('click', '.btn-editar', function() {
-        var id = $(this).data('id');
-        var fila = $(this).closest('tr');
-        var datos = tabla.row(fila).data();
-        
-        Swal.fire({
-            title: 'Editar Estudiante',
-            html: `
-                <form id="form-editar">
-                    <div class="form-group">
-                        <label for="edit-nombre">Nombre:</label>
-                        <input type="text" id="edit-nombre" class="swal2-input" value="${datos.nombre}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-numero_control">No. Control:</label>
-                        <input type="text" id="edit-numero_control" class="swal2-input" value="${datos.numero_control}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-carrera">Carrera:</label>
-                        <input type="text" id="edit-carrera" class="swal2-input" value="${datos.carrera}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-semestre">Semestre:</label>
-                        <input type="text" id="edit-semestre" class="swal2-input" value="${datos.semestre}" required>
-                    </div>
-                </form>
-            `,
-            focusConfirm: false,
-            showCancelButton: true,
-            confirmButtonText: 'Guardar',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                return {
-                    nombre: $('#edit-nombre').val(),
-                    numero_control: $('#edit-numero_control').val(),
-                    carrera: $('#edit-carrera').val(),
-                    semestre: $('#edit-semestre').val()
-                }
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: 'php/actualizar_estudiante1.php',
-                    type: 'POST',
-                    data: {
-                        id_alumno: id,
-                        nombre: result.value.nombre,
-                        numero_control: result.value.numero_control,
-                        carrera: result.value.carrera,
-                        semestre: result.value.semestre
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if(response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Éxito',
-                                text: 'Registro actualizado correctamente'
-                            });
-                            tabla.ajax.reload(null, false);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message || 'Error al actualizar el registro'
-                            });
-                        }
-                    },
-                    error: function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error al conectar con el servidor'
-                        });
-                    }
-                });
-            }
-        });
-    });
+      // Función para mostrar mensaje de error si falla la carga inicial
+      tabla.on('error.dt', function(e, settings, techNote, message) {
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error al cargar los datos. Por favor recarga la página.'
+          });
+          console.error('DataTables Error: ', message);
+      });
 
+      // Menú hamburguesa
+      document.getElementById("toggle-sidebar").addEventListener("click", function () {
+          document.querySelector(".sidebar").classList.toggle("active");
+          document.querySelector(".main-content").classList.toggle("active");
+      });
 
-    // Función para mostrar mensaje de error si falla la carga inicial
-    tabla.on('error.dt', function(e, settings, techNote, message) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Ocurrió un error al cargar los datos. Por favor recarga la página.'
-        });
-        console.error('DataTables Error: ', message);
-    });
-});
+      // Mostrar modal de perfil al hacer clic en el icono de usuario
+      const iconoPerfil = document.getElementById('iconoPerfil');
+      if (iconoPerfil) {
+          iconoPerfil.addEventListener('click', mostrarModalPerfil);
+      }
+  });
 
-function editarAlumno(alumno) {
-    Swal.fire({
-        title: 'Editar Alumno',
-        html: `
-            <input id="swal-nombre" class="swal2-input" value="${alumno.nombre}" placeholder="Nombre">
-            <input id="swal-id_usuario" class="swal2-input" value="${alumno.id_usuario}" placeholder="ID Usuario">
-            <input id="swal-numero_control" class="swal2-input" value="${alumno.numero_control}" placeholder="Número de Control">
-            <input id="swal-carrera" class="swal2-input" value="${alumno.carrera}" placeholder="Carrera">
-            <input id="swal-semestre" class="swal2-input" value="${alumno.semestre}" placeholder="Semestre">
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Guardar',
-        preConfirm: () => {
-            return {
-                id_alumno: alumno.id_alumno,
-                nombre: document.getElementById('swal-nombre').value,
-                id_usuario: document.getElementById('swal-id_usuario').value,
-                numero_control: document.getElementById('swal-numero_control').value,
-                carrera: document.getElementById('swal-carrera').value,
-                semestre: document.getElementById('swal-semestre').value
-            }
-        }
-    }).then(result => {
-        if (result.isConfirmed) {
-            actualizarAlumnoEnBD(result.value);
-        }
-    });
-}
+  function mostrarModalPerfil() {
+      // Evita duplicar el modal
+      if (document.getElementById('modalPerfilUsuario')) return;
 
-function actualizarAlumnoEnBD(alumno) {
-    fetch('php/actualizar_estudiante1.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(alumno)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire('¡Actualizado!', 'Los datos han sido guardados.', 'success');
-            // Recarga la tabla
-            cargarAlumnos();
-        } else {
-            Swal.fire('Error', data.message || 'No se pudo actualizar.', 'error');
-        }
-    })
-    .catch(err => {
-        Swal.fire('Error', 'Error de conexión o servidor.', 'error');
-    });
-}
+      const usuarioActual = sessionStorage.getItem('usuario') || 'Usuario Invitado';
 
-function regresar() {
-    if (document.referrer !== "") {
-      window.history.back();
-    } else {
-      window.location.href = "Pagina principal.html"; // Cambia esta ruta si necesitas otra
-    }
+      const modalHTML = `
+        <div id="modalPerfilUsuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+          <div style="background: #fff; border-radius: 12px; padding: 30px 40px; min-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; position: relative;">
+            <i class="fas fa-user-circle" style="font-size: 60px; color: #1B396A; margin-bottom: 15px;"></i>
+            <h2 style="color: #1B396A; font-size: 22px; margin-bottom: 10px;">Perfil de Usuario</h2>
+            <p style="font-size: 17px; margin-bottom: 25px;"><strong>${usuarioActual}</strong></p>
+            <button id="btnCerrarSesion" style="background: #d33; color: #fff; border: none; border-radius: 5px; padding: 10px 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+              <i class="fas fa-sign-out-alt" style="margin-right: 7px;"></i>Cerrar Sesión
+            </button>
+            <button id="btnCerrarModalPerfil" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 22px; color: #888; cursor: pointer;">&times;</button>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+      document.getElementById('btnCerrarSesion').onclick = function() {
+          sessionStorage.clear();
+          window.location.href = '../index.html'; // Ajusta la ruta si es necesario
+      };
+
+      document.getElementById('btnCerrarModalPerfil').onclick = function() {
+          document.getElementById('modalPerfilUsuario').remove();
+      };
+
+      document.getElementById('modalPerfilUsuario').onclick = function(e) {
+          if (e.target === this) this.remove();
+      };
   }
-</script>
-
+  </script>
 </body>
 </html>

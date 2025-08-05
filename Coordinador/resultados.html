@@ -499,11 +499,10 @@
   </div>
   <div class="sidebar-menu">
     <ul>
-      <li>
-        <a href="#" id="link-inicio">
-  <i class="fa fa-home"></i> Inicio
+  <a href="#" onclick="window.history.back(); return false;">
+  <i class="fa fa-home"></i> Regresar
 </a>
-      </li>
+
       <li>
         <a href="VerEstudiantes.html">
           <i class="fa fa-users"></i> Ver Estudiantes
@@ -615,34 +614,35 @@
     </div>
   </div>
 
-  <!-- Footer con mapa y contacto (solo pantalla) -->
-  <footer class="site-footer">
-    <div class="footer-container">
-      <!-- Información de contacto -->
-      <div class="footer-text">
-        <h3>Dirección</h3>
-        <p>Carretera Santa María Tlahuitoltepec Km 1.5<br>Santa María Tlahuitoltepec, Oaxaca, C.P. 70280</p>
+      <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <!-- Información de contacto -->
+        <div class="footer-text">
+          <h3>Dirección</h3>
+          <p>Abasolo S/N, Barrio del Agua Buena<br>Santiago Suchilquitongo, Oaxaca, C.P. 68230</p>
+          
+          <h3>Contacto</h3>
+          <p>
+            Email: info@vetla.tecnm.mx<br>
+            Teléfono: 951 305 29 27
+          </p>
+          
+          <h3>Preguntar por Whatsapp</h3>
+          <a href="https://wa.me/9513052927?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
+            <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
+          </a>
+        </div>
         
-        <h3>Contacto</h3>
-        <p>
-          Email: santamaria@tecnm.mx<br>
-          Teléfono: 951 123 4567
-        </p>
-        
-        <h3>Preguntar por Whatsapp</h3>
-        <a href="https://wa.me/9511234567?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
-          <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
-        </a>
+        <!-- Mapa -->
+        <div class="footer-map">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15241.367048623282!2d-96.8702191!3d17.2506929!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c6e36d891967db%3A0x512f566ad941ae57!2sTecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20campus%20Instituto%20Tecnol%C3%B3gico%20del%20Valle%20de%20Etla!5e0!3m2!1ses!2smx!4v1621983062705!5m2!1ses!2smx"
+            allowfullscreen>
+          </iframe>
+        </div>
       </div>
       
-      <!-- Mapa -->
-      <div class="footer-map">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3827.123456789012!2d-96.12345678901234!3d16.98765432109876!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDU5JzE1LjQiTiA5NMKwMzcnMDMuNCJX!5e0!3m2!1ses!2smx!4v1234567890123!5m2!1ses!2smx"
-          allowfullscreen>
-        </iframe>
-      </div>
-    </div>
     
     <!-- Derechos reservados -->
     <div class="footer-copyright">
@@ -810,13 +810,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let ruta = "index.html"; // Valor por defecto
 
     switch (unidad) {
-      case "CIDERS Unión Hidalgo":
+       case "CIDERS unión Hidalgo":
         ruta = "U_CentrodeInvestigacion.html";
         break;
       case "Unidad Demetrio Vallejo en el Espinal":
         ruta = "U_Demetrio.html";
         break;
-      case "Unidad académica Tlahuitoltepec":
+      case "Unidad Académica Tlahuitoltepec":
         ruta = "U_SantaMaria.html";
         break;
       case "Valle de Etla":
