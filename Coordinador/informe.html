@@ -382,6 +382,7 @@
 
   /* ==================== ESTILOS PARA IMPRESIÓN ==================== */
   @media print {
+    
     /* ✅ Asegura que los colores y bordes se impriman tal como están en pantalla */
     * {
       -webkit-print-color-adjust: exact !important;
@@ -485,6 +486,10 @@
     
     /* Firmas en impresión */
     .footer-firmas {
+      position: fixed;
+      bottom: 1cm;
+      left: 0;
+      right: 0;
       display: flex !important;
       justify-content: center !important;
       margin-top: 40px !important;
@@ -513,9 +518,30 @@
     /* Clase para agrupar filas (se usará con JavaScript) */
     .grupo-filas {
       page-break-after: always;
+      margin-bottom: 2cm; /* Espacio para las firmas */
     }
+    
+    /* Evitar que la última página tenga page-break */
     .grupo-filas:last-child {
       page-break-after: avoid;
+    }
+    
+    /* Asegurar que las filas no se dividan */
+    tr {
+      page-break-inside: avoid;
+    }
+    
+    /* Encabezado de tabla en cada página */
+    thead {
+      display: table-header-group;
+    }
+    
+    /* Firmas fijas en cada página */
+    .footer-firmas {
+      position: fixed;
+      bottom: 1cm;
+      left: 0;
+      right: 0;
     }
 
     /* ✅ Ajuste opcional para que Chrome renderice correctamente bordes muy finos */
@@ -563,6 +589,105 @@
       width: auto;
     }
   }
+
+/* Ocultar en pantalla (opcional) */
+@media screen {
+  .contenedor-lugar-fecha {
+    display: none;
+  }
+}
+
+/* Estilo al imprimir */
+@media print {
+  .texto-lugar-fecha {
+    display: block;
+    margin: 20px 0;
+    font-size: 16px;
+  }
+}
+
+
+/* ==================== LUGAR Y FECHA ==================== */
+/* Estilos para pantalla */
+.lugar-fecha-container {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.lugar-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lugar-fecha label {
+  font-weight: bold;
+  color: #333;
+}
+
+.lugar-fecha input {
+  width: 300px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.lugar-fecha input:focus {
+  border-color: #1B396A;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(27, 57, 106, 0.2);
+}
+
+/* Estilos específicos para impresión */
+@media print {
+  .lugar-fecha-container {
+    position: fixed;
+    bottom: 140px; /* Posición ajustada (original era 120px) */
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: 0;
+    z-index: 100;
+    page-break-inside: avoid;
+  }
+  
+  .lugar-fecha {
+    display: inline-block;
+    border: none;
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  
+  .lugar-fecha label {
+    color: #000 !important;
+  }
+  
+  .lugar-fecha input {
+    display: none;
+  }
+  
+  .lugar-fecha::after {
+    content: attr(data-value);
+    display: inline;
+    margin-left: 8px;
+    font-weight: normal;
+    color: #000;
+  }
+
+  /* Ocultar otros elementos no relevantes para impresión */
+  .no-imprimir, .footer-botones, .sidebar {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -642,7 +767,7 @@
 <h2 style="text-align:center; font-size:18px;"></h2>
 <h3 style="text-align:center; font-size:16px;">Subdirección de Planeación y Vinculación</h3>
 <h3 style="text-align:center; font-size:16px;">DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES<br>OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA</h3>
-<h3 style="text-align:center; font-size:1px;">Informe Semestral del Periodo 
+<h3 style="text-align:center; font-size:16px;">Informe Semestral del Periodo 
   <span class="editable" data-value="">
     <input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Periodo">
   </span>
@@ -695,12 +820,22 @@
       </table>
     </div>
 
+  <!-- Lugar y Fecha -->
+<div class="lugar-fecha-container">
+  <div class="lugar-fecha" data-value="">
+    <label>Lugar y Fecha:</label>
+    <input type="text" id="lugarFecha" placeholder="Oaxaca, 06 de agosto de 2025" 
+           oninput="this.parentElement.setAttribute('data-value', this.value)">
+  </div>
+</div>
+
     <!-- Botones -->
     <div class="footer-botones">
       <button class="btn-accion" onclick="agregarFila()">Agregar Evento</button>
       <button class="btn-accion" onclick="eliminarUltimaFila()">Eliminar Evento</button>
       <button class="btn-accion" onclick="window.print()">Imprimir</button>
     </div>
+
 
     <!-- Firmas -->
     <div class="footer-firmas">
@@ -760,25 +895,29 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-  // Funciones del informe
-  function agregarFila() {
-    const tbody = document.getElementById('eventos-body');
-    const rowCount = tbody.rows.length + 1;
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${rowCount}</td>
-      <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Evento"></span></td>
-      <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Institución"></span></td>
-      <td><span class="editable" data-value=""><input type="date" oninput="this.parentElement.dataset.value = this.value"></span></td>
-      <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
-      <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
-      <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
-      <td><span class="editable" data-value=""><input type="text" placeholder="Resultados" oninput="this.parentElement.dataset.value = this.value"></span></td>
-    `;
-    tbody.appendChild(row);
+function agregarFila() {
+  const tbody = document.getElementById('eventos-body');
+  const rowCount = tbody.rows.length + 1;
+  
+  if (rowCount > 12) {
+    alert("No se pueden agregar más de 12 eventos.");
+    return; // Detiene la función si ya hay 13 filas
   }
+  
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${rowCount}</td>
+    <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Evento"></span></td>
+    <td><span class="editable" data-value=""><input type="text" oninput="this.parentElement.dataset.value = this.value" placeholder="Institución"></span></td>
+    <td><span class="editable" data-value=""><input type="date" oninput="this.parentElement.dataset.value = this.value"></span></td>
+    <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+    <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+    <td><span class="editable" data-value=""><input type="number" min="0" oninput="this.parentElement.dataset.value = this.value"></span></td>
+    <td><span class="editable" data-value=""><input type="text" placeholder="Resultados" oninput="this.parentElement.dataset.value = this.value"></span></td>
+  `;
+  tbody.appendChild(row);
+}
 
   function eliminarUltimaFila() {
     const tbody = document.getElementById('eventos-body');
@@ -788,6 +927,62 @@
       alert("No hay filas para eliminar.");
     }
   }
+
+  function prepararParaImprimir() {
+    const filasPorPagina = 12;
+    const tbody = document.getElementById('eventos-body');
+    const filas = tbody.querySelectorAll('tr');
+    const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+    
+    // Limpiar grupos anteriores si existen
+    document.querySelectorAll('.grupo-filas').forEach(g => g.remove());
+    
+    // Crear grupos de filas
+    for (let i = 0; i < totalPaginas; i++) {
+        const grupo = document.createElement('div');
+        grupo.className = 'grupo-filas';
+        
+        // Clonar la tabla completa (para mantener estructura)
+        const tablaClon = document.querySelector('.tabla-estilo').cloneNode(true);
+        const tbodyClon = tablaClon.querySelector('tbody');
+        
+        // Limpiar el tbody clonado
+        while (tbodyClon.firstChild) {
+            tbodyClon.removeChild(tbodyClon.firstChild);
+        }
+        
+        // Agregar solo las filas de esta página
+        const inicio = i * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+        
+        for (let j = inicio; j < fin && j < filas.length; j++) {
+            tbodyClon.appendChild(filas[j].cloneNode(true));
+        }
+        
+        grupo.appendChild(tablaClon);
+        
+        // Clonar y agregar firmas
+        const firmasClon = document.querySelector('.footer-firmas').cloneNode(true);
+        grupo.appendChild(firmasClon);
+        
+        // Insertar en el documento
+        document.querySelector('.informe-container').insertBefore(grupo, document.querySelector('.footer-botones'));
+    }
+    
+    // Ocultar la tabla original
+    document.querySelector('.tabla-estilo').style.display = 'none';
+  }
+
+  // Modificar el botón de imprimir para que primero prepare el documento
+  document.querySelector('.btn-accion[onclick="window.print()"]').onclick = function() {
+    prepararParaImprimir();
+    setTimeout(() => {
+        window.print();
+        // Restaurar la tabla original después de imprimir
+        document.querySelector('.tabla-estilo').style.display = '';
+        document.querySelectorAll('.grupo-filas').forEach(g => g.remove());
+    }, 500);
+  };
 
   // Funciones del dashboard
   document.addEventListener("DOMContentLoaded", function () {
@@ -887,6 +1082,103 @@
 
     init();
   });
+
+  function prepararImpresion() {
+    const filasPorPagina = 15; // Ajusta este número según tus necesidades
+    const tbody = document.getElementById('eventos-body');
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+    const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+    
+    // Ocultar elementos no necesarios
+    document.querySelectorAll('.no-imprimir').forEach(el => {
+        el.classList.add('no-imprimir');
+    });
+    
+    // Crear contenedor para páginas
+    const contenedorPaginas = document.createElement('div');
+    contenedorPaginas.className = 'contenedor-paginas';
+    
+    // Dividir en páginas
+    for (let i = 0; i < totalPaginas; i++) {
+        const pagina = document.createElement('div');
+        pagina.className = 'pagina-impresion';
+        
+        // Clonar tabla completa
+        const tablaClon = document.querySelector('.tabla-estilo').cloneNode(true);
+        tablaClon.className = 'tabla-repetitiva';
+        
+        // Obtener el tbody clonado
+        const tbodyClon = tablaClon.querySelector('tbody');
+        
+        // Limpiar el tbody clonado
+        while (tbodyClon.firstChild) {
+            tbodyClon.removeChild(tbodyClon.firstChild);
+        }
+        
+        // Agregar solo las filas de esta página
+        const inicio = i * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+        
+        for (let j = inicio; j < fin && j < filas.length; j++) {
+            tbodyClon.appendChild(filas[j].cloneNode(true));
+        }
+        
+        // Crear contenedor para los datos
+        const contenedorDatos = document.createElement('div');
+        contenedorDatos.className = 'contenedor-datos';
+        contenedorDatos.appendChild(tablaClon);
+        
+        pagina.appendChild(contenedorDatos);
+        
+        // Agregar firmas (si es necesario)
+        const firmasClon = document.querySelector('.footer-firmas').cloneNode(true);
+        pagina.appendChild(firmasClon);
+        
+        contenedorPaginas.appendChild(pagina);
+    }
+    
+    // Insertar antes de los botones
+    const contenedorOriginal = document.querySelector('.informe-container');
+    contenedorOriginal.insertBefore(contenedorPaginas, document.querySelector('.footer-botones'));
+    
+    // Ocultar la tabla original
+    document.querySelector('.tabla-estilo').classList.add('no-imprimir');
+}
+
+function restaurarDocumento() {
+    // Eliminar páginas de impresión
+    document.querySelector('.contenedor-paginas')?.remove();
+    
+    // Mostrar tabla original
+    document.querySelector('.tabla-estilo').classList.remove('no-imprimir');
+    
+    // Mostrar elementos ocultos
+    document.querySelectorAll('.no-imprimir').forEach(el => {
+        el.classList.remove('no-imprimir');
+    });
+}
+
+// Modificar el botón de imprimir
+document.querySelector('.btn-accion[onclick="window.print()"]').onclick = function() {
+    prepararImpresion();
+    setTimeout(() => {
+        window.print();
+        setTimeout(restaurarDocumento, 500);
+    }, 500);
+};
+
+// Actualizar el data-value automáticamente
+document.getElementById('lugarFecha').addEventListener('input', function() {
+  this.parentElement.setAttribute('data-value', this.value);
+});
+
+// Configurar el valor inicial si es necesario
+window.addEventListener('load', function() {
+  const input = document.getElementById('lugarFecha');
+  if (input.value) {
+    input.parentElement.setAttribute('data-value', input.value);
+  }
+});
 </script>
 
 </body>
