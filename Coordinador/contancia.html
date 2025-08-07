@@ -123,9 +123,9 @@
 <body data-theme="light">
     <header>
         <div class="logos">
-             <img src="../Administrador/assets/img/Logo Educacion.png" alt="SEP" />
-             <img src="../Administrador/assets/img/Logo TecNM.png" alt="TecNM" />
-             <img src="../Administrador/assets/img/Logo IT Valle de etla.png" alt="IT Valle de Etla" class="logo-itvo" style="height: 60px;"/>
+            <img src="../Administrador/assets/img/Logo Educacion.png" alt="SEP" />
+            <img src="../Administrador/assets/img/Logo TecNM.png" alt="TecNM" />
+            <img src="../Administrador/assets/img/Logo IT Valle de etla.png" alt="IT Valle de Etla" class="logo-itvo" style="height: 60px;"/>
         </div>
         <h2>Gobierno de México<br />Secretaría de Educación Pública | TecNM | IT Valle de Etla</h2>
     </header>
@@ -205,285 +205,295 @@
     <footer>© 2025 Club Cultural | TecNM - Instituto Tecnológico del Valle de Etla</footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-    const { jsPDF } = window.jspdf;
-    let students = [];
-    let studentIdToEvaluate = null;
-    let currentSort = { column: 'nombre', direction: 'asc' };
-    document.addEventListener('DOMContentLoaded', () => {
-        setupTheme();
-        loadStudents();
-        initializeEvaluationForm();
-    });
-    function setupTheme() {
-        const themeToggle = document.getElementById('theme-toggle');
-        const storedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', storedTheme);
-        themeToggle.checked = storedTheme === 'dark';
-        themeToggle.addEventListener('change', () => {
-            const newTheme = themeToggle.checked ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+        const { jsPDF } = window.jspdf;
+        let students = [];
+        let studentIdToEvaluate = null;
+        let currentSort = { column: 'nombre', direction: 'asc' };
+        document.addEventListener('DOMContentLoaded', () => {
+            setupTheme();
+            loadStudents();
+            initializeEvaluationForm();
         });
-    }
-    async function loadStudents() {
-        try {
-            const response = await fetch('../php/obtener_alumnos.php');
-            if (!response.ok) throw new Error('Error al cargar alumnos');
-            const data = await response.json();
-            if (data.success && Array.isArray(data.alumnos)) {
-                students = data.alumnos.map(alumno => ({
-                    ...alumno,
-                    status: alumno.status || 'Pendiente'
-                }));
+        function setupTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const storedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', storedTheme);
+            themeToggle.checked = storedTheme === 'dark';
+            themeToggle.addEventListener('change', () => {
+                const newTheme = themeToggle.checked ? 'dark' : 'light';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+        async function loadStudents() {
+            try {
+                const response = await fetch('../php/obtener_alumnos.php');
+                if (!response.ok) throw new Error('Error al cargar alumnos');
+                const data = await response.json();
+                if (data.success && Array.isArray(data.alumnos)) {
+                    students = data.alumnos.map(alumno => ({
+                        ...alumno,
+                        status: alumno.status || 'Pendiente'
+                    }));
+                    renderTable();
+                } else {
+                    throw new Error(data.message || "Formato de respuesta inválido");
+                }
+            } catch (error) {
+                showToast('Error al cargar datos.');
+                students = [];
                 renderTable();
+            }
+        }
+        function updateStats() {
+            const total = students.length;
+            const evaluated = students.filter(s => s.status === 'Evaluado').length;
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-evaluated').textContent = evaluated;
+            document.getElementById('stat-pending').textContent = total - evaluated;
+        }
+        function handleSort(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
             } else {
-                throw new Error(data.message || "Formato de respuesta inválido");
+                currentSort.column = column;
+                currentSort.direction = 'asc';
             }
-        } catch (error) {
-            showToast('Error al cargar datos.');
-            students = [];
             renderTable();
         }
-    }
-    function updateStats() {
-        const total = students.length;
-        const evaluated = students.filter(s => s.status === 'Evaluado').length;
-        document.getElementById('stat-total').textContent = total;
-        document.getElementById('stat-evaluated').textContent = evaluated;
-        document.getElementById('stat-pending').textContent = total - evaluated;
-    }
-    function handleSort(column) {
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            currentSort.column = column;
-            currentSort.direction = 'asc';
+        function renderTable() {
+            updateStats();
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            let filteredStudents = students.filter(s => 
+                (s.nombre && s.nombre.toUpperCase().includes(filter)) || 
+                (s.numero_control && s.numero_control.toUpperCase().includes(filter)) ||
+                (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
+                (s.semestre && s.semestre.toString().includes(filter))
+            );
+            filteredStudents.sort((a, b) => {
+                const valA = a[currentSort.column];
+                const valB = b[currentSort.column];
+                if (valA === undefined || valB === undefined) return 0;
+                let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
+                return currentSort.direction === 'desc' ? comp * -1 : comp;
+            });
+            document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
+                const column = icon.parentElement.dataset.column;
+                icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
+            });
+            const tableBody = document.getElementById('tabla-alumnos');
+            const emptyStateTbody = document.getElementById('empty-state-tbody');
+            tableBody.innerHTML = '';
+            if (filteredStudents.length === 0) {
+                tableBody.style.display = 'none';
+                emptyStateTbody.style.display = '';
+                emptyStateTbody.querySelector('td').textContent = students.length === 0 ? 
+                    "Aún no hay alumnos registrados." : 
+                    "No se encontraron alumnos que coincidan.";
+            } else {
+                tableBody.style.display = '';
+                emptyStateTbody.style.display = 'none';
+                filteredStudents.forEach(student => {
+                    const isEvaluado = student.status === 'Evaluado';
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${student.numero_control || 'N/A'}</td>
+                            <td>${student.nombre || 'N/A'}</td>
+                            <td>${student.carrera || 'N/A'}</td>
+                            <td>${student.semestre || 'N/A'}</td>
+                            <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
+                            <td>
+                                <div class="actions-container">
+                                    <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${isEvaluado ? 'disabled' : ''}>
+                                        <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+            }
         }
-        renderTable();
-    }
-    function renderTable() {
-        updateStats();
-        const filter = document.getElementById("searchInput").value.toUpperCase();
-        let filteredStudents = students.filter(s => 
-            (s.nombre && s.nombre.toUpperCase().includes(filter)) || 
-            (s.numero_control && s.numero_control.toUpperCase().includes(filter)) ||
-            (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
-            (s.semestre && s.semestre.toString().includes(filter))
-        );
-        filteredStudents.sort((a, b) => {
-            const valA = a[currentSort.column];
-            const valB = b[currentSort.column];
-            if (valA === undefined || valB === undefined) return 0;
-            let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
-            return currentSort.direction === 'desc' ? comp * -1 : comp;
-        });
-        document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
-            const column = icon.parentElement.dataset.column;
-            icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
-        });
-        const tableBody = document.getElementById('tabla-alumnos');
-        const emptyStateTbody = document.getElementById('empty-state-tbody');
-        tableBody.innerHTML = '';
-        if (filteredStudents.length === 0) {
-            tableBody.style.display = 'none';
-            emptyStateTbody.style.display = '';
-            emptyStateTbody.querySelector('td').textContent = students.length === 0 ? 
-                "Aún no hay alumnos registrados." : 
-                "No se encontraron alumnos que coincidan.";
-        } else {
-            tableBody.style.display = '';
-            emptyStateTbody.style.display = 'none';
-            filteredStudents.forEach(student => {
-                const isEvaluado = student.status === 'Evaluado';
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>${student.numero_control || 'N/A'}</td>
-                        <td>${student.nombre || 'N/A'}</td>
-                        <td>${student.carrera || 'N/A'}</td>
-                        <td>${student.semestre || 'N/A'}</td>
-                        <td><span class="status-badge ${isEvaluado ? 'status-completed' : 'status-pending'}">${student.status || 'Pendiente'}</span></td>
-                        <td>
-                            <div class="actions-container">
-                                <button class="btn-generar-constancia" onclick="mostrarFormularioEvaluacion(${student.id_alumno})" ${isEvaluado ? 'disabled' : ''}>
-                                    <i class="fa-solid ${isEvaluado ? 'fa-check' : 'fa-clipboard-check'}"></i> ${isEvaluado ? 'Evaluado' : 'Evaluar'}
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
+        function exportToCSV() {
+            if (students.length === 0) {
+                showToast("No hay alumnos para exportar.");
+                return;
+            }
+            const headers = ['No. Control', 'Nombre Completo', 'Carrera', 'Semestre', 'Estado'];
+            let csv = "data:text/csv;charset=utf-8," + headers.join(',') + '\n';
+            csv += students.map(s => [
+                `"${s.numero_control || ''}"`,
+                `"${s.nombre || ''}"`,
+                `"${s.carrera || ''}"`,
+                `"${s.semestre || ''}"`,
+                `"${s.status || 'Pendiente'}"`
+            ].join(',')).join('\n');
+            const a = document.createElement("a");
+            a.setAttribute("href", encodeURI(csv));
+            a.setAttribute("download", `alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+        const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
+        function initializeEvaluationForm() {
+            const container = document.getElementById("criteriosContainer");
+            container.innerHTML = "";
+            criterios.forEach((texto, i) => {
+                container.innerHTML += `
+                    <div class="criterio-item">
+                        <label>${i + 1}. ${texto}</label>
+                        <div class="radio-group">
+                            ${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"]
+                                .map((nivel, idx) => `
+                                    <label>
+                                        <input type="radio" name="criterio${i}" value="${idx}" required>
+                                        ${nivel}
+                                    </label>
+                                `).join(" ")}
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('evaluationForm').addEventListener("change", (e) => {
+                if (e.target.name && e.target.name.startsWith("criterio")) {
+                    calcularPromedioYDesempeno();
+                }
             });
         }
-    }
-    function exportToCSV() {
-        if (students.length === 0) {
-            showToast("No hay alumnos para exportar.");
-            return;
+        function mostrarFormularioEvaluacion(studentId) {
+            const student = students.find(s => s.id_alumno == studentId);
+            if(!student) return;
+            studentIdToEvaluate = studentId;
+            document.getElementById('evaluationForm').reset();
+            document.getElementById('fechaExpedicion').valueAsDate = new Date();
+            document.getElementById("nombreEstudianteEval").value = student.nombre || '';
+            document.getElementById("evalStudentId").value = studentId;
+            calcularPromedioYDesempeno();
+            openModal('formularioEvaluacion');
         }
-        const headers = ['No. Control', 'Nombre Completo', 'Carrera', 'Semestre', 'Estado'];
-        let csv = "data:text/csv;charset=utf-8," + headers.join(',') + '\n';
-        csv += students.map(s => [
-            `"${s.numero_control || ''}"`,
-            `"${s.nombre || ''}"`,
-            `"${s.carrera || ''}"`,
-            `"${s.semestre || ''}"`,
-            `"${s.status || 'Pendiente'}"`
-        ].join(',')).join('\n');
-        const a = document.createElement("a");
-        a.setAttribute("href", encodeURI(csv));
-        a.setAttribute("download", `alumnos_danza_${new Date().toISOString().slice(0,10)}.csv`);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-    const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
-    function initializeEvaluationForm() {
-        const container = document.getElementById("criteriosContainer");
-        container.innerHTML = "";
-        criterios.forEach((texto, i) => {
-            container.innerHTML += `
-                <div class="criterio-item">
-                    <label>${i + 1}. ${texto}</label>
-                    <div class="radio-group">
-                        ${["Insuficiente", "Suficiente", "Bueno", "Notable", "Excelente"]
-                            .map((nivel, idx) => `
-                                <label>
-                                    <input type="radio" name="criterio${i}" value="${idx}" required>
-                                    ${nivel}
-                                </label>
-                            `).join(" ")}
-                    </div>
-                </div>`;
-        });
-        document.getElementById('evaluationForm').addEventListener("change", (e) => {
-            if (e.target.name && e.target.name.startsWith("criterio")) {
-                calcularPromedioYDesempeno();
+        function calcularPromedioYDesempeno() {
+            let total = 0;
+            let count = 0;
+            const radios = document.querySelectorAll('#evaluationForm input[type="radio"]:checked');
+            radios.forEach(radio => {
+                total += parseInt(radio.value);
+                count++;
+            });
+            const promedio = count > 0 ? total / count : 0;
+            let nivel = "Insuficiente";
+            if (promedio >= 4) nivel = "Excelente";
+            else if (promedio >= 3) nivel = "Notable";
+            else if (promedio >= 2) nivel = "Bueno";
+            else if (promedio >= 1) nivel = "Suficiente";
+            document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
+            document.getElementById("nivelDesempenoEval").value = nivel;
+        }
+        function finalizarEvaluacion() {
+            if (!document.getElementById('evaluationForm').checkValidity()) {
+                showToast('Complete todos los campos requeridos');
+                return;
             }
-        });
-    }
-    function mostrarFormularioEvaluacion(studentId) {
-        const student = students.find(s => s.id_alumno == studentId);
-        if(!student) return;
-        studentIdToEvaluate = studentId;
-        document.getElementById('evaluationForm').reset();
-        document.getElementById('fechaExpedicion').valueAsDate = new Date();
-        document.getElementById("nombreEstudianteEval").value = student.nombre || '';
-        document.getElementById("evalStudentId").value = studentId;
-        calcularPromedioYDesempeno();
-        openModal('formularioEvaluacion');
-    }
-    function calcularPromedioYDesempeno() {
-        let total = 0;
-        let count = 0;
-        const radios = document.querySelectorAll('#evaluationForm input[type="radio"]:checked');
-        radios.forEach(radio => {
-            total += parseInt(radio.value);
-            count++;
-        });
-        const promedio = count > 0 ? total / count : 0;
-        let nivel = "Insuficiente";
-        if (promedio >= 4) nivel = "Excelente";
-        else if (promedio >= 3) nivel = "Notable";
-        else if (promedio >= 2) nivel = "Bueno";
-        else if (promedio >= 1) nivel = "Suficiente";
-        document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
-        document.getElementById("nivelDesempenoEval").value = nivel;
-    }
-    function finalizarEvaluacion() {
-        if (!document.getElementById('evaluationForm').checkValidity()) {
-            showToast('Complete todos los campos requeridos');
-            return;
+            closeModal('formularioEvaluacion');
+            openModal('confirmacionModal');
         }
-        closeModal('formularioEvaluacion');
-        openModal('confirmacionModal');
-    }
-    function confirmarGenerarConstancia() {
-        generarConstanciaPDF();
-        closeModal('confirmacionModal');
-        showToast('Constancia generada con éxito.');
-        const idx = students.findIndex(s => s.id_alumno == studentIdToEvaluate);
-        if(idx > -1) {
-            students[idx].status = 'Evaluado';
-            renderTable();
+        function confirmarGenerarConstancia() {
+            generarConstanciaPDF();
+            closeModal('confirmacionModal');
+            showToast('Constancia generada con éxito.');
+            const idx = students.findIndex(s => s.id_alumno == studentIdToEvaluate);
+            if(idx > -1) {
+                students[idx].status = 'Evaluado';
+                renderTable();
+            }
+            studentIdToEvaluate = null;
         }
-        studentIdToEvaluate = null;
-    }
-    function cancelarGenerarConstancia() {
-        closeModal('confirmacionModal');
-        openModal('formularioEvaluacion');
-    }
-    function generarConstanciaPDF() {
-        const doc = new jsPDF();
-        const student = students.find(s => s.id_alumno == studentIdToEvaluate);
-        const form = document.getElementById('evaluationForm');
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(16);
-        doc.setTextColor(40, 53, 147);
-        doc.text('Instituto Tecnológico del Valle de Etla', 105, 20, null, null, 'center');
-        doc.setFontSize(14);
-        doc.text('Constancia de Participación', 105, 30, null, null, 'center');
-        doc.setDrawColor(40, 53, 147);
-        doc.setLineWidth(0.5);
-        doc.line(20, 35, 190, 35);
-        doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        doc.text('Por medio del presente documento se hace constar que:', 20, 45);
-        doc.setFont('helvetica', 'bold');
-        doc.text(`Nombre del alumno: ${student.nombre || ''}`, 20, 55);
-        doc.text(`Número de control: ${student.numero_control || ''}`, 20, 65);
-        doc.text(`Carrera: ${student.carrera || ''}`, 20, 75);
-        doc.text(`Semestre: ${student.semestre || ''}`, 20, 85);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Ha participado en la actividad complementaria "${form.actividadComplementaria.value}"`, 20, 95);
-        doc.text(`durante el periodo ${form.periodo.value}, obteniendo un nivel de desempeño:`, 20, 105);
-        doc.setFont('helvetica', 'bold');
-        doc.text(`Valor numérico: ${form.valorNumericoEval.value}`, 20, 115);
-        doc.text(`Nivel de desempeño: ${form.nivelDesempenoEval.value}`, 20, 125);
-        if (form.observaciones.value) {
+        function cancelarGenerarConstancia() {
+            closeModal('confirmacionModal');
+            openModal('formularioEvaluacion');
+        }
+        function generarConstanciaPDF() {
+            const doc = new jsPDF();
+            const student = students.find(s => s.id_alumno == studentIdToEvaluate);
+            const form = document.getElementById('evaluationForm');
+            const today = new Date(form.fechaExpedicion.value);
+            const day = today.getDate();
+            const month = today.toLocaleString('es-ES', { month: 'long' });
+            const year = today.getFullYear();
+        
+            // Headers and logo section
+            doc.addImage("../Administrador/assets/img/Logo SGC.png", "PNG", 15, 10, 20, 20);
+            doc.addImage("../Administrador/assets/img/Logo TecNM.png", "PNG", 40, 10, 20, 20);
+            doc.setFontSize(10);
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 70, 15);
+            doc.text('Referencia a la Norma ISO 9001:2015 8.1', 70, 25);
+            doc.text('Código:TecNM-VI-PO-003-05', 140, 15);
+            doc.text('Revisión: 0', 140, 20);
+            doc.text('Página 1 de 1', 140, 25);
+        
+            // Main title
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 50, null, null, 'center');
+        
+            // Body
+            doc.setFontSize(12);
             doc.setFont('helvetica', 'normal');
-            doc.text(`Observaciones: ${form.observaciones.value}`, 20, 135);
+            doc.text('C.', 20, 65);
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 75);
+            doc.text('PRESENTE', 20, 85);
+        
+            const bodyText = `El que suscribe ${form.nombreResponsable.value}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${student.nombre} con número de control ${student.numero_control} de la carrera de ${student.carrera} ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño ${form.nivelDesempenoEval.value} y un valor numérico de ${form.valorNumericoEval.value} durante el periodo escolar ${form.periodo.value} con un valor curricular de créditos.`;
+        
+            doc.text(bodyText, 20, 100, { maxWidth: 170, align: 'justify' });
+            
+            doc.text(`Se extiende la presente en la a los ${day} días del mes de ${month} de ${year}.`, 20, 130);
+        
+            // Signatures
+            doc.text('ATENTAMENTE', 105, 160, null, null, 'center');
+        
+            doc.line(20, 220, 90, 220);
+            doc.text('Nombre y firma del (de la) profesor(a)', 20, 225);
+            doc.text('responsable', 20, 230);
+            doc.text(form.nombreResponsable.value, 20, 235);
+            
+            doc.line(120, 220, 190, 220);
+            doc.text('V.o. B.o.', 150, 215, null, null, 'center');
+            doc.text('Jefe(a) del Depto. de Actividades', 120, 225);
+            doc.text('Extraescolares', 120, 230);
+            doc.text(form.nombreJefeExtra.value, 120, 235);
+        
+            doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
         }
-        doc.setFontSize(10);
-        doc.text(`Fecha de expedición: ${form.fechaExpedicion.value}`, 20, 160);
-        doc.text('_________________________________', 50, 190);
-        doc.text('Profesor Responsable', 50, 195);
-        doc.text(form.nombreResponsable.value, 50, 200);
-        doc.text('_________________________________', 120, 190);
-        doc.text('Jefe de Actividades Extraescolares', 120, 195);
-        doc.text(form.nombreJefeExtra.value, 120, 200);
-        doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
-    }
-    const overlay = document.getElementById('overlay');
-    function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            overlay.classList.add('visible');
-            modal.classList.add('visible');
-            document.body.style.overflow = 'hidden';
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                overlay.classList.add('visible');
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            }
         }
-    }
-    function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            overlay.classList.remove('visible');
-            modal.classList.remove('visible');
-            document.body.style.overflow = '';
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                overlay.classList.remove('visible');
+                modal.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
         }
-    }
-    function showToast(msg) {
-        const toast = document.getElementById('toast-notification');
-        toast.querySelector('#toast-message').textContent = msg;
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal.visible').forEach(modal => {
-                closeModal(modal.id);
-            });
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notification');
+            toast.querySelector('#toast-message').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
-    });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.visible').forEach(modal => {
+                    closeModal(modal.id);
+                });
+            }
+        });
     </script>
 </body>
 </html>
