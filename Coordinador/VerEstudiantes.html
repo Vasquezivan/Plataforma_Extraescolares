@@ -264,6 +264,18 @@
       margin-bottom: 20px;
     }
 
+    /* Mensaje de unidad */
+    .mensaje-unidad {
+      background-color: #002147;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin: 15px auto;
+      max-width: 800px;
+      text-align: center;
+      font-weight: bold;
+    }
+
     /* Footer */
     .site-footer {
       background-color: #002147;
@@ -401,8 +413,8 @@
     <div class="sidebar-menu">
       <ul>
         <a href="#" onclick="window.history.back(); return false;">
-  <i class="fa fa-home"></i> Regresar
-</a>
+          <i class="fa fa-home"></i> Regresar
+        </a>
         <li>
           <a href="VerEstudiantes.html" class="active">
             <i class="fa fa-users"></i> Ver Estudiantes
@@ -434,6 +446,9 @@
       <button class="toggle-sidebar" id="toggle-sidebar">
         <i class="fa fa-bars"></i>
       </button>
+      <div class="user-menu">
+        <span id="nombre-usuario"></span>
+      </div>
     </div>
 
     <!-- Content -->
@@ -450,7 +465,12 @@
 
       <!-- Encabezado de unidad -->
       <div class="unidad-header">
-        Tecnológico Nacional de México - Unidad Académica Demetrio Vallejo Martínez en el Espinal
+        Tecnológico Nacional de México
+      </div>
+
+      <!-- Mensaje de unidad académica -->
+      <div class="mensaje-unidad" id="mensaje-unidad">
+        Cargando datos de la unidad académica...
       </div>
 
       <!-- Contenedor de la tabla -->
@@ -535,153 +555,243 @@
   <!-- Script personalizado -->
   <script>
   $(document).ready(function() {
-      // Configuración inicial de DataTables
-      var tabla = $('#dataTable').DataTable({
-          "ajax": {
-              "url": "php/obtener_estudiantes.php",
-              "dataSrc": "",
-              "error": function(xhr, error, thrown) {
+      // Variable para almacenar la unidad académica del usuario
+      let unidadAcademica = '';
+      
+      // 1. Cargar información del usuario y su unidad académica
+      function cargarUsuarioYUnidad() {
+          $.ajax({
+              url: "php/obtener_usuario.php",
+              method: "GET",
+              dataType: "json",
+              success: function(data) {
+                  if (data && typeof data === "object" && !Array.isArray(data)) {
+                      // Mostrar nombre de usuario
+                      $("#nombre-usuario").text(data.nombre || "Usuario");
+                      
+                      // Guardar unidad académica
+                      unidadAcademica = data.unidad_academica || '';
+                      
+                      // Actualizar mensaje de unidad
+                      const mensajeUnidad = $('#mensaje-unidad');
+                      if (unidadAcademica) {
+                          mensajeUnidad.text(`Mostrando estudiantes de: ${unidadAcademica}`);
+                      } else {
+                          mensajeUnidad.text('Mostrando todos los estudiantes (no se especificó unidad académica)');
+                          mensajeUnidad.css('backgroundColor', '#ff7f00'); // Cambiar color para advertencia
+                      }
+                      
+                      // Configurar DataTables con la unidad académica
+                      inicializarDataTable(unidadAcademica);
+                  } else {
+                      throw new Error("Respuesta JSON no válida");
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error al cargar usuario:", error);
+                  $("#nombre-usuario").text("Usuario");
                   Swal.fire({
-                      icon: 'error',
-                      title: 'Error al cargar datos',
-                      text: 'No se pudieron obtener los registros. Por favor intente más tarde.'
+                      title: 'Error',
+                      text: 'No se pudo cargar la información del usuario',
+                      icon: 'error'
                   });
-                  console.error("Error en la carga de datos:", xhr.responseText);
+                  // Inicializar tabla sin filtro de unidad
+                  inicializarDataTable();
               }
-          },
-          "columns": [
-              { "data": "id_alumno" },
-              { "data": "nombre" },
-              { "data": "id_usuario" },
-              { "data": "numero_control" },
-              { "data": "carrera" },
-              { "data": "semestre" },
-              {
-                  "data": null,
-                  "className": "dt-center",
-                  "orderable": false,
-                  "render": function(data, type, row) {
-                      return `
-                          <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
-                              <i class='fas fa-edit'></i>
-                          </button>
-                      `;
+          });
+      }
+
+      // 2. Configuración inicial de DataTables con filtro por unidad
+      function inicializarDataTable(unidad = '') {
+          var tabla = $('#dataTable').DataTable({
+              "ajax": {
+                  "url": "php/obtener_estudiantes.php",
+                  "data": function(d) {
+                      if (unidad) {
+                          d.unidad = unidad;
+                      }
+                  },
+                  "dataSrc": "",
+                  "error": function(xhr, error, thrown) {
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error al cargar datos',
+                          text: 'No se pudieron obtener los registros. Por favor intente más tarde.'
+                      });
+                      console.error("Error en la carga de datos:", xhr.responseText);
                   }
-              }
-          ],
-          "language": {
-              "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json"
-          },
-          "responsive": true,
-          "dom": 'rt<"bottom"lip><"clear">'
-      });
-
-      // Función para buscar al escribir en el campo de búsqueda
-      $('#buscador-nombre').on('keyup', function() {
-          tabla.search(this.value).draw();
-      });
-
-      // Función para buscar al hacer clic en el botón de búsqueda
-      $('#btn-buscar-nombre').on('click', function() {
-          tabla.search($('#buscador-nombre').val()).draw();
-      });
-
-      // Función para recargar la tabla
-      $('#btn-recargar').on('click', function() {
-          tabla.ajax.reload(null, false);
-          $('#buscador-nombre').val('');
-      });
-
-      // Función para editar un registro
-      $('#dataTable').on('click', '.btn-editar', function() {
-          var id = $(this).data('id');
-          var fila = $(this).closest('tr');
-          var datos = tabla.row(fila).data();
-          
-          Swal.fire({
-              title: 'Editar Estudiante',
-              html: `
-                  <form id="form-editar">
-                      <div class="form-group">
-                          <label for="edit-nombre">Nombre:</label>
-                          <input type="text" id="edit-nombre" class="swal2-input" value="${datos.nombre}" required>
-                      </div>
-                      <div class="form-group">
-                          <label for="edit-numero_control">No. Control:</label>
-                          <input type="text" id="edit-numero_control" class="swal2-input" value="${datos.numero_control}" required>
-                      </div>
-                      <div class="form-group">
-                          <label for="edit-carrera">Carrera:</label>
-                          <input type="text" id="edit-carrera" class="swal2-input" value="${datos.carrera}" required>
-                      </div>
-                      <div class="form-group">
-                          <label for="edit-semestre">Semestre:</label>
-                          <input type="text" id="edit-semestre" class="swal2-input" value="${datos.semestre}" required>
-                      </div>
-                  </form>
-              `,
-              focusConfirm: false,
-              showCancelButton: true,
-              confirmButtonText: 'Guardar',
-              cancelButtonText: 'Cancelar',
-              preConfirm: () => {
-                  return {
-                      nombre: $('#edit-nombre').val(),
-                      numero_control: $('#edit-numero_control').val(),
-                      carrera: $('#edit-carrera').val(),
-                      semestre: $('#edit-semestre').val()
+              },
+              "columns": [
+                  { "data": "id_alumno" },
+                  { "data": "nombre" },
+                  { "data": "id_usuario" },
+                  { "data": "numero_control" },
+                  { "data": "carrera" },
+                  { "data": "semestre" },
+                  {
+                      "data": null,
+                      "className": "dt-center",
+                      "orderable": false,
+                      "render": function(data, type, row) {
+                          return `
+                              <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
+                                  <i class='fas fa-edit'></i>
+                              </button>
+                          `;
+                      }
                   }
-              }
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  $.ajax({
-                      url: 'php/actualizar_estudiante1.php',
-                      type: 'POST',
-                      data: {
-                          id_alumno: id,
-                          nombre: result.value.nombre,
-                          numero_control: result.value.numero_control,
-                          carrera: result.value.carrera,
-                          semestre: result.value.semestre
-                      },
-                      dataType: 'json',
-                      success: function(response) {
-                          if(response.success) {
-                              Swal.fire({
-                                  icon: 'success',
-                                  title: 'Éxito',
-                                  text: 'Registro actualizado correctamente'
-                              });
-                              tabla.ajax.reload(null, false);
-                          } else {
+              ],
+              "language": {
+                  "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/es-MX.json"
+              },
+              "responsive": true,
+              "dom": 'rt<"bottom"lip><"clear">'
+          });
+
+          // Función para buscar al escribir en el campo de búsqueda
+          $('#buscador-nombre').on('keyup', function() {
+              tabla.search(this.value).draw();
+          });
+
+          // Función para buscar al hacer clic en el botón de búsqueda
+          $('#btn-buscar-nombre').on('click', function() {
+              tabla.search($('#buscador-nombre').val()).draw();
+          });
+
+          // Función para recargar la tabla
+          $('#btn-recargar').on('click', function() {
+              tabla.ajax.reload(null, false);
+              $('#buscador-nombre').val('');
+          });
+
+          // Función para editar un registro
+          $('#dataTable').on('click', '.btn-editar', function() {
+              var id = $(this).data('id');
+              var fila = $(this).closest('tr');
+              var datos = tabla.row(fila).data();
+              
+              Swal.fire({
+                  title: 'Editar Estudiante',
+                  html: `
+                      <form id="form-editar">
+                          <div class="form-group">
+                              <label for="edit-nombre">Nombre:</label>
+                              <input type="text" id="edit-nombre" class="swal2-input" value="${datos.nombre}" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="edit-numero_control">No. Control:</label>
+                              <input type="text" id="edit-numero_control" class="swal2-input" value="${datos.numero_control}" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="edit-carrera">Carrera:</label>
+                              <input type="text" id="edit-carrera" class="swal2-input" value="${datos.carrera}" required>
+                          </div>
+                          <div class="form-group">
+                              <label for="edit-semestre">Semestre:</label>
+                              <input type="text" id="edit-semestre" class="swal2-input" value="${datos.semestre}" required>
+                          </div>
+                      </form>
+                  `,
+                  focusConfirm: false,
+                  showCancelButton: true,
+                  confirmButtonText: 'Guardar',
+                  cancelButtonText: 'Cancelar',
+                  preConfirm: () => {
+                      return {
+                          nombre: $('#edit-nombre').val(),
+                          numero_control: $('#edit-numero_control').val(),
+                          carrera: $('#edit-carrera').val(),
+                          semestre: $('#edit-semestre').val()
+                      }
+                  }
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      $.ajax({
+                          url: 'php/actualizar_estudiante1.php',
+                          type: 'POST',
+                          data: {
+                              id_alumno: id,
+                              nombre: result.value.nombre,
+                              numero_control: result.value.numero_control,
+                              carrera: result.value.carrera,
+                              semestre: result.value.semestre,
+                              unidad_academica: unidadAcademica // Enviar unidad académica para validación
+                          },
+                          dataType: 'json',
+                          success: function(response) {
+                              if(response.success) {
+                                  Swal.fire({
+                                      icon: 'success',
+                                      title: 'Éxito',
+                                      text: 'Registro actualizado correctamente'
+                                  });
+                                  tabla.ajax.reload(null, false);
+                              } else {
+                                  Swal.fire({
+                                      icon: 'error',
+                                      title: 'Error',
+                                      text: response.message || 'Error al actualizar el registro'
+                                  });
+                              }
+                          },
+                          error: function() {
                               Swal.fire({
                                   icon: 'error',
                                   title: 'Error',
-                                  text: response.message || 'Error al actualizar el registro'
+                                  text: 'Error al conectar con el servidor'
                               });
                           }
-                      },
-                      error: function() {
-                          Swal.fire({
-                              icon: 'error',
-                              title: 'Error',
-                              text: 'Error al conectar con el servidor'
-                          });
-                      }
-                  });
-              }
+                      });
+                  }
+              });
           });
-      });
 
-      // Función para mostrar mensaje de error si falla la carga inicial
-      tabla.on('error.dt', function(e, settings, techNote, message) {
-          Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Ocurrió un error al cargar los datos. Por favor recarga la página.'
+          // Función para mostrar mensaje de error si falla la carga inicial
+          tabla.on('error.dt', function(e, settings, techNote, message) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Ocurrió un error al cargar los datos. Por favor recarga la página.'
+              });
+              console.error('DataTables Error: ', message);
           });
-          console.error('DataTables Error: ', message);
-      });
+      }
+
+      // 3. Mostrar modal de perfil
+      function mostrarModalPerfil() {
+          // Evita duplicar el modal
+          if (document.getElementById('modalPerfilUsuario')) return;
+
+          const usuarioActual = sessionStorage.getItem('usuario') || 'Usuario Invitado';
+
+          const modalHTML = `
+            <div id="modalPerfilUsuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+              <div style="background: #fff; border-radius: 12px; padding: 30px 40px; min-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; position: relative;">
+                <i class="fas fa-user-circle" style="font-size: 60px; color: #1B396A; margin-bottom: 15px;"></i>
+                <h2 style="color: #1B396A; font-size: 22px; margin-bottom: 10px;">Perfil de Usuario</h2>
+                <p style="font-size: 17px; margin-bottom: 25px;"><strong>${usuarioActual}</strong></p>
+                <button id="btnCerrarSesion" style="background: #d33; color: #fff; border: none; border-radius: 5px; padding: 10px 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                  <i class="fas fa-sign-out-alt" style="margin-right: 7px;"></i>Cerrar Sesión
+                </button>
+                <button id="btnCerrarModalPerfil" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 22px; color: #888; cursor: pointer;">&times;</button>
+              </div>
+            </div>
+          `;
+          document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+          document.getElementById('btnCerrarSesion').onclick = function() {
+              sessionStorage.clear();
+              window.location.href = '../index.html'; // Ajusta la ruta si es necesario
+          };
+
+          document.getElementById('btnCerrarModalPerfil').onclick = function() {
+              document.getElementById('modalPerfilUsuario').remove();
+          };
+
+          document.getElementById('modalPerfilUsuario').onclick = function(e) {
+              if (e.target === this) this.remove();
+          };
+      }
 
       // Menú hamburguesa
       document.getElementById("toggle-sidebar").addEventListener("click", function () {
@@ -694,42 +804,37 @@
       if (iconoPerfil) {
           iconoPerfil.addEventListener('click', mostrarModalPerfil);
       }
+
+      // Inicializar la página
+      cargarUsuarioYUnidad();
   });
 
-  function mostrarModalPerfil() {
-      // Evita duplicar el modal
-      if (document.getElementById('modalPerfilUsuario')) return;
+  // Redirección dinámica del enlace "Inicio"
+  document.addEventListener("DOMContentLoaded", function () {
+      const linkInicio = document.getElementById("link-inicio");
 
-      const usuarioActual = sessionStorage.getItem('usuario') || 'Usuario Invitado';
+      if (linkInicio) {
+          const unidad = sessionStorage.getItem("unidad_academica");
+          let ruta = "index.html"; // Valor por defecto
 
-      const modalHTML = `
-        <div id="modalPerfilUsuario" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-          <div style="background: #fff; border-radius: 12px; padding: 30px 40px; min-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); text-align: center; position: relative;">
-            <i class="fas fa-user-circle" style="font-size: 60px; color: #1B396A; margin-bottom: 15px;"></i>
-            <h2 style="color: #1B396A; font-size: 22px; margin-bottom: 10px;">Perfil de Usuario</h2>
-            <p style="font-size: 17px; margin-bottom: 25px;"><strong>${usuarioActual}</strong></p>
-            <button id="btnCerrarSesion" style="background: #d33; color: #fff; border: none; border-radius: 5px; padding: 10px 25px; font-size: 16px; font-weight: bold; cursor: pointer;">
-              <i class="fas fa-sign-out-alt" style="margin-right: 7px;"></i>Cerrar Sesión
-            </button>
-            <button id="btnCerrarModalPerfil" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 22px; color: #888; cursor: pointer;">&times;</button>
-          </div>
-        </div>
-      `;
-      document.body.insertAdjacentHTML('beforeend', modalHTML);
+          switch (unidad) {
+              case "CIDERS unión Hidalgo":
+                  ruta = "U_CentrodeInvestigacion.html";
+                  break;
+              case "Unidad Demetrio Vallejo en el Espinal":
+                  ruta = "U_Demetrio.html";
+                  break;
+              case "Unidad Académica Tlahuitoltepec":
+                  ruta = "U_SantaMaria.html";
+                  break;
+              case "Valle de Etla":
+                  ruta = "U_ValleEtla.html";
+                  break;
+          }
 
-      document.getElementById('btnCerrarSesion').onclick = function() {
-          sessionStorage.clear();
-          window.location.href = '../index.html'; // Ajusta la ruta si es necesario
-      };
-
-      document.getElementById('btnCerrarModalPerfil').onclick = function() {
-          document.getElementById('modalPerfilUsuario').remove();
-      };
-
-      document.getElementById('modalPerfilUsuario').onclick = function(e) {
-          if (e.target === this) this.remove();
-      };
-  }
+          linkInicio.setAttribute("href", ruta);
+      }
+  });
   </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Informe de Actividad - Santa María Tlahuitoltepec</title>
+  <title>Informe de Actividad</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -208,9 +208,9 @@
        border: 2px solid #000; 
     }
 
-    .encabezado td,
-    .encabezado th {
-      border: 1px solid #999;
+  .encabezado td,
+.encabezado th {
+  border: 1px solid #000 !important;
       padding: 5px;
       vertical-align: top;
         border: 1px solid #000 !important;
@@ -283,51 +283,48 @@
     }
 
     /* Firmas - MODIFICADO */
+    .footer-firmas {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      width: 100%;
+      margin-top: auto;
+      padding: 40px 0 20px;
+      position: relative;
+    }
 
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 900px;
+    }
 
-   .footer-firmas {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  width: 100%;
-  margin-top: auto;
-  padding: 40px 0 20px;
-  position: relative;
-}
+    .firma {
+      flex: 1;
+      text-align: center;
+      padding: 0 10px;
+    }
 
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 900px;
-}
+    .firma div {
+      border-bottom: 1.5px solid #222;
+      margin-bottom: 6px;
+      height: 60px;
+    }
 
-.firma {
-  flex: 1;
-  text-align: center;
-  padding: 0 10px;
-}
+    .firma span {
+      font-size: 0.98em;
+    }
 
-.firma div {
-  border-bottom: 1.5px solid #222;
-  margin-bottom: 6px;
-  height: 60px;
-}
-
-.firma span {
-  font-size: 0.98em;
-}
-
-@media print {
-  .footer-firmas {
-    display: flex !important;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-  }
-}
-
+    @media print {
+      .footer-firmas {
+        display: flex !important;
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+      }
+    }
 
     .tabla-estilo {
       width: 100%;
@@ -335,12 +332,12 @@
       border-collapse: collapse;
     }
 
-    .tabla-estilo th,
-    .tabla-estilo td {
-      padding: 8px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
+ .tabla-estilo th,
+.tabla-estilo td {
+  padding: 6px;
+  text-align: center;
+  border: 1px solid #000; /* línea negra */
+}
 
     .tabla-estilo th {
       background-color: #f2f2f2;
@@ -489,6 +486,47 @@
         width: auto;
       }
     }
+    /* Estilo uniforme para todas las tablas */
+table {
+  border-collapse: collapse !important;
+  width: 100%;
+  border: 2px solid black !important; /* Más grueso para que no desaparezcan */
+}
+
+/* Bordes visibles en celdas */
+table th, table td {
+  border: 2px solid black !important;
+  padding: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Estilo especial solo para impresión */
+@media print {
+  table {
+    border-collapse: collapse !important;
+    border: 2px solid black !important;
+  }
+
+  table th, table td {
+    border: 2px solid black !important;
+    -webkit-print-color-adjust: exact; /* Forzar impresión exacta */
+    print-color-adjust: exact;
+  }
+}
+
+    /* Estilo para el mensaje de unidad */
+    .mensaje-unidad {
+      background-color: #002147;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin: 15px auto;
+      max-width: 800px;
+      text-align: center;
+      font-weight: bold;
+    }
+
   </style>
 </head>
 <body>
@@ -499,10 +537,9 @@
   </div>
   <div class="sidebar-menu">
     <ul>
-  <a href="#" onclick="window.history.back(); return false;">
-  <i class="fa fa-home"></i> Regresar
-</a>
-
+      <a href="#" onclick="window.history.back(); return false;">
+        <i class="fa fa-home"></i> Regresar
+      </a>
       <li>
         <a href="VerEstudiantes.html">
           <i class="fa fa-users"></i> Ver Estudiantes
@@ -534,6 +571,9 @@
     <button class="toggle-sidebar" id="toggle-sidebar">
       <i class="fa fa-bars"></i>
     </button>
+    <div class="user-menu">
+      <span id="nombre-usuario"></span>
+    </div>
   </div>
 
   <!-- Logos (solo pantalla) -->
@@ -551,6 +591,11 @@
     FORMATO DE RESULTADOS DE ACTIVIDADES EXTRAESCOLARES CULTURALES Y/O DEPORTIVAS
   </div>
 
+  <!-- Mensaje de unidad académica -->
+  <div class="mensaje-unidad" id="mensaje-unidad">
+    Cargando datos de la unidad académica...
+  </div>
+
   <!-- Contenido del informe -->
   <div class="contenido-informe">
     <table class="tabla-estilo" style="margin-bottom: 32px;">
@@ -565,11 +610,11 @@
       </tr>
     </table>
 
- <h3 style="text-align:center; font-size: 16px; line-height: 1.5;">
-  DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES<br>
-  OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA<br>
-  ACTIVIDAD CULTURAL
-</h3>
+    <h3 style="text-align:center; font-size: 16px; line-height: 1.5;">
+      DEPARTAMENTO DE ACTIVIDADES EXTRAESCOLARES<br>
+      OFICINA DE PROMOCIÓN CULTURAL O DEPORTIVA<br>
+      ACTIVIDAD CULTURAL
+    </h3>
 
     <div style="margin-bottom: 18px;">
       <table class="tabla-estilo">
@@ -590,7 +635,7 @@
       </table>
     </div>
 
-    <!-- Firmas - MODIFICADO -->
+    <!-- Firmas -->
     <div class="footer-firmas">
       <div class="footer-content">
         <div class="firma">
@@ -614,39 +659,38 @@
     </div>
   </div>
 
-      <!-- Footer -->
-    <footer class="site-footer">
-      <div class="footer-container">
-        <!-- Información de contacto -->
-        <div class="footer-text">
-          <h3>Dirección</h3>
-          <p>Abasolo S/N, Barrio del Agua Buena<br>Santiago Suchilquitongo, Oaxaca, C.P. 68230</p>
-          
-          <h3>Contacto</h3>
-          <p>
-            Email: info@vetla.tecnm.mx<br>
-            Teléfono: 951 305 29 27
-          </p>
-          
-          <h3>Preguntar por Whatsapp</h3>
-          <a href="https://wa.me/9513052927?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
-            <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
-          </a>
-        </div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <!-- Información de contacto -->
+      <div class="footer-text">
+        <h3>Dirección</h3>
+        <p>Abasolo S/N, Barrio del Agua Buena<br>Santiago Suchilquitongo, Oaxaca, C.P. 68230</p>
         
-        <!-- Mapa -->
-        <div class="footer-map">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15241.367048623282!2d-96.8702191!3d17.2506929!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c6e36d891967db%3A0x512f566ad941ae57!2sTecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20campus%20Instituto%20Tecnol%C3%B3gico%20del%20Valle%20de%20Etla!5e0!3m2!1ses!2smx!4v1621983062705!5m2!1ses!2smx"
-            allowfullscreen>
-          </iframe>
-        </div>
+        <h3>Contacto</h3>
+        <p>
+          Email: info@vetla.tecnm.mx<br>
+          Teléfono: 951 305 29 27
+        </p>
+        
+        <h3>Preguntar por Whatsapp</h3>
+        <a href="https://wa.me/9513052927?text=Buen%20d%C3%ADa%2C%20deseo%20informaci%C3%B3n%20" target="_blank" class="whatsapp-link">
+          <img src="http://vetla.tecnm.mx/wp-content/uploads/2021/04/whatsapp.png" alt="Whatsapp">
+        </a>
       </div>
       
+      <!-- Mapa -->
+      <div class="footer-map">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15241.367048623282!2d-96.8702191!3d17.2506929!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c6e36d891967db%3A0x512f566ad941ae57!2sTecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20campus%20Instituto%20Tecnol%C3%B3gico%20del%20Valle%20de%20Etla!5e0!3m2!1ses!2smx!4v1621983062705!5m2!1ses!2smx"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
     
     <!-- Derechos reservados -->
     <div class="footer-copyright">
-      <p>© 2023 Tecnológico Nacional de México - Santa María Tlahuitoltepec. Todos los derechos reservados.</p>
+      <p>© 2023 Tecnológico Nacional de México - Campus Valle de Etla. Todos los derechos reservados.</p>
     </div>
   </footer>
 </div>
@@ -658,11 +702,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // 1. Cargar datos del usuario desde JSON
-    function cargarUsuario() {
+    // Variable para almacenar la unidad académica del usuario
+    let unidadAcademica = '';
+    
+    // 1. Obtener información del usuario y su unidad académica
+    function cargarUsuarioYUnidad() {
       fetch("php/obtener_usuario.php")
         .then((response) => {
           if (!response.ok) throw new Error("Error en la respuesta del servidor");
@@ -670,7 +716,23 @@
         })
         .then((data) => {
           if (data && typeof data === "object" && !Array.isArray(data)) {
+            // Mostrar nombre de usuario
             document.getElementById("nombre-usuario").textContent = data.nombre || "Usuario";
+            
+            // Guardar unidad académica
+            unidadAcademica = data.unidad_academica || '';
+            
+            // Actualizar mensaje de unidad
+            const mensajeUnidad = document.getElementById('mensaje-unidad');
+            if (unidadAcademica) {
+              mensajeUnidad.textContent = `Mostrando datos de: ${unidadAcademica}`;
+            } else {
+              mensajeUnidad.textContent = 'Mostrando todos los datos (no se especificó unidad académica)';
+              mensajeUnidad.style.backgroundColor = '#ff7f00'; // Cambiar color para advertencia
+            }
+            
+            // Cargar datos de la unidad correspondiente
+            llenarTablas(unidadAcademica);
           } else {
             throw new Error("Respuesta JSON no válida");
           }
@@ -678,6 +740,11 @@
         .catch((error) => {
           console.error("Error al cargar usuario:", error);
           document.getElementById("nombre-usuario").textContent = "Usuario";
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo cargar la información del usuario',
+            icon: 'error'
+          });
         });
     }
 
@@ -689,9 +756,14 @@
       });
     }
 
-    // 3. Llenar tabla de alumnos
-    function llenarTablas() {
-      fetch('php/obtener_alumnos.php')
+    // 3. Llenar tabla de alumnos por unidad académica
+    function llenarTablas(unidad = '') {
+      let url = 'php/obtener_alumnos.php';
+      if (unidad) {
+        url += `?unidad=${encodeURIComponent(unidad)}`;
+      }
+      
+      fetch(url)
         .then(response => {
           if (!response.ok) {
             throw new Error('Error en la respuesta del servidor');
@@ -703,6 +775,18 @@
           const tablaCuerpo = document.getElementById('tabla-cuerpo');
           tablaCuerpo.innerHTML = '';
           
+          // Verificar si hay datos
+          if (data.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td colspan="7" style="text-align: center; color: #666; padding: 20px;">
+                No hay datos disponibles para esta unidad académica
+              </td>
+            `;
+            tablaCuerpo.appendChild(row);
+            return;
+          }
+          
           data.forEach((alumno, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -711,12 +795,13 @@
               <td>${alumno.numero_control || ''}</td>
               <td>${alumno.carrera || ''}</td>
               <td>${alumno.semestre || ''}</td>
-              <td></td>
+              <td>${alumno.resultado || ''}</td>
               <td></td>
             `;
             tablaCuerpo.appendChild(row);
           });
           
+          // Rellenar con filas vacías si hay menos de 15 registros
           for (let i = data.length; i < 15; i++) {
             const emptyRow = document.createElement('tr');
             emptyRow.innerHTML = `
@@ -733,7 +818,11 @@
         })
         .catch(error => {
           console.error('Error al obtener datos:', error);
-          alert('Error al cargar los datos de los alumnos. Por favor, intente más tarde.');
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al cargar los datos de los alumnos. Por favor, intente más tarde.',
+            icon: 'error'
+          });
         });
     }
 
@@ -774,9 +863,8 @@
 
     // Inicializar
     function init() {
-      cargarUsuario();
       setupSidebarToggle();
-      llenarTablas();
+      cargarUsuarioYUnidad(); // Cambiado a la nueva función que carga usuario y unidad
 
       // Resaltar enlace activo en el menú lateral
       document.querySelectorAll('.sidebar-menu a').forEach(link => {
@@ -799,36 +887,33 @@
 
     init();
   });
-//inicio
 
-document.addEventListener("DOMContentLoaded", function () {
   // Redirección dinámica del enlace "Inicio"
-  const linkInicio = document.getElementById("link-inicio");
+  document.addEventListener("DOMContentLoaded", function () {
+    const linkInicio = document.getElementById("link-inicio");
 
-  if (linkInicio) {
-    const unidad = sessionStorage.getItem("unidad_academica");
-    let ruta = "index.html"; // Valor por defecto
+    if (linkInicio) {
+      const unidad = sessionStorage.getItem("unidad_academica");
+      let ruta = "index.html"; // Valor por defecto
 
-    switch (unidad) {
-       case "CIDERS unión Hidalgo":
-        ruta = "U_CentrodeInvestigacion.html";
-        break;
-      case "Unidad Demetrio Vallejo en el Espinal":
-        ruta = "U_Demetrio.html";
-        break;
-      case "Unidad Académica Tlahuitoltepec":
-        ruta = "U_SantaMaria.html";
-        break;
-      case "Valle de Etla":
-        ruta = "U_ValleEtla.html";
-        break;
+      switch (unidad) {
+        case "CIDERS unión Hidalgo":
+          ruta = "U_CentrodeInvestigacion.html";
+          break;
+        case "Unidad Demetrio Vallejo en el Espinal":
+          ruta = "U_Demetrio.html";
+          break;
+        case "Unidad Académica Tlahuitoltepec":
+          ruta = "U_SantaMaria.html";
+          break;
+        case "Valle de Etla":
+          ruta = "U_ValleEtla.html";
+          break;
+      }
+
+      linkInicio.setAttribute("href", ruta);
     }
-
-    linkInicio.setAttribute("href", ruta);
-  }
-});
-
-
+  });
 </script>
 
 </body>
