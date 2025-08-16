@@ -182,51 +182,54 @@
       margin-bottom: 15px;
     }
 
-    .stat-card-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 20px;
-    }
+    /* Colores y estilos para los iconos de los cuadros */
+.stat-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-    .stat-card-icon.blue {
-      background-color: #3498db;
-    }
+/* Degradados y colores más vibrantes */
+.stat-card-icon.blue {
+    background: linear-gradient(45deg, #4285f4, #1a73e8);
+}
 
-    .stat-card-icon.green {
-      background-color: #2ecc71;
-    }
+.stat-card-icon.green {
+    background: linear-gradient(45deg, #34a853, #2e8b57);
+}
 
-    .stat-card-icon.orange {
-      background-color: #e67e22;
-    }
+.stat-card-icon.orange {
+    background: linear-gradient(45deg, #fbbc05, #e67e22);
+}
 
-    .stat-card-icon.purple {
-      background-color: #9b59b6;
-    }
+.stat-card-icon.purple {
+    background: linear-gradient(45deg, #9b59b6, #8e44ad);
+}
 
     .stat-card-title {
-      color: #777;
-      font-size: 14px;
+      color: #555; /* Color de texto más oscuro para mejor contraste */
+      font-size: 15px;
       text-transform: uppercase;
       font-weight: bold;
     }
 
     .stat-card-value {
-      color: #002147;
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0;
+      color: #1B396A; /* El color principal de la marca */
+      font-size: 28px;
+      font-weight: 700;
+      margin: 10px 0 5px; /* Ajuste de margen */
     }
 
     .stat-card-footer {
-      color: #777;
-      font-size: 13px;
-      border-top: 1px solid #eee;
+      color: #888;
+      font-size: 14px;
+      border-top: 1px solid #f0f0f0;
       padding-top: 10px;
       margin-top: auto;
     }
@@ -512,50 +515,58 @@
 
       <!-- Stats Cards -->
       <div class="stats-cards">
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Estudiantes Registrados</span>
-            <div class="stat-card-icon blue">
-              <i class="fa fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">725</div>
-          <div class="stat-card-footer">+15% desde el mes pasado</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Actividades Activas</span>
-            <div class="stat-card-icon green">
-              <i class="fa fa-calendar-check-o"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">22</div>
-          <div class="stat-card-footer">4 nuevas este mes</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Constancias Generadas</span>
-            <div class="stat-card-icon orange">
-              <i class="fa fa-file-text"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">589</div>
-          <div class="stat-card-footer">+25 esta semana</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Participación Total</span>
-            <div class="stat-card-icon purple">
-              <i class="fa fa-line-chart"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">90%</div>
-          <div class="stat-card-footer">Meta: 95%</div>
-        </div>
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <div class="stat-card-icon blue">
+        <i class="fa fa-users"></i>
       </div>
+      <span class="stat-card-title">Estudiantes Registrados</span>
+    </div>
+    <div class="stat-card-value">725</div>
+    <div class="stat-card-footer">
+        Información sobre el total de alumnos inscritos en actividades.
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <div class="stat-card-icon green">
+        <i class="fa fa-calendar-check-o"></i>
+      </div>
+      <span class="stat-card-title">Actividades Activas</span>
+    </div>
+    <div class="stat-card-value">22</div>
+    <div class="stat-card-footer">
+        Número de actividades disponibles y en curso.
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <div class="stat-card-icon orange">
+        <i class="fa fa-file-text"></i>
+      </div>
+      <span class="stat-card-title">Constancias Generadas</span>
+    </div>
+    <div class="stat-card-value">589</div>
+    <div class="stat-card-footer">
+        Total de documentos de cumplimiento emitidos a la fecha.
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <div class="stat-card-icon purple">
+        <i class="fa fa-line-chart"></i>
+      </div>
+      <span class="stat-card-title">Participación Total</span>
+    </div>
+    <div class="stat-card-value">90%</div>
+    <div class="stat-card-footer">
+        Porcentaje de estudiantes activos en al menos una actividad.
+    </div>
+  </div>
+</div>
 
       <!-- Contenedor de categorías -->
       <div id="categorias-container"></div>
