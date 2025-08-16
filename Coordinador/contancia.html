@@ -105,7 +105,7 @@
         #confirmacionModal, #deleteConfirmModal { max-width: 400px; text-align: center; }
         #confirmacionModal p, #deleteConfirmModal p { font-size: 1.2em; margin-bottom: 25px; color: var(--color-texto-oscuro); }
         .modal-buttons { display: flex; justify-content: space-around; gap: 15px; }
-        .modal-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border-radius: 6px; border: none; cursor: pointer; transition: background-color 0.3s ease; color: white; margin-top: 0; }
+        .modal-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border-radius: 6px; border: none, cursor: pointer; transition: background-color 0.3s ease; color: white; margin-top: 0; }
         .modal-buttons .confirm-yes { background-color: #28a745; }
         .modal-buttons .confirm-yes:hover { background-color: #218838; }
         .modal-buttons .confirm-no, .modal-buttons .confirm-delete-no { background-color: #6c757d; }
@@ -418,49 +418,103 @@
             const day = today.getDate();
             const month = today.toLocaleString('es-ES', { month: 'long' });
             const year = today.getFullYear();
-        
-            // Headers and logo section
-            doc.addImage("../Administrador/assets/img/Logo SGC.png", "PNG", 15, 10, 20, 20);
-            doc.addImage("../Administrador/assets/img/Logo TecNM.png", "PNG", 40, 10, 20, 20);
+
+            // Encabezado tipo tabla
             doc.setFontSize(10);
-            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 70, 15);
-            doc.text('Referencia a la Norma ISO 9001:2015 8.1', 70, 25);
-            doc.text('Código:TecNM-VI-PO-003-05', 140, 15);
-            doc.text('Revisión: 0', 140, 20);
-            doc.text('Página 1 de 1', 140, 25);
-        
-            // Main title
-            doc.setFontSize(14);
             doc.setFont('helvetica', 'bold');
-            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 50, null, null, 'center');
-        
-            // Body
-            doc.setFontSize(12);
+            // Logo
+            doc.addImage("../Administrador/assets/img/Logo SGC.png", "PNG", 15, 10, 30, 18);
+            doc.addImage("../Administrador/assets/img/Logo TecNM.png", "PNG", 50, 10, 30, 18);
+
+            // Tabla encabezado
+            doc.setDrawColor(100);
+            doc.setLineWidth(0.3);
+            doc.rect(85, 10, 110, 8); // fila 1
+            doc.rect(85, 18, 110, 8); // fila 2
+            doc.line(155, 10, 155, 26); // división vertical
+
+            doc.setFontSize(10);
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 87, 15);
+            doc.text('Referencia a la Norma ISO 9001:2015  8.1', 87, 23);
+            doc.text('Código:TecNM-VI-PO-003-05', 157, 15);
+            doc.text('Revisión: 0', 157, 19);
+            doc.text('Página 1 de 1', 157, 23);
+
+            // Título principal
+            doc.setFontSize(13);
+            doc.setFont('helvetica', 'bold');
+            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 40, null, null, 'center');
+
+            // Cuerpo
+            doc.setFontSize(11);
             doc.setFont('helvetica', 'normal');
-            doc.text('C.', 20, 65);
-            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 75);
-            doc.text('PRESENTE', 20, 85);
-        
-            const bodyText = `El que suscribe ${form.nombreResponsable.value}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${student.nombre} con número de control ${student.numero_control} de la carrera de ${student.carrera} ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño ${form.nivelDesempenoEval.value} y un valor numérico de ${form.valorNumericoEval.value} durante el periodo escolar ${form.periodo.value} con un valor curricular de créditos.`;
-        
-            doc.text(bodyText, 20, 100, { maxWidth: 170, align: 'justify' });
-            
-            doc.text(`Se extiende la presente en la a los ${day} días del mes de ${month} de ${year}.`, 20, 130);
-        
-            // Signatures
-            doc.text('ATENTAMENTE', 105, 160, null, null, 'center');
-        
-            doc.line(20, 220, 90, 220);
-            doc.text('Nombre y firma del (de la) profesor(a)', 20, 225);
-            doc.text('responsable', 20, 230);
-            doc.text(form.nombreResponsable.value, 20, 235);
-            
-            doc.line(120, 220, 190, 220);
-            doc.text('V.o. B.o.', 150, 215, null, null, 'center');
-            doc.text('Jefe(a) del Depto. de Actividades', 120, 225);
-            doc.text('Extraescolares', 120, 230);
-            doc.text(form.nombreJefeExtra.value, 120, 235);
-        
+            doc.text('C.', 20, 50);
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 55);
+            doc.text('PRESENTE', 20, 60);
+
+            // Texto con líneas simuladas
+            doc.text('El que suscribe', 20, 70);
+            doc.line(50, 69, 110, 69); // línea nombre responsable
+            doc.text(', por este medio se permite hacer de su conocimiento que el (la) estudiante', 112, 70);
+
+            doc.line(20, 74, 110, 74); // línea nombre estudiante
+            doc.text(', con número de control', 112, 75);
+            doc.line(150, 74, 180, 74); // línea número control
+            doc.text('de la carrera de', 20, 80);
+            doc.line(50, 79, 110, 79); // línea carrera
+            doc.text(',', 112, 80);
+
+            doc.text('ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño', 20, 85);
+            doc.line(140, 84, 180, 84); // línea nivel desempeño
+            doc.text('y un valor numérico de', 20, 90);
+            doc.line(60, 89, 90, 89); // línea valor numérico
+            doc.text('durante el periodo escolar', 92, 90);
+            doc.line(130, 89, 180, 89); // línea periodo
+            doc.text('con un valor curricular de', 20, 95);
+            doc.line(70, 94, 110, 94); // línea créditos
+            doc.text('créditos.', 112, 95);
+
+            // Rellenar los datos
+            doc.setFontSize(11);
+            doc.text(form.nombreResponsable.value, 52, 69);
+            doc.text(student.nombre, 22, 74);
+            doc.text(student.numero_control, 152, 74);
+            doc.text(student.carrera, 52, 79);
+            doc.text(form.nivelDesempenoEval.value, 142, 84);
+            doc.text(form.valorNumericoEval.value, 62, 89);
+            doc.text(form.periodo.value, 132, 89);
+            doc.text('______', 72, 94); // puedes poner el valor curricular si lo tienes
+
+            // Fecha
+            doc.text(`Se extiende la presente en la ${form.fechaExpedicion.value ? form.fechaExpedicion.value : '____________'} a los ${day} días del mes de ${month} de ${year}.`, 20, 105);
+
+            // ATENTAMENTE
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text('ATENTAMENTE', 105, 120, null, null, 'center');
+
+            // Firmas y sello
+            // Sello
+            doc.rect(60, 130, 40, 30); // cuadro sello
+            doc.setFontSize(11);
+            doc.text('SELLO', 80, 145, null, null, 'center');
+
+            // Líneas de firmas
+            doc.line(20, 170, 90, 170); // profesor
+            doc.line(120, 170, 190, 170); // jefe
+
+            doc.setFontSize(10);
+            doc.text('Nombre y firma del (de la) profesor(a)', 20, 175);
+            doc.text('responsable', 20, 180);
+
+            doc.text('Jefe(a) del Depto. de Actividades', 120, 175);
+            doc.text('Extraescolares', 120, 180);
+
+            // Vo. Bo.
+            doc.setFontSize(12);
+            doc.setTextColor(200, 0, 0);
+            doc.text('Vo. Bo.', 170, 125);
+
             doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
         }
         function openModal(modalId) {
