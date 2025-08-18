@@ -1587,7 +1587,7 @@ function guardarCambiosUsuario(filaUsuario) {
       const modal = document.getElementById('modalEditarUsuario');
       modal.parentNode.removeChild(modal);
       
-      actualizarFilaUsuario(filaUsuario, nuevoNombre, nuevaUnidad, nuevoContacto, nuevoPassword, nuevoRol);
+      actualizarFilaUsuario(filaUsuario, nuevoNombre, nuevaUnidad, nuevoContacto, nuevaPassword, nuevoRol);
       
       // Mostrar mensaje de éxito
       Swal.fire({
@@ -2694,3 +2694,103 @@ function cargarUsuariosDesdeBaseDeDatosCoordinador() {
       });
   }
 }
+
+// Agregar estilos para que la fila de encabezado de la tabla tenga un fondo sólido y permanezca fija al hacer scroll
+const estiloTabla = document.createElement('style');
+estiloTabla.textContent = `
+  .tabla-alumnos thead th {
+    position: sticky;
+    top: 0;
+    background-color: #DCDCDC; /* Color sólido para el encabezado */
+    color: white; /* Color del texto */
+    z-index: 2; /* Asegura que el encabezado esté por encima del contenido */
+  }
+`;
+document.head.appendChild(estiloTabla);
+
+// Ajustar el estilo para que el encabezado de la tabla esté separado de la tabla y no se vea afectado al desplazarse
+const estiloTablaSeparada = document.createElement('style');
+estiloTablaSeparada.textContent = `
+  .tabla-alumnos {
+    margin-top: 20px; /* Espacio entre el encabezado y la tabla */
+  }
+  .tabla-alumnos thead th {
+    position: sticky;
+    top: 20px; /* Ajustar la posición del encabezado */
+    background-color: #DCDCDC; /* Color sólido para el encabezado */
+    color: black; /* Color del texto */
+    z-index: 2; /* Asegura que el encabezado esté por encima del contenido */
+  }
+`;
+document.head.appendChild(estiloTablaSeparada);
+
+// Ajustar el estilo para que el encabezado de la tabla no esté dentro del contenedor deslizante
+const estiloEncabezadoSeparado = document.createElement('style');
+estiloEncabezadoSeparado.textContent = `
+  .contenedor-tabla {
+    overflow-y: auto; /* Hacer que solo el cuerpo de la tabla sea desplazable */
+    max-height: 400px; /* Altura máxima para el área desplazable */
+  }
+  .tabla-alumnos thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #C0C0C0; /* Color sólido para el encabezado */
+    color: black; /* Color del texto */
+  }
+`;
+document.head.appendChild(estiloEncabezadoSeparado);
+
+// Ajustar estilos para centrar el contenido de las celdas del encabezado de la tabla
+const estiloCentrarEncabezado = document.createElement('style');
+estiloCentrarEncabezado.textContent = `
+  .tabla-alumnos thead th {
+    text-align: center; /* Centrar texto horizontalmente */
+    vertical-align: middle; /* Centrar texto verticalmente */
+  }
+`;
+document.head.appendChild(estiloCentrarEncabezado);
+
+// Agregar estilos para mostrar los bordes de las celdas y divisiones de la tabla
+const estiloBordesTabla = document.createElement('style');
+estiloBordesTabla.textContent = `
+  .tabla-alumnos, .tabla-alumnos th, .tabla-alumnos td {
+    border: 1px solid #ddd; /* Bordes de las celdas */
+    border-collapse: collapse; /* Colapsar bordes */
+  }
+  .tabla-alumnos th, .tabla-alumnos td {
+    padding: 8px; /* Espaciado interno */
+    text-align: center; /* Centrar contenido */
+  }
+`;
+document.head.appendChild(estiloBordesTabla);
+
+// Agregar estilos para mostrar los bordes del encabezado de la tabla
+const estiloBordesEncabezado = document.createElement('style');
+estiloBordesEncabezado.textContent = `
+  .tabla-alumnos thead th {
+    border: 1px solid #ddd; /* Bordes del encabezado */
+    border-collapse: collapse; /* Colapsar bordes */
+  }
+`;
+document.head.appendChild(estiloBordesEncabezado);
+
+// Ajustar estilos para que las divisiones entre las celdas del encabezado sean más notorias
+const estiloDivisionesEncabezado = document.createElement('style');
+estiloDivisionesEncabezado.textContent = `
+  .tabla-alumnos thead th {
+    border: 2px solid #000; /* Bordes más gruesos y oscuros para mayor visibilidad */
+    border-collapse: collapse; /* Colapsar bordes */
+  }
+`;
+document.head.appendChild(estiloDivisionesEncabezado);
+
+// Ajustar estilos para que los bordes del encabezado sean más suaves
+const estiloBordesEncabezadoSuaves = document.createElement('style');
+estiloBordesEncabezadoSuaves.textContent = `
+  .tabla-alumnos thead th {
+    border: 1px solid #aaa; /* Bordes más suaves y claros */
+    border-collapse: collapse; /* Colapsar bordes */
+  }
+`;
+document.head.appendChild(estiloBordesEncabezadoSuaves);
