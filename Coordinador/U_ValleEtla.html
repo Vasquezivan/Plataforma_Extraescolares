@@ -497,6 +497,31 @@
       font-size: 14px;
       margin-bottom: 10px;
     }
+
+
+    
+
+    .stat-card-footer {
+  font-size: 13px;
+  color: #555;
+  margin-top: 8px;
+  line-height: 1.4em;
+  text-align: justify;
+}
+.stat-card-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+.stat-card {
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(84, 82, 82, 0.1);
+  background: #fff;
+}
+
+
+
   </style>
 </head>
 <body>
@@ -571,51 +596,70 @@
       </div>
 
       <!-- Stats Cards -->
-      <div class="stats-cards">
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Estudiantes Registrados</span>
-            <div class="stat-card-icon blue">
-              <i class="fa fa-users"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">1,450</div>
-          <div class="stat-card-footer">+15% desde el mes pasado</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Actividades Activas</span>
-            <div class="stat-card-icon green">
-              <i class="fa fa-calendar-check-o"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">32</div>
-          <div class="stat-card-footer">6 nuevas este mes</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Constancias Generadas</span>
-            <div class="stat-card-icon orange">
-              <i class="fa fa-file-text"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">980</div>
-          <div class="stat-card-footer">+45 esta semana</div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-card-header">
-            <span class="stat-card-title">Participación Total</span>
-            <div class="stat-card-icon purple">
-              <i class="fa fa-line-chart"></i>
-            </div>
-          </div>
-          <div class="stat-card-value">94%</div>
-          <div class="stat-card-footer">Meta: 95%</div>
-        </div>
+<div class="stats-cards">
+
+  <!-- Estudiantes Registrados -->
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-title">Ver Estudiantes</span>
+      <div class="stat-card-icon blue">
+        <i class="fa fa-users"></i>
       </div>
+    </div>
+    <div class="stat-card-value">01</div>
+    <div class="stat-card-footer">
+      Este apartado permite consultar y gestionar la información de los estudiantes registrados. 
+      Desde aquí se puede verificar su participación en actividades, actualizar datos y llevar un control general.
+    </div>
+  </div>
+
+  <!-- Constancia de Cumplimiento -->
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-title">Constancia de Cumplimiento</span>
+      <div class="stat-card-icon orange">
+        <i class="fa fa-file-text"></i>
+      </div>
+    </div>
+    <div class="stat-card-value">02</div>
+    <div class="stat-card-footer">
+      Acá se generan y descargan las constancias oficiales que validan la participación de los estudiantes 
+      en las actividades extraescolares.
+    </div>
+  </div>
+
+  <!-- Informe de Actividad -->
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-title">Informe de Actividad</span>
+      <div class="stat-card-icon green">
+        <i class="fa fa-file-pdf-o"></i>
+      </div>
+    </div>
+    <div class="stat-card-value">03</div>
+    <div class="stat-card-footer">
+      Esta sección permite registrar y consultar los reportes de cada actividad realizada. 
+    
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="stat-card">
+    <div class="stat-card-header">
+      <span class="stat-card-title">Resultados</span>
+      <div class="stat-card-icon purple">
+        <i class="fa fa-line-chart"></i>
+      </div>
+    </div>
+    <div class="stat-card-value">04</div>
+    <div class="stat-card-footer">
+      En este apartado se visualizan los indicadores como número de estudiantes activos, 
+      actividades realizadas, constancias emitidas y nivel de participación.
+    </div>
+  </div>
+
+</div>
+
 
       <!-- Contenedor de categorías -->
       <div id="categorias-container"></div>
@@ -754,10 +798,10 @@
     // 3. Actualizar estadísticas (JSON simulado)
     function updateStats() {
       const stats = [
-        { selector: ".stat-card:nth-child(1) .stat-card-value", value: 1450, isPercent: false },
-        { selector: ".stat-card:nth-child(2) .stat-card-value", value: 32, isPercent: false },
-        { selector: ".stat-card:nth-child(3) .stat-card-value", value: 980, isPercent: false },
-        { selector: ".stat-card:nth-child(4) .stat-card-value", value: 94, isPercent: true }
+        { selector: ".stat-card:nth-child(1) .stat-card-value", value: 1, isPercent: false },
+        { selector: ".stat-card:nth-child(2) .stat-card-value", value: 2, isPercent: false },
+        { selector: ".stat-card:nth-child(3) .stat-card-value", value: 3, isPercent: false },
+        { selector: ".stat-card:nth-child(4) .stat-card-value", value: 4, isPercent: false }
       ];
 
       stats.forEach((stat) => {
