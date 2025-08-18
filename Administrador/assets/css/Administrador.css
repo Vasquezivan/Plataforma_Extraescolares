@@ -812,3 +812,56 @@ body {
 .main-content {
     margin-left: 273px; /* Ajustar el margen izquierdo para coincidir con el ancho reducido de la barra lateral */
 }
+
+/* --- FLECHAS PARA LA BARRA DE ACTIVIDADES --- */
+.barra-actividades-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.barra-actividades-arrow {
+  background: #1B396A;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.barra-actividades-arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.barra-actividades-arrow:hover:not(:disabled) {
+  background: #003366;
+}
+.barra-actividades {
+  flex: 1;
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1px 20px;
+  margin: 10px 0;
+  background-color: #003366;
+  justify-content: flex-start;
+}
+.barra-actividades::-webkit-scrollbar {
+  height: 8px;
+}
+.barra-actividades::-webkit-scrollbar-thumb {
+  background: #1B396A;
+  border-radius: 4px;
+}
+.barra-actividades::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
