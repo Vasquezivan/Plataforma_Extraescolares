@@ -6,6 +6,7 @@
   <title>Detalle de Actividad Extraescolar</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     * {
       box-sizing: border-box;
@@ -321,7 +322,7 @@
                 <th>No. de Control</th>
                 <th>Carrera</th>
                 <th>Semestre</th>
-                <!-- <th>Acciones</th>  Quitado -->
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody id="tabla-estudiantes">
@@ -333,6 +334,29 @@
       
       
     </main>
+
+    <!-- Modal para editar estudiante -->
+    <div id="modal-editar" class="modal">
+      <div class="modal-contenido">
+        <span class="cerrar" id="cerrar-modal-editar">&times;</span>
+        <h2>Editar Estudiante</h2>
+        <form id="form-editar-estudiante">
+          <input type="hidden" id="editar-id">
+          <label>Nombre:</label>
+          <input type="text" id="editar-nombre" required>
+          <label>No. de Control:</label>
+          <input type="text" id="editar-numero-control" required>
+          <label>Carrera:</label>
+          <input type="text" id="editar-carrera" required>
+          <label>Semestre:</label>
+          <input type="number" id="editar-semestre" required>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button type="submit">Guardar</button>
+            <button type="button" id="cancelar-edicion" style="background:#ff7f00;">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="site-footer">
@@ -420,5 +444,134 @@ fetch('php/obtener_alumnos_inscritos_union.php?id_actividad=' + id_actividad)
     });
   });
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  function cargarEstudiantes() {
+    fetch('php/obtener_alumnos_inscritos_union.php?id_actividad=' + id_actividad)
+      .then(res => res.json())
+      .then(alumnos => {
+        const tbody = document.getElementById('tabla-estudiantes');
+        tbody.innerHTML = '';
+        if (alumnos.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 20px; color: #666;">
+                No hay estudiantes registrados en esta actividad
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        alumnos.forEach(al => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${al.nombre}</td>
+            <td>${al.numero_control}</td>
+            <td>${al.carrera}</td>
+            <td>${al.semestre}</td>
+            <td class="acciones-celda">
+              <button class="btn-accion btn-editar" title="Editar" data-id="${al.id_alumno}" data-nombre="${al.nombre}" data-numero_control="${al.numero_control}" data-carrera="${al.carrera}" data-semestre="${al.semestre}">
+                <i class="bi bi-pen-fill" style="color:#002147; font-size:1.3em;"></i>
+              </button>
+              <button class="btn-accion btn-eliminar" title="Eliminar" data-id="${al.id_alumno}">
+                <i class="bi bi-trash-fill" style="color:#002147; font-size:1.3em;"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Evento editar
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+          btn.addEventListener('click', function() {
+            document.getElementById('editar-id').value = this.dataset.id;
+            document.getElementById('editar-nombre').value = this.dataset.nombre;
+            document.getElementById('editar-numero-control').value = this.dataset.numero_control;
+            document.getElementById('editar-carrera').value = this.dataset.carrera;
+            document.getElementById('editar-semestre').value = this.dataset.semestre;
+            document.getElementById('modal-editar').style.display = 'flex';
+          });
+        });
+
+        // Evento eliminar
+        document.querySelectorAll('.btn-eliminar').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const idAlumno = this.dataset.id;
+            Swal.fire({
+              title: '¿Estás seguro?',
+              text: "¿Deseas eliminar este estudiante?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Sí, eliminar',
+              cancelButtonText: 'Cancelar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetch('php/eliminar_alumno_union.php', {
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                  body: 'id_alumno=' + encodeURIComponent(idAlumno) + '&id_actividad=' + encodeURIComponent(id_actividad)
+                })
+                .then(res => res.json())
+                .then(resp => {
+                  if (resp.success) {
+                    Swal.fire('Eliminado', 'El estudiante ha sido eliminado.', 'success');
+                    cargarEstudiantes();
+                  } else {
+                    Swal.fire('Error', 'No se pudo eliminar el estudiante.', 'error');
+                  }
+                });
+              }
+            });
+          });
+        });
+      });
+  }
+
+  cargarEstudiantes();
+
+  // Modal editar: cerrar y cancelar
+  document.getElementById('cerrar-modal-editar').onclick = function() {
+    document.getElementById('modal-editar').style.display = 'none';
+  };
+  document.getElementById('cancelar-edicion').onclick = function() {
+    document.getElementById('modal-editar').style.display = 'none';
+  };
+
+  // Guardar edición
+  document.getElementById('form-editar-estudiante').onsubmit = function(e) {
+    e.preventDefault();
+    const id = document.getElementById('editar-id').value;
+    const nombre = document.getElementById('editar-nombre').value;
+    const numero_control = document.getElementById('editar-numero-control').value;
+    const carrera = document.getElementById('editar-carrera').value;
+    const semestre = document.getElementById('editar-semestre').value;
+    fetch('php/editar_alumno_union.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `id_alumno=${encodeURIComponent(id)}&nombre=${encodeURIComponent(nombre)}&numero_control=${encodeURIComponent(numero_control)}&carrera=${encodeURIComponent(carrera)}&semestre=${encodeURIComponent(semestre)}`
+    })
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.success) {
+        Swal.fire('Actualizado', 'Los datos del estudiante han sido actualizados.', 'success');
+        document.getElementById('modal-editar').style.display = 'none';
+        cargarEstudiantes();
+      } else {
+        Swal.fire('Error', 'No se pudo actualizar el estudiante.', 'error');
+      }
+    });
+  };
+
+  // Cerrar modal al hacer click fuera del contenido
+  window.onclick = function(event) {
+    const modal = document.getElementById('modal-editar');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+});
+</script>
 </body>
 </html>
