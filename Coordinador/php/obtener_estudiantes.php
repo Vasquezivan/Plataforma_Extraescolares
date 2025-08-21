@@ -1,28 +1,37 @@
 <?php
-// filepath: php/obtener_estudiantes.php
-header('Content-Type: application/json');
+require_once 'conexion.php';
 
-try {
-    require_once "Database.php";
-    $db = new Database();
-    $conn = $db->getConnection();
+header('Content-Type: application/json; charset=utf-8');
 
-    // Selecciona la base de datos si es necesario
-    $conn->query("USE extraescolares");
+$unidad = isset($_GET['unidad']) ? $_GET['unidad'] : '';
 
-    // Consulta todos los campos de la tabla alumnos
-    $sql = "SELECT id_alumno, nombre, id_usuario, numero_control, carrera, semestre FROM alumnos";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$sql = "SELECT a.id_alumno, 
+               a.nombre, 
+               a.id_usuario, 
+               a.numero_control, 
+               a.carrera, 
+               a.semestre,
+               act.nombre_actividad AS extraescolar
+        FROM alumnos a
+        LEFT JOIN inscripciones i ON a.id_alumno = i.id_alumno
+        LEFT JOIN actividades act ON i.id_actividad = act.id_actividad";
 
-    echo json_encode($alumnos, JSON_UNESCAPED_UNICODE);
-
-} catch(Exception $e) {
-    http_response_code(500);
-    echo json_encode([
-        'error' => true,
-        'message' => $e->getMessage()
-    ]);
+if (!empty($unidad)) {
+    $sql .= " WHERE a.unidad_academica = ?";
 }
-?>
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($unidad)) {
+    $stmt->bind_param("s", $unidad);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$alumnos = [];
+while ($row = $result->fetch_assoc()) {
+    $alumnos[] = $row;
+}
+
+echo json_encode($alumnos, JSON_UNESCAPED_UNICODE);
