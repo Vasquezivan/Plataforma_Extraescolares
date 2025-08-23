@@ -393,19 +393,52 @@
                 return;
             }
             
-            // Generar la constancia directamente
+            // Obtener datos de la evaluación
+            const student = students.find(s => s.id_alumno == studentIdToEvaluate);
+            const form = document.getElementById('evaluationForm');
+            
+            // Guardar resultados en localStorage
+            const evaluationData = {
+                studentId: studentIdToEvaluate,
+                nombre: student.nombre || 'N/A',
+                numero_control: student.numero_control || 'N/A',
+                carrera: student.carrera || 'N/A',
+                semestre: student.semestre || 'N/A',
+                periodo: form.periodo.value || 'N/A',
+                valorNumerico: form.valorNumericoEval.value || '0',
+                nivelDesempeno: form.nivelDesempenoEval.value || 'N/A',
+                nombreResponsable: form.nombreResponsable.value || 'N/A',
+                fechaExpedicion: form.fechaExpedicion.value || new Date().toISOString().split('T')[0],
+                timestamp: new Date().toISOString()
+            };
+            
+            // Guardar en lista de evaluaciones
+            let evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+            
+            // Eliminar evaluación previa si existe para este estudiante
+            evaluations = evaluations.filter(eval => eval.studentId != studentIdToEvaluate);
+            
+            // Agregar la nueva evaluación
+            evaluations.push(evaluationData);
+            localStorage.setItem('evaluations', JSON.stringify(evaluations));
+            
+            // Generar la constancia
             generarConstanciaPDF();
             
             // Actualizar el estado del alumno
             const idx = students.findIndex(s => s.id_alumno == studentIdToEvaluate);
             if(idx > -1) {
                 students[idx].status = 'Evaluado';
+                students[idx].resultado = `${evaluationData.nivelDesempeno} (${evaluationData.valorNumerico})`;
                 renderTable();
             }
             
             // Cerrar el modal y mostrar mensaje de éxito
             closeModal('formularioEvaluacion');
             showToast('Evaluación completada y constancia generada con éxito.');
+            
+            // Agregar botón para ver resultados
+            showResultsButton();
             
             studentIdToEvaluate = null;
         }
