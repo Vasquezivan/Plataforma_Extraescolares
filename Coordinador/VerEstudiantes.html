@@ -490,16 +490,14 @@
         
         <table id="dataTable" class="display nowrap">
           <thead>
-         <tr>
-    <th>ID Alumno</th>
-    <th>Nombre</th>
-    <th>ID Usuario</th>
-    <th>No. Control</th>
-    <th>Carrera</th>
-    <th>Extraescolar</th> <!-- ✅ Nueva columna -->
-    <th>Semestre</th>
-    <th>Acciones</th>
-  </tr>
+            <tr>
+              <th>No. Control</th>
+              <th>Nombre</th>
+              <th>Carrera</th>
+              <th>Extraescolar</th>
+              <th>Semestre</th>
+              <th>Acciones</th>
+            </tr>
           </thead>
           <tbody>
             <!-- Los datos se cargarán dinámicamente mediante AJAX -->
@@ -622,24 +620,22 @@
                       console.error("Error en la carga de datos:", xhr.responseText);
                   }
               },
-             "columns": [
-    { "data": "id_alumno" },
-    { "data": "nombre" },
-    { "data": "id_usuario" },
-    { "data": "numero_control" },
-    { "data": "carrera" },
-    { "data": "extraescolar" }, 
-    { "data": "semestre" },
-    {
-        "data": null,
-        "className": "dt-center",
-        "orderable": false,
-        "render": function(data, type, row) {
-            return `
-                <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
-                    <i class='fas fa-edit'></i>
-                </button>
-            `;
+              "columns": [
+                  { "data": "numero_control" },
+                  { "data": "nombre" },
+                  { "data": "carrera" },
+                  { "data": "extraescolar" },
+                  { "data": "semestre" },
+                  {
+                      "data": null,
+                      "className": "dt-center",
+                      "orderable": false,
+                      "render": function(data, type, row) {
+                          return `
+                              <button class='btn-editar' data-id='${row.id_alumno}' title='Editar registro'>
+                                  <i class='fas fa-edit'></i>
+                              </button>
+                          `;
                       }
                   }
               ],

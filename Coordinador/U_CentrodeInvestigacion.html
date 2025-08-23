@@ -474,11 +474,11 @@
             <i class="fa fa-home"></i> Inicio
           </a>
         </li>
-        <li>
-          <a href="VerEstudiantes.html">
-            <i class="fa fa-users"></i> Ver Estudiantes
-          </a>
-        </li>
+            <li>
+  <a href="VerEstudiantes.html?unidad=Unidad académica Unión Hidalgo">
+    <i class="fa fa-users"></i> Ver Estudiantes
+  </a>
+</li>
         <li>
           <a href="contancia.html">
             <i class="fa fa-file-text"></i> Constancia de Cumplimiento 
@@ -671,7 +671,7 @@
       const categoriasContainer = document.getElementById("categorias-container");
       categoriasContainer.innerHTML = '<div class="loading">Cargando actividades...</div>';
 
-      const id_unidad = 1; // ID para Unión Hidalgo
+      const id_unidad = 2; // ID para Unión Hidalgo
 
       fetch(`php/api_actividades.php?id_unidad=${id_unidad}`)
         .then((response) => {
