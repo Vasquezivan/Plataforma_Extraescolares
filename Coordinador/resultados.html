@@ -775,7 +775,7 @@ table th, table td {
       });
       
       // Rellenar con filas vacías si hay menos de 15 registros
-      for (let i = evaluations.length; i < 15; i++) {
+      for (let i = evaluations.length; i < 12; i++) {
           const emptyRow = document.createElement('tr');
           emptyRow.innerHTML = `
               <td>${i + 1}</td>
@@ -783,7 +783,7 @@ table th, table td {
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
+               <td></td>
               <td></td>
           `;
           tablaCuerpo.appendChild(emptyRow);
