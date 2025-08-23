@@ -431,16 +431,15 @@
             doc.setDrawColor(0);
             doc.setLineWidth(0.3);
             
-            // Dibujar tabla de encabezado con 3 filas y 3 columnas
+            // Dibujar tabla de encabezado con 2 filas y 3 columnas
             doc.rect(15, 15, 180, 8); // Fila 1
             doc.rect(15, 23, 180, 8); // Fila 2
-            doc.rect(15, 31, 180, 8); // Fila 3
             
             // Líneas verticales
-            doc.line(105, 15, 105, 39); // Línea vertical central
-            doc.line(155, 15, 155, 39); // Línea vertical derecha
+            doc.line(105, 15, 105, 31); // Línea vertical central
+            doc.line(155, 15, 155, 31); // Línea vertical derecha
             
-            // Texto de la tabla de encabezado
+            // Texto de la tabla de encabezado - Alineación exacta como en la imagen
             doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 17, 20);
             doc.text('Referencia a la Norma ISO 9001:2015  8.1', 17, 28);
             doc.text('Código: TecNM-VI-PO-003-05', 107, 20);
@@ -450,31 +449,31 @@
             // Título principal
             doc.setFontSize(13);
             doc.setFont('helvetica', 'bold');
-            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 50, null, null, 'center');
+            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 45, null, null, 'center');
             
-            // Destinatario
+            // Destinatario - Alineación exacta como en la imagen
             doc.setFontSize(11);
             doc.setFont('helvetica', 'bold');
-            doc.text('C. _____', 20, 60);
-            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 67);
-            doc.text('PRESENTE', 20, 74);
+            doc.text('C. _____', 20, 55);
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 62);
+            doc.text('PRESENTE', 20, 69);
             
-            // Cuerpo del texto
+            // Cuerpo del texto - Alineación exacta como en la imagen
             doc.setFont('helvetica', 'normal');
-            let yPosition = 84;
-            doc.text('El que suscribe ' + form.nombreResponsable.value + ', por este medio se permite hacer de su', 20, yPosition);
+            let yPosition = 79;
+            doc.text('El que suscribe ' + form.nombreResponsable.value + ', por este medio se permite hacer de su conocimiento', 20, yPosition);
             yPosition += 7;
-            doc.text('conocimiento que el (la) estudiante', 20, yPosition);
+            doc.text('que el (la) estudiante', 20, yPosition);
             yPosition += 7;
             doc.text(student.nombre + ', con número de control ' + student.numero_control + ' de la carrera de', 20, yPosition);
             yPosition += 7;
-            doc.text(student.carrera + ', ha cumplido su actividad Cultural y/o Deportiva con el', 20, yPosition);
+            doc.text(student.carrera + ', ha cumplido su actividad Cultural y/o Deportiva con el nivel de', 20, yPosition);
             yPosition += 7;
-            doc.text('nivel de desempeño ' + form.nivelDesempenoEval.value + ' y un valor numérico de', 20, yPosition);
+            doc.text('desempeño ' + form.nivelDesempenoEval.value + ' y un valor numérico de ' + form.valorNumericoEval.value, 20, yPosition);
             yPosition += 7;
-            doc.text(form.valorNumericoEval.value + ' durante el periodo escolar ' + form.periodo.value, 20, yPosition);
+            doc.text('durante el periodo escolar ' + form.periodo.value + ' con un valor curricular de', 20, yPosition);
             yPosition += 7;
-            doc.text('con un valor curricular de _____ créditos.', 20, yPosition);
+            doc.text('_____ créditos.', 20, yPosition);
             
             yPosition += 10;
             doc.text('Se extiende la presente en la ' + form.fechaExpedicion.value + ' a los ' + day + ' días del mes', 20, yPosition);
@@ -486,35 +485,35 @@
             doc.setFont('helvetica', 'bold');
             doc.text('ATENTAMENTE', 105, yPosition, null, null, 'center');
             
-            // Vo.Bo.
+            // Vo.Bo. - Posicionado correctamente
             doc.setFontSize(10);
             doc.setTextColor(150, 0, 0);
             doc.text('Vo. Bo.', 170, yPosition - 5);
             
-            // Sello
+            // Sello - Centrado entre las dos firmas
             doc.setDrawColor(150, 0, 0);
             doc.setLineWidth(0.5);
-            doc.circle(160, yPosition + 15, 12);
+            doc.circle(105, yPosition + 20, 15); // Sello centrado
             doc.setFontSize(8);
             doc.setTextColor(150, 0, 0);
-            doc.text('SELLO', 157, yPosition + 15);
+            doc.text('SELLO', 102, yPosition + 20);
             
-            // Firmas
-            yPosition += 25;
+            // Firmas - Alineación exacta como en la imagen
+            yPosition += 30;
             doc.setDrawColor(0);
             doc.setLineWidth(0.3);
-            doc.line(25, yPosition, 85, yPosition);
-            doc.line(125, yPosition, 185, yPosition);
+            doc.line(30, yPosition, 80, yPosition); // Línea firma izquierda
+            doc.line(130, yPosition, 180, yPosition); // Línea firma derecha
             
             doc.setFontSize(9);
             doc.setTextColor(0);
-            doc.text('Nombre y firma del (de la) profesor(a)', 25, yPosition + 5);
-            doc.text('responsable', 25, yPosition + 10);
+            doc.text('Nombre y firma del (de la) profesor(a)', 30, yPosition + 5);
+            doc.text('responsable', 30, yPosition + 10);
             
-            doc.text('Jefe(a) del Depto. de Actividades', 125, yPosition + 5);
-            doc.text('Extraescolares', 125, yPosition + 10);
+            doc.text('Jefe(a) del Depto. de Actividades', 130, yPosition + 5);
+            doc.text('Extraescolares', 130, yPosition + 10);
             
-            // Copia para jefe de departamento
+            // Copia para jefe de departamento - Alineación exacta como en la imagen
             yPosition += 20;
             doc.setFontSize(8);
             doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 20, yPosition);
