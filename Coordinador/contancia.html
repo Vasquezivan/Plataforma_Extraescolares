@@ -102,16 +102,6 @@
         .modal button:hover { background-color: var(--color-azul-claro-hover); }
         .modal .btn-cerrar { background-color: #6c757d; margin-top: 10px; }
         .modal .btn-cerrar:hover { background-color: #5a6268; }
-        #confirmacionModal, #deleteConfirmModal { max-width: 400px; text-align: center; }
-        #confirmacionModal p, #deleteConfirmModal p { font-size: 1.2em; margin-bottom: 25px; color: var(--color-texto-oscuro); }
-        .modal-buttons { display: flex; justify-content: space-around; gap: 15px; }
-        .modal-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border-radius: 6px; border: none, cursor: pointer; transition: background-color 0.3s ease; color: white; margin-top: 0; }
-        .modal-buttons .confirm-yes { background-color: #28a745; }
-        .modal-buttons .confirm-yes:hover { background-color: #218838; }
-        .modal-buttons .confirm-no, .modal-buttons .confirm-delete-no { background-color: #6c757d; }
-        .modal-buttons .confirm-no:hover, .modal-buttons .confirm-delete-no:hover { background-color: #5a6268; }
-        .modal-buttons .confirm-delete-yes { background-color: #dc3545; }
-        .modal-buttons .confirm-delete-yes:hover { background-color: #c82333; }
         #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 100px); padding: 15px 25px; background-color: var(--color-azul-principal); color: var(--color-texto-claro); border-radius: 6px; box-shadow: var(--sombra-profesional); display: flex; align-items: center; gap: 10px; z-index: 9999; opacity: 0; transition: transform 0.5s ease, opacity 0.5s ease; }
         #toast-notification.show { transform: translate(-50%, 0); opacity: 1; }
         #toast-notification .fa-circle-check { color: #28a745; }
@@ -187,16 +177,9 @@
             <input type="text" id="nombreJefeExtra" placeholder="Nombre completo del jefe/a" required/>
             <label for="fechaExpedicion">Fecha de Expedición:</label>
             <input type="date" id="fechaExpedicion" required/>
-            <button type="button" onclick="finalizarEvaluacion()">Finalizar Evaluación</button>
+            <button type="button" onclick="finalizarEvaluacion()">Finalizar Evaluación y Generar Constancia</button>
             <button class="btn-cerrar" type="button" onclick="closeModal('formularioEvaluacion')">Cerrar</button>
         </form>
-    </div>
-    <div id="confirmacionModal" class="modal">
-        <p>¿Desea generar la constancia con los datos de la evaluación?</p>
-        <div class="modal-buttons">
-            <button class="confirm-yes" onclick="confirmarGenerarConstancia()">Sí, generar</button>
-            <button class="confirm-no" onclick="cancelarGenerarConstancia()">No, volver</button>
-        </div>
     </div>
     <div id="toast-notification">
         <i class="fa-solid fa-circle-check"></i>
@@ -209,11 +192,13 @@
         let students = [];
         let studentIdToEvaluate = null;
         let currentSort = { column: 'nombre', direction: 'asc' };
+        
         document.addEventListener('DOMContentLoaded', () => {
             setupTheme();
             loadStudents();
             initializeEvaluationForm();
         });
+
         function setupTheme() {
             const themeToggle = document.getElementById('theme-toggle');
             const storedTheme = localStorage.getItem('theme') || 'light';
@@ -225,6 +210,7 @@
                 localStorage.setItem('theme', newTheme);
             });
         }
+
         async function loadStudents() {
             try {
                 const response = await fetch('../php/obtener_alumnos.php');
@@ -245,6 +231,7 @@
                 renderTable();
             }
         }
+
         function updateStats() {
             const total = students.length;
             const evaluated = students.filter(s => s.status === 'Evaluado').length;
@@ -252,6 +239,7 @@
             document.getElementById('stat-evaluated').textContent = evaluated;
             document.getElementById('stat-pending').textContent = total - evaluated;
         }
+
         function handleSort(column) {
             if (currentSort.column === column) {
                 currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -261,6 +249,7 @@
             }
             renderTable();
         }
+
         function renderTable() {
             updateStats();
             const filter = document.getElementById("searchInput").value.toUpperCase();
@@ -270,6 +259,7 @@
                 (s.carrera && s.carrera.toUpperCase().includes(filter)) ||
                 (s.semestre && s.semestre.toString().includes(filter))
             );
+
             filteredStudents.sort((a, b) => {
                 const valA = a[currentSort.column];
                 const valB = b[currentSort.column];
@@ -277,13 +267,16 @@
                 let comp = valA > valB ? 1 : (valA < valB ? -1 : 0);
                 return currentSort.direction === 'desc' ? comp * -1 : comp;
             });
+
             document.querySelectorAll('th.sortable .sort-icon').forEach(icon => {
                 const column = icon.parentElement.dataset.column;
                 icon.className = `fas sort-icon fa-sort${column === currentSort.column ? (currentSort.direction === 'asc' ? '-up' : '-down') : ''}`;
             });
+
             const tableBody = document.getElementById('tabla-alumnos');
             const emptyStateTbody = document.getElementById('empty-state-tbody');
             tableBody.innerHTML = '';
+
             if (filteredStudents.length === 0) {
                 tableBody.style.display = 'none';
                 emptyStateTbody.style.display = '';
@@ -313,6 +306,7 @@
                 });
             }
         }
+
         function exportToCSV() {
             if (students.length === 0) {
                 showToast("No hay alumnos para exportar.");
@@ -334,7 +328,9 @@
             a.click();
             document.body.removeChild(a);
         }
+
         const criterios = ["Cumple en tiempo y forma", "Trabaja en equipo", "Muestra liderazgo", "Organiza su tiempo", "Interpreta la realidad", "Realiza sugerencias", "Tiene iniciativa"];
+
         function initializeEvaluationForm() {
             const container = document.getElementById("criteriosContainer");
             container.innerHTML = "";
@@ -353,12 +349,14 @@
                         </div>
                     </div>`;
             });
+
             document.getElementById('evaluationForm').addEventListener("change", (e) => {
                 if (e.target.name && e.target.name.startsWith("criterio")) {
                     calcularPromedioYDesempeno();
                 }
             });
         }
+
         function mostrarFormularioEvaluacion(studentId) {
             const student = students.find(s => s.id_alumno == studentId);
             if(!student) return;
@@ -370,6 +368,7 @@
             calcularPromedioYDesempeno();
             openModal('formularioEvaluacion');
         }
+
         function calcularPromedioYDesempeno() {
             let total = 0;
             let count = 0;
@@ -387,136 +386,143 @@
             document.getElementById("valorNumericoEval").value = promedio.toFixed(2);
             document.getElementById("nivelDesempenoEval").value = nivel;
         }
+
         function finalizarEvaluacion() {
             if (!document.getElementById('evaluationForm').checkValidity()) {
                 showToast('Complete todos los campos requeridos');
                 return;
             }
-            closeModal('formularioEvaluacion');
-            openModal('confirmacionModal');
-        }
-        function confirmarGenerarConstancia() {
+            
+            // Generar la constancia directamente
             generarConstanciaPDF();
-            closeModal('confirmacionModal');
-            showToast('Constancia generada con éxito.');
+            
+            // Actualizar el estado del alumno
             const idx = students.findIndex(s => s.id_alumno == studentIdToEvaluate);
             if(idx > -1) {
                 students[idx].status = 'Evaluado';
                 renderTable();
             }
+            
+            // Cerrar el modal y mostrar mensaje de éxito
+            closeModal('formularioEvaluacion');
+            showToast('Evaluación completada y constancia generada con éxito.');
+            
             studentIdToEvaluate = null;
         }
-        function cancelarGenerarConstancia() {
-            closeModal('confirmacionModal');
-            openModal('formularioEvaluacion');
-        }
+
         function generarConstanciaPDF() {
             const doc = new jsPDF();
             const student = students.find(s => s.id_alumno == studentIdToEvaluate);
             const form = document.getElementById('evaluationForm');
-            const today = new Date(form.fechaExpedicion.value);
-            const day = today.getDate();
-            const month = today.toLocaleString('es-ES', { month: 'long' });
-            const year = today.getFullYear();
+            
+            // Obtener fecha formateada
+            const fechaExpedicion = new Date(form.fechaExpedicion.value);
+            const day = fechaExpedicion.getDate();
+            const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
+                              "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            const month = monthNames[fechaExpedicion.getMonth()];
+            const year = fechaExpedicion.getFullYear();
 
-            // Encabezado tipo tabla
+            // Configuración inicial
             doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
-            // Logo
-            doc.addImage("../Administrador/assets/img/Logo SGC.png", "PNG", 15, 10, 30, 18);
-            doc.addImage("../Administrador/assets/img/Logo TecNM.png", "PNG", 50, 10, 30, 18);
-
-            // Tabla encabezado
-            doc.setDrawColor(100);
+            doc.setFont('helvetica', 'normal');
+            
+            // Tabla de encabezado - Estructura exacta como en la imagen
+            doc.setDrawColor(0);
             doc.setLineWidth(0.3);
-            doc.rect(85, 10, 110, 8); // fila 1
-            doc.rect(85, 18, 110, 8); // fila 2
-            doc.line(155, 10, 155, 26); // división vertical
-
-            doc.setFontSize(10);
-            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 87, 15);
-            doc.text('Referencia a la Norma ISO 9001:2015  8.1', 87, 23);
-            doc.text('Código:TecNM-VI-PO-003-05', 157, 15);
-            doc.text('Revisión: 0', 157, 19);
-            doc.text('Página 1 de 1', 157, 23);
-
+            
+            // Dibujar tabla de encabezado con 3 filas y 3 columnas
+            doc.rect(15, 15, 180, 8); // Fila 1
+            doc.rect(15, 23, 180, 8); // Fila 2
+            doc.rect(15, 31, 180, 8); // Fila 3
+            
+            // Líneas verticales
+            doc.line(105, 15, 105, 39); // Línea vertical central
+            doc.line(155, 15, 155, 39); // Línea vertical derecha
+            
+            // Texto de la tabla de encabezado
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 17, 20);
+            doc.text('Referencia a la Norma ISO 9001:2015  8.1', 17, 28);
+            doc.text('Código: TecNM-VI-PO-003-05', 107, 20);
+            doc.text('Revisión: 0', 107, 28);
+            doc.text('Página 1 de 1', 157, 20);
+            
             // Título principal
             doc.setFontSize(13);
             doc.setFont('helvetica', 'bold');
-            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 40, null, null, 'center');
-
-            // Cuerpo
+            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 50, null, null, 'center');
+            
+            // Destinatario
             doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.text('C.', 20, 50);
-            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 55);
-            doc.text('PRESENTE', 20, 60);
-
-            // Texto con líneas simuladas
-            doc.text('El que suscribe', 20, 70);
-            doc.line(50, 69, 110, 69); // línea nombre responsable
-            doc.text(', por este medio se permite hacer de su conocimiento que el (la) estudiante', 112, 70);
-
-            doc.line(20, 74, 110, 74); // línea nombre estudiante
-            doc.text(', con número de control', 112, 75);
-            doc.line(150, 74, 180, 74); // línea número control
-            doc.text('de la carrera de', 20, 80);
-            doc.line(50, 79, 110, 79); // línea carrera
-            doc.text(',', 112, 80);
-
-            doc.text('ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño', 20, 85);
-            doc.line(140, 84, 180, 84); // línea nivel desempeño
-            doc.text('y un valor numérico de', 20, 90);
-            doc.line(60, 89, 90, 89); // línea valor numérico
-            doc.text('durante el periodo escolar', 92, 90);
-            doc.line(130, 89, 180, 89); // línea periodo
-            doc.text('con un valor curricular de', 20, 95);
-            doc.line(70, 94, 110, 94); // línea créditos
-            doc.text('créditos.', 112, 95);
-
-            // Rellenar los datos
-            doc.setFontSize(11);
-            doc.text(form.nombreResponsable.value, 52, 69);
-            doc.text(student.nombre, 22, 74);
-            doc.text(student.numero_control, 152, 74);
-            doc.text(student.carrera, 52, 79);
-            doc.text(form.nivelDesempenoEval.value, 142, 84);
-            doc.text(form.valorNumericoEval.value, 62, 89);
-            doc.text(form.periodo.value, 132, 89);
-            doc.text('______', 72, 94); // puedes poner el valor curricular si lo tienes
-
-            // Fecha
-            doc.text(`Se extiende la presente en la ${form.fechaExpedicion.value ? form.fechaExpedicion.value : '____________'} a los ${day} días del mes de ${month} de ${year}.`, 20, 105);
-
-            // ATENTAMENTE
-            doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('ATENTAMENTE', 105, 120, null, null, 'center');
-
-            // Firmas y sello
-            // Sello
-            doc.rect(60, 130, 40, 30); // cuadro sello
-            doc.setFontSize(11);
-            doc.text('SELLO', 80, 145, null, null, 'center');
-
-            // Líneas de firmas
-            doc.line(20, 170, 90, 170); // profesor
-            doc.line(120, 170, 190, 170); // jefe
-
+            doc.text('C. _____', 20, 60);
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 67);
+            doc.text('PRESENTE', 20, 74);
+            
+            // Cuerpo del texto
+            doc.setFont('helvetica', 'normal');
+            let yPosition = 84;
+            doc.text('El que suscribe ' + form.nombreResponsable.value + ', por este medio se permite hacer de su', 20, yPosition);
+            yPosition += 7;
+            doc.text('conocimiento que el (la) estudiante', 20, yPosition);
+            yPosition += 7;
+            doc.text(student.nombre + ', con número de control ' + student.numero_control + ' de la carrera de', 20, yPosition);
+            yPosition += 7;
+            doc.text(student.carrera + ', ha cumplido su actividad Cultural y/o Deportiva con el', 20, yPosition);
+            yPosition += 7;
+            doc.text('nivel de desempeño ' + form.nivelDesempenoEval.value + ' y un valor numérico de', 20, yPosition);
+            yPosition += 7;
+            doc.text(form.valorNumericoEval.value + ' durante el periodo escolar ' + form.periodo.value, 20, yPosition);
+            yPosition += 7;
+            doc.text('con un valor curricular de _____ créditos.', 20, yPosition);
+            
+            yPosition += 10;
+            doc.text('Se extiende la presente en la ' + form.fechaExpedicion.value + ' a los ' + day + ' días del mes', 20, yPosition);
+            yPosition += 7;
+            doc.text('de ' + month + ' de ' + year + '.', 20, yPosition);
+            
+            // Despedida
+            yPosition += 15;
+            doc.setFont('helvetica', 'bold');
+            doc.text('ATENTAMENTE', 105, yPosition, null, null, 'center');
+            
+            // Vo.Bo.
             doc.setFontSize(10);
-            doc.text('Nombre y firma del (de la) profesor(a)', 20, 175);
-            doc.text('responsable', 20, 180);
-
-            doc.text('Jefe(a) del Depto. de Actividades', 120, 175);
-            doc.text('Extraescolares', 120, 180);
-
-            // Vo. Bo.
-            doc.setFontSize(12);
-            doc.setTextColor(200, 0, 0);
-            doc.text('Vo. Bo.', 170, 125);
-
+            doc.setTextColor(150, 0, 0);
+            doc.text('Vo. Bo.', 170, yPosition - 5);
+            
+            // Sello
+            doc.setDrawColor(150, 0, 0);
+            doc.setLineWidth(0.5);
+            doc.circle(160, yPosition + 15, 12);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 0, 0);
+            doc.text('SELLO', 157, yPosition + 15);
+            
+            // Firmas
+            yPosition += 25;
+            doc.setDrawColor(0);
+            doc.setLineWidth(0.3);
+            doc.line(25, yPosition, 85, yPosition);
+            doc.line(125, yPosition, 185, yPosition);
+            
+            doc.setFontSize(9);
+            doc.setTextColor(0);
+            doc.text('Nombre y firma del (de la) profesor(a)', 25, yPosition + 5);
+            doc.text('responsable', 25, yPosition + 10);
+            
+            doc.text('Jefe(a) del Depto. de Actividades', 125, yPosition + 5);
+            doc.text('Extraescolares', 125, yPosition + 10);
+            
+            // Copia para jefe de departamento
+            yPosition += 20;
+            doc.setFontSize(8);
+            doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 20, yPosition);
+            
+            // Guardar el PDF
             doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
         }
+
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -525,6 +531,7 @@
                 document.body.style.overflow = 'hidden';
             }
         }
+
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -533,6 +540,7 @@
                 document.body.style.overflow = '';
             }
         }
+
         function showToast(msg) {
             const toast = document.getElementById('toast-notification');
             toast.querySelector('#toast-message').textContent = msg;
@@ -541,6 +549,7 @@
                 toast.classList.remove('show');
             }, 3000);
         }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.visible').forEach(modal => {
