@@ -438,38 +438,55 @@
                 mes = meses[fechaObj.getMonth()];
             }
 
-            // --- ENCABEZADO ---
-            doc.setDrawColor(0);
-            doc.setLineWidth(0.3);
-            doc.rect(20, 20, 170, 20);
-            doc.line(20, 30, 190, 30);
-            doc.line(100, 20, 100, 40);
-            doc.line(140, 20, 140, 40);
+            // --- ENCABEZADO TIPO TABLA CON LOGO Y LÍNEAS ---
+            // Medidas y posiciones
+            const x = 15, y = 15;
+            const cellH = 10, cellH2 = 10;
+            const cellW1 = 32, cellW2 = 100, cellW3 = 48;
 
+            // Cuadro principal
+            doc.setDrawColor(128);
+            doc.setLineWidth(0.5);
+            doc.rect(x, y, cellW1 + cellW2 + cellW3, cellH + cellH2);
+
+            // Líneas horizontales
+            doc.line(x, y + cellH, x + cellW1 + cellW2 + cellW3, y + cellH);
+            // Líneas verticales
+            doc.line(x + cellW1, y, x + cellW1, y + cellH + cellH2);
+            doc.line(x + cellW1 + cellW2, y, x + cellW1 + cellW2, y + cellH + cellH2);
+
+            // --- LOGO ---
+            doc.addImage('../Administrador/assets/img/Logo TecNM.png', 'PNG', x + 2, y + 2, cellW1 - 4, cellH + cellH2 - 4);
+
+            // --- TEXTOS ---
             doc.setFont('arial', 'normal');
             doc.setFontSize(10);
-            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 22, 26);
-            doc.text('Código: TecNM-VI-PO-003-05', 102, 26);
-            doc.text('Página 1 de 1', 142, 26);
-            doc.text('Referencia a la Norma ISO 9001:2015 8.1', 22, 36);
-            doc.text('Revisión: 0', 102, 36);
+            // Columna central
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', x + cellW1 + 2, y + 6);
+            doc.text('Referencia a la Norma ISO 9001:2015   8.1', x + cellW1 + 2, y + cellH + 6);
+            // Columna derecha
+            doc.setFont('arial', 'bold');
+            doc.text('Código:TecNM-VI-PO-003-05', x + cellW1 + cellW2 + 2, y + 6);
+            doc.text('Revisión: 0', x + cellW1 + cellW2 + 2, y + cellH + 4);
+            doc.setFont('arial', 'normal');
+            doc.text('Página 1 de 1', x + cellW1 + cellW2 + 2, y + cellH + 9);
 
-            // --- TÍTULO ---
+            // --- CONTENIDO DE LA CONSTANCIA ---
+            let yContent = y + cellH + cellH2 + 10; // posición debajo del encabezado
             doc.setFont('arial', 'bold');
             doc.setFontSize(12);
-            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 105, 55, { align: 'center' });
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 105, yContent, { align: 'center' });
 
-            // --- CONTENIDO JUSTIFICADO ---
+            yContent += 12;
             doc.setFont('arial', 'normal');
             doc.setFontSize(10);
-            let y = 65;
-            doc.text('C.', 22, y);
-            y += 6;
+            doc.text('C.', 22, yContent);
+            yContent += 6;
             doc.setFont('arial', 'bold');
-            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 22, y);
-            y += 6;
-            doc.text('PRESENTE', 22, y);
-            y += 10;
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 22, yContent);
+            yContent += 6;
+            doc.text('PRESENTE', 22, yContent);
+            yContent += 10;
             doc.setFont('arial', 'normal');
 
             // Texto principal
@@ -477,49 +494,45 @@
             let textoCreditos = `Con un valor curricular de ${valorCurricular} créditos.`;
             let texto2 = `Se extiende la presente en la ${lugar}, a los ${dia} días del mes de ${mes} de 20${anio}.`;
 
-            // Justificado y alineación 1.5
             const ancho = 170;
-            const interlineado = 7; // 1.5 veces el tamaño de fuente (10 * 1.5 ≈ 15, pero en mm es menos)
+            const interlineado = 7;
             [texto1, textoCreditos, texto2].forEach(texto => {
                 const lineas = doc.splitTextToSize(texto, ancho);
                 lineas.forEach(linea => {
-                    doc.text(linea, 22, y, { align: 'justify' });
-                    y += interlineado;
+                    doc.text(linea, 22, yContent, { align: 'justify' });
+                    yContent += interlineado;
                 });
-                y += 2; // Espacio extra entre párrafos
+                yContent += 2;
             });
 
-            // --- ATENTAMENTE ---
+            // --- FIRMAS Y PIE ---
             doc.setFont('arial', 'bold');
             doc.setFontSize(11);
-            doc.text('ATENTAMENTE', 105, y, { align: 'center' });
-            y += 8;
+            doc.text('ATENTAMENTE', 105, yContent, { align: 'center' });
+            yContent += 8;
             doc.setFontSize(10);
             doc.setTextColor(150, 0, 0);
-            doc.text('Vº. Bo.', 105, y, { align: 'center' });
+            doc.text('', 105, yContent, { align: 'center' });
             doc.setTextColor(0, 0, 0);
 
-            // --- SELLO ---
             doc.setDrawColor(0);
-            doc.rect(80, y + 10, 50, 30);
+            doc.rect(80, yContent + 10, 50, 30);
             doc.setFontSize(12);
-            doc.text('SELLO', 105, y + 27, { align: 'center' });
+            doc.text('SELLO', 105, yContent + 27, { align: 'center' });
 
-            // --- FIRMAS ---
-            y += 50;
+            yContent += 50;
             doc.setFontSize(10);
-            doc.text('___________________________', 30, y);
-            doc.text('___________________________', 150, y);
-            doc.text(nombreResponsable, 30, y + 7);
-            doc.text(nombreJefeExtra, 150, y + 7);
-            doc.text('Nombre y firma del (de la) profesor(a) responsable', 30, y + 13);
-            doc.text('Jefe(a) del Depto. de Actividades Extraescolares', 150, y + 13);
+            doc.text('___________________________', 30, yContent);
+            doc.text('___________________________', 150, yContent);
+            doc.text(nombreResponsable, 30, yContent + 7);
+            doc.text(nombreJefeExtra, 150, yContent + 7);
+            doc.text('Nombre y firma del (de la) profesor(a) responsable', 30, yContent + 13);
+            doc.text('Jefe(a) del Depto. de Actividades Extraescolares', 120, yContent + 13);
 
-            // --- COPIA ---
             doc.setFontSize(8);
-            doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 22, y + 25);
+            doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 22, yContent + 25);
 
-            // --- GUARDAR ---
+            // --- DESCARGA EL PDF ---
             doc.save('Constancia_Actividad.pdf');
         }
 
