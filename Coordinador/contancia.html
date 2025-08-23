@@ -414,8 +414,6 @@
             const doc = new jsPDF();
             const student = students.find(s => s.id_alumno == studentIdToEvaluate);
             const form = document.getElementById('evaluationForm');
-            
-            // Obtener fecha formateada
             const fechaExpedicion = new Date(form.fechaExpedicion.value);
             const day = fechaExpedicion.getDate();
             const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -423,102 +421,91 @@
             const month = monthNames[fechaExpedicion.getMonth()];
             const year = fechaExpedicion.getFullYear();
 
-            // Configuración inicial
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
-            
-            // Tabla de encabezado - Estructura exacta como en la imagen
+
+            // --- ENCABEZADO TIPO TABLA CON LOGO Y LÍNEAS ---
             doc.setDrawColor(0);
             doc.setLineWidth(0.3);
-            
-            // Dibujar tabla de encabezado con 2 filas y 3 columnas
-            doc.rect(15, 15, 180, 8); // Fila 1
-            doc.rect(15, 23, 180, 8); // Fila 2
-            
-            // Líneas verticales
-            doc.line(105, 15, 105, 31); // Línea vertical central
-            doc.line(155, 15, 155, 31); // Línea vertical derecha
-            
-            // Texto de la tabla de encabezado - Alineación exacta como en la imagen
-            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 17, 20);
-            doc.text('Referencia a la Norma ISO 9001:2015  8.1', 17, 28);
-            doc.text('Código: TecNM-VI-PO-003-05', 107, 20);
-            doc.text('Revisión: 0', 107, 28);
-            doc.text('Página 1 de 1', 157, 20);
-            
-            // Título principal
-            doc.setFontSize(13);
-            doc.setFont('helvetica', 'bold');
-            doc.text('CONSTANCIA DE CUMPLIMIENTO DE ACTIVIDAD CULTURAL Y/O DEPORTIVA', 105, 45, null, null, 'center');
-            
-            // Destinatario - Alineación exacta como en la imagen
+            doc.rect(15, 15, 32, 16); // Celda logo
+            doc.rect(47, 15, 108, 8); // Celda central fila 1
+            doc.rect(47, 23, 108, 8); // Celda central fila 2
+            doc.rect(155, 15, 40, 8); // Celda derecha fila 1
+            doc.rect(155, 23, 40, 8); // Celda derecha fila 2
+
+            // --- LOGO ---
+            doc.addImage('../Administrador/assets/img/Logo TecNM.png', 'PNG', 16, 16, 30, 14);
+
+            // --- TEXTOS ---
+            doc.setFont('arial', 'normal');
+            doc.setFontSize(10);
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 49, 20);
+            doc.text('Referencia a la Norma ISO 9001:2015   8.1', 49, 28);
+            doc.setFont('arial', 'bold');
+            doc.text('Código:TecNM-VI-PO-003-05', 157, 20);
+            doc.text('Revisión: 0', 157, 28);
+            doc.setFont('arial', 'normal');
+            doc.text('Página 1 de 1', 157, 32);
+
+            // --- CONTENIDO DE LA CONSTANCIA ---
+            let yContent = 40;
+            doc.setFont('arial', 'bold');
+            doc.setFontSize(12);
+            doc.text('Constancia de cumplimiento de actividad Cultural y/o Deportiva', 105, yContent, { align: 'center' });
+
+            yContent += 12;
+            doc.setFont('arial', 'normal');
+            doc.setFontSize(10);
+            doc.text('C.', 22, yContent);
+            yContent += 6;
+            doc.setFont('arial', 'bold');
+            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 22, yContent);
+            yContent += 6;
+            doc.text('PRESENTE', 22, yContent);
+            yContent += 10;
+            doc.setFont('arial', 'normal');
+
+            let texto1 = `El que suscribe ${form.nombreResponsable.value}, por este medio se permite hacer de su conocimiento que el (la) estudiante ${student.nombre}, con número de control ${student.numero_control} de la carrera de ${student.carrera}, ha cumplido su actividad Cultural y/o Deportiva con el nivel de desempeño ${form.nivelDesempenoEval.value} y un valor numérico de ${form.valorNumericoEval.value} durante el periodo escolar ${form.periodo.value}.`;
+            let textoCreditos = `Con un valor curricular de 1 créditos.`;
+            let texto2 = `Se extiende la presente en la Valle de Etla, a los ${day} días del mes de ${month} de ${year}.`;
+
+            const ancho = 170;
+            const interlineado = 7;
+            [texto1, textoCreditos, texto2].forEach(texto => {
+                const lineas = doc.splitTextToSize(texto, ancho);
+                lineas.forEach(linea => {
+                    doc.text(linea, 22, yContent, { align: 'justify' });
+                    yContent += interlineado;
+                });
+                yContent += 2;
+            });
+
+            doc.setFont('arial', 'bold');
             doc.setFontSize(11);
-            doc.setFont('helvetica', 'bold');
-            doc.text('C. _____', 20, 55);
-            doc.text('JEFE(A) DEL DEPARTAMENTO DE SERVICIOS ESCOLARES', 20, 62);
-            doc.text('PRESENTE', 20, 69);
-            
-            // Cuerpo del texto - Alineación exacta como en la imagen
-            doc.setFont('helvetica', 'normal');
-            let yPosition = 79;
-            doc.text('El que suscribe ' + form.nombreResponsable.value + ', por este medio se permite hacer de su conocimiento', 20, yPosition);
-            yPosition += 7;
-            doc.text('que el (la) estudiante', 20, yPosition);
-            yPosition += 7;
-            doc.text(student.nombre + ', con número de control ' + student.numero_control + ' de la carrera de', 20, yPosition);
-            yPosition += 7;
-            doc.text(student.carrera + ', ha cumplido su actividad Cultural y/o Deportiva con el nivel de', 20, yPosition);
-            yPosition += 7;
-            doc.text('desempeño ' + form.nivelDesempenoEval.value + ' y un valor numérico de ' + form.valorNumericoEval.value, 20, yPosition);
-            yPosition += 7;
-            doc.text('durante el periodo escolar ' + form.periodo.value + ' con un valor curricular de', 20, yPosition);
-            yPosition += 7;
-            doc.text('_____ créditos.', 20, yPosition);
-            
-            yPosition += 10;
-            doc.text('Se extiende la presente en la ' + form.fechaExpedicion.value + ' a los ' + day + ' días del mes', 20, yPosition);
-            yPosition += 7;
-            doc.text('de ' + month + ' de ' + year + '.', 20, yPosition);
-            
-            // Despedida
-            yPosition += 15;
-            doc.setFont('helvetica', 'bold');
-            doc.text('ATENTAMENTE', 105, yPosition, null, null, 'center');
-            
-            // Vo.Bo. - Posicionado correctamente
+            doc.text('ATENTAMENTE', 105, yContent, { align: 'center' });
+            yContent += 8;
             doc.setFontSize(10);
             doc.setTextColor(150, 0, 0);
-            doc.text('Vo. Bo.', 170, yPosition - 5);
-            
-            // Sello - Centrado entre las dos firmas
-            doc.setDrawColor(150, 0, 0);
-            doc.setLineWidth(0.5);
-            doc.circle(105, yPosition + 20, 15); 
-            doc.setFontSize(8);
-            doc.setTextColor(150, 0, 0);
-            doc.text('SELLO', 102, yPosition + 20);
-            
-            // Firmas - Alineación exacta como en la imagen
-            yPosition += 30;
+            doc.text('Vº. Bo.', 105, yContent, { align: 'center' });
+            doc.setTextColor(0, 0, 0);
+
             doc.setDrawColor(0);
-            doc.setLineWidth(0.3);
-            doc.line(30, yPosition, 80, yPosition); // Línea firma izquierda
-            doc.line(130, yPosition, 180, yPosition); // Línea firma derecha
-            
-            doc.setFontSize(9);
-            doc.setTextColor(0);
-            doc.text('Nombre y firma del (de la) profesor(a)', 30, yPosition + 5);
-            doc.text('responsable', 30, yPosition + 10);
-            
-            doc.text('Jefe(a) del Depto. de Actividades', 130, yPosition + 5);
-            doc.text('Extraescolares', 130, yPosition + 10);
-            
-            // Copia para jefe de departamento - Alineación exacta como en la imagen
-            yPosition += 20;
+            doc.rect(80, yContent + 10, 50, 30);
+            doc.setFontSize(12);
+            doc.text('SELLO', 105, yContent + 27, { align: 'center' });
+
+            yContent += 50;
+            doc.setFontSize(10);
+            doc.text('___________________________', 30, yContent);
+            doc.text('___________________________', 150, yContent);
+            doc.text(form.nombreResponsable.value, 30, yContent + 7);
+            doc.text(form.nombreJefeExtra.value, 150, yContent + 7);
+            doc.text('Nombre y firma del (de la) profesor(a) responsable', 30, yContent + 13);
+            doc.text('Jefe(a) del Depto. de Actividades Extraescolares', 150, yContent + 13);
+
             doc.setFontSize(8);
-            doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 20, yPosition);
-            
-            // Guardar el PDF
+            doc.text('c.c.p. Jefe (a) de Departamento Correspondiente', 22, yContent + 25);
+
             doc.save(`Constancia_${student.nombre.replace(/\s/g, "_")}.pdf`);
         }
 
