@@ -707,46 +707,27 @@ table th, table td {
     // Variable para almacenar la unidad académica del usuario
     let unidadAcademica = '';
     
-    // 1. Obtener información del usuario y su unidad académica
+    // 1. Obtener información del usuario
     function cargarUsuarioYUnidad() {
-      fetch("php/obtener_usuario.php")
-        .then((response) => {
-          if (!response.ok) throw new Error("Error en la respuesta del servidor");
-          return response.json();
-        })
-        .then((data) => {
-          if (data && typeof data === "object" && !Array.isArray(data)) {
-            // Mostrar nombre de usuario
-            document.getElementById("nombre-usuario").textContent = data.nombre || "Usuario";
-            
-            // Guardar unidad académica
-            unidadAcademica = data.unidad_academica || '';
-            
-            // Actualizar mensaje de unidad
-            const mensajeUnidad = document.getElementById('mensaje-unidad');
-            if (unidadAcademica) {
-              mensajeUnidad.textContent = `Mostrando datos de: ${unidadAcademica}`;
-            } else {
-              mensajeUnidad.textContent = 'Mostrando todos los datos (no se especificó unidad académica)';
-              mensajeUnidad.style.backgroundColor = '#ff7f00'; // Cambiar color para advertencia
-            }
-            
-            // Cargar datos de la unidad correspondiente
-            llenarTablas(unidadAcademica);
-          } else {
-            throw new Error("Respuesta JSON no válida");
-          }
-        })
-        .catch((error) => {
-          console.error("Error al cargar usuario:", error);
-          document.getElementById("nombre-usuario").textContent = "Usuario";
-          Swal.fire({
-            title: 'Error',
-            text: 'No se pudo cargar la información del usuario',
-            icon: 'error'
-          });
-        });
+    // Mostrar nombre de usuario desde sessionStorage o por defecto
+    const nombreUsuario = sessionStorage.getItem('usuario') || 'Usuario';
+    document.getElementById("nombre-usuario").textContent = nombreUsuario;
+    
+    // Obtener unidad académica si existe
+    unidadAcademica = sessionStorage.getItem("unidad_academica") || '';
+    
+    // Actualizar mensaje de unidad
+    const mensajeUnidad = document.getElementById('mensaje-unidad');
+    if (unidadAcademica) {
+        mensajeUnidad.textContent = `Mostrando datos de: ${unidadAcademica}`;
+    } else {
+        mensajeUnidad.textContent = 'Mostrando todas las evaluaciones';
+        mensajeUnidad.style.backgroundColor = '#ff7f00';
     }
+    
+    // Cargar datos desde localStorage
+    llenarTablas(unidadAcademica);
+}
 
     // 2. Menú hamburguesa
     function setupSidebarToggle() {
@@ -756,55 +737,47 @@ table th, table td {
       });
     }
 
-    // 3. Llenar tabla de alumnos por unidad académica
+    // 3. Llenar tabla de alumnos con datos de localStorage
     function llenarTablas(unidad = '') {
-      let url = 'php/obtener_alumnos.php';
-      if (unidad) {
-        url += `?unidad=${encodeURIComponent(unidad)}`;
+      const tablaCuerpo = document.getElementById('tabla-cuerpo');
+      tablaCuerpo.innerHTML = '';
+      
+      // Obtener evaluaciones guardadas
+      const evaluations = JSON.parse(localStorage.getItem('evaluations') || '[]');
+      
+      console.log('Evaluaciones encontradas:', evaluations);
+      
+      // Verificar si hay datos
+      if (evaluations.length === 0) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td colspan="7" style="text-align: center; color: #666; padding: 20px;">
+                  No hay alumnos evaluados. Complete algunas evaluaciones primero.
+              </td>
+          `;
+          tablaCuerpo.appendChild(row);
+          return;
       }
       
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('Datos recibidos:', data);
-          const tablaCuerpo = document.getElementById('tabla-cuerpo');
-          tablaCuerpo.innerHTML = '';
-          
-          // Verificar si hay datos
-          if (data.length === 0) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td colspan="7" style="text-align: center; color: #666; padding: 20px;">
-                No hay datos disponibles para esta unidad académica
-              </td>
-            `;
-            tablaCuerpo.appendChild(row);
-            return;
-          }
-          
-          data.forEach((alumno, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+      // Mostrar solo los alumnos evaluados
+      evaluations.forEach((evaluacion, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
               <td>${index + 1}</td>
-              <td>${alumno.nombre || ''}</td>
-              <td>${alumno.numero_control || ''}</td>
-              <td>${alumno.carrera || ''}</td>
-              <td>${alumno.semestre || ''}</td>
-              <td>${alumno.resultado || ''}</td>
+              <td>${evaluacion.nombre || 'N/A'}</td>
+              <td>${evaluacion.numero_control || 'N/A'}</td>
+              <td>${evaluacion.carrera || 'N/A'}</td>
+              <td>${evaluacion.semestre || 'N/A'}</td>
+              <td>${evaluacion.nivelDesempeno || 'N/A'} (${evaluacion.valorNumerico || 'N/A'})</td>
               <td></td>
-            `;
-            tablaCuerpo.appendChild(row);
-          });
-          
-          // Rellenar con filas vacías si hay menos de 15 registros
-          for (let i = data.length; i < 15; i++) {
-            const emptyRow = document.createElement('tr');
-            emptyRow.innerHTML = `
+          `;
+          tablaCuerpo.appendChild(row);
+      });
+      
+      // Rellenar con filas vacías si hay menos de 15 registros
+      for (let i = evaluations.length; i < 15; i++) {
+          const emptyRow = document.createElement('tr');
+          emptyRow.innerHTML = `
               <td>${i + 1}</td>
               <td></td>
               <td></td>
@@ -812,18 +785,9 @@ table th, table td {
               <td></td>
               <td></td>
               <td></td>
-            `;
-            tablaCuerpo.appendChild(emptyRow);
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener datos:', error);
-          Swal.fire({
-            title: 'Error',
-            text: 'Error al cargar los datos de los alumnos. Por favor, intente más tarde.',
-            icon: 'error'
-          });
-        });
+          `;
+          tablaCuerpo.appendChild(emptyRow);
+      }
     }
 
     // 4. Modal de perfil
