@@ -394,24 +394,30 @@ body, .contenedor-principal, .lado-izquierdo, .lado-derecho, .formulario-login, 
       if (data.success) {
         let mensaje = "";
         let destino = "";
-        sessionStorage.setItem('usuario', usuario); // usuario es el nombre del usuario logueado
+  sessionStorage.setItem('usuario', usuario); // usuario es el nombre del usuario logueado
+  // Guardar la unidad académica para que la página destino pueda usarla
+  if (data.unidad_academica) sessionStorage.setItem('unidad_academica', data.unidad_academica);
         if (data.role === "Administrador") {
           mensaje = "¡Bienvenido Administrador!";
-          destino = "Administrador/Principal_Admin.html";
+          destino = "Administrador/Semestres-cursados.html";
         } else if (data.role === "Coordinador") {
           mensaje = "¡Bienvenido Coordinador!";
           switch (data.unidad_academica) {
             case "CIDERS unión Hidalgo":
-              destino = "Coordinador/U_CentrodeInvestigacion.html";
+              // Redirigir coordinador de Unión Hidalgo al panel de Semestres cursados de la unidad
+              destino = "Coordinador/U_CentrodeInvestigacion_Semestres-cursados.html";
               break;
             case "Unidad Demetrio Vallejo en el Espinal":
-              destino = "Coordinador/U_Demetrio.html";
+              // Redirigir coordinador de Demetrio al panel de Semestres cursados de la unidad
+              destino = "Coordinador/U_Demetrio_Semestres-cursados.html";
               break;
             case "Unidad académica Tlahuitoltepec":
-              destino = "Coordinador/U_SantaMaria.html";
+              // Redirigir coordinador de Santa María/Tlahuitoltepec al panel de Semestres cursados de la unidad
+              destino = "Coordinador/U_SantaMaria_Semestres-cursados.html";
               break;
             case "Valle de Etla":
-              destino = "Coordinador/U_ValleEtla.html";
+              // Redirigir coordinador de Valle de Etla al panel de Semestres cursados de la unidad
+              destino = "Coordinador/U_ValleEtla_Semestres-cursados.html";
               break;
             default:
               destino = ""; // Fallback en caso de unidad desconocida

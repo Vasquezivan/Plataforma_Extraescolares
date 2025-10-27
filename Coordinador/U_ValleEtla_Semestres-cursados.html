@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semestres Cursados - Unidad Académica Valle de Etla</title>
+  <link rel="stylesheet" href="./assets/css/Semestres-cursados_Coordinador.css" />
+  
+  <!-- Carga de Font Awesome desde CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+  <!-- Encabezado con logos institucionales -->
+  <div class="header">
+    <div class="header-logos">
+      <img src="../Administrador/assets/img/Logo Educacion.png" alt="Logo Educación">
+      <img src="../Administrador/assets/img/Logo TecNM.png" alt="Logo TecNM">
+      <img src="../Administrador/assets/img/Logo IT Valle de etla.png" alt="Logo ITVE">
+    </div>
+    <div class="header-user">
+  <!-- Botón de volver eliminado -->
+      <i class="fas fa-user-circle" id="iconoPerfil"></i>
+    </div>
+  </div>
+
+  <!-- Barra de título -->
+  <div class="title-bar">
+    <h1>Gestión de Semestres Cursados - Unidad Académica Valle de Etla</h1>
+    <p>Sistema de Actividades Extraescolares - Unidad Académica Valle de Etla</p>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="main-container">
+    <div class="semestres-container">
+      <div class="semestres-header">
+        <h2>Historial de Semestres - Unidad Académica Valle de Etla</h2>
+        <p class="descripcion-seccion">
+          En este panel el Coordinador puede visualizar únicamente los períodos académicos publicados por el Administrador para la Unidad Académica Valle de Etla.
+        </p>
+        <p class="descripcion-seccion">
+          No dispone de permisos para crear, editar ni eliminar semestres desde aquí. Si requiere cambios, contacte al Administrador.
+        </p>
+      </div>
+
+      <!-- Botón para agregar nuevo semestre -->
+      <div class="crear-semestre">
+        <button id="btnCrearSemestre">
+          <i class="fas fa-plus-circle"></i>
+          Crear Nuevo Semestre
+        </button>
+      </div>
+
+      <!-- Contenedor para las tarjetas de semestres -->
+      <div class="semestres-grid" id="contenedorSemestres">
+        <!-- Las tarjetas de semestres se agregarán dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear/editar semestre -->
+  <div id="modalSemestre" class="modal">
+    <div class="modal-contenido">
+      <span class="cerrar" id="cerrarModal">&times;</span>
+      <h2 id="tituloModal">Crear Nuevo Semestre</h2>
+      
+      <form id="formSemestre">
+        <!-- Campo oculto para el ID del semestre en edición -->
+        <input type="hidden" id="semestreId">
+        
+        <div class="form-group">
+          <label for="nombreSemestre">Nombre del Período:</label>
+          <input type="text" id="nombreSemestre" placeholder="Ej: Agosto - Diciembre 2025" required>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fechaInicio">Fecha de Inicio:</label>
+            <input type="date" id="fechaInicio" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="fechaFin">Fecha de Fin:</label>
+            <input type="date" id="fechaFin" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcionSemestre">Descripción (opcional):</label>
+          <textarea id="descripcionSemestre" rows="3" placeholder="Descripción del semestre..."></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" id="btnCancelar" class="btn-cancelar">Cancelar</button>
+          <button type="submit" id="btnGuardarSemestre" class="btn-guardar">Guardar Semestre</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 Instituto Tecnológico del Valle de Etla. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="./assets/js/U_ValleEtla_Semestres-cursados.js"></script>
+</body>
+</html>

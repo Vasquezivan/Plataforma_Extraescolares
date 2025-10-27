@@ -50,6 +50,28 @@ body {
     font-size: 20px;
   }
   
+  /* Estilos para el botón de volver */
+  #btnVolverSemestres {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    font-size: 14px;
+  }
+  
+  #btnVolverSemestres:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  #btnVolverSemestres i {
+    margin-right: 8px;
+  }
+  
   /* Contenido */
   .contenedor-unidades {
     padding: 40px;
